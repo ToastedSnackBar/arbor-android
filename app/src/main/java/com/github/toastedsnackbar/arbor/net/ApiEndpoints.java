@@ -8,11 +8,13 @@ import java.util.Map;
 public class ApiEndpoints {
 
     private static final String CLIENT_ID = "b573f060b42730edf91e";
-    private static final String SCOPE = "user\\,public_repo\\,repo\\,delete_repo\\,notifications\\,gist";
+    private static final String SCOPE = "user,public_repo,repo,notifications,gist";
     private static final String STATE = "1e31b439642ef73721067652dc0ffb15";
+    private static final String REDIRECT = "https://www.google.com/";
+    private static final String ACCESS_TOKEN = "https://github.com/login/oauth/access_token";
+    private static final String OAUTH = "https://github.com/login/oauth/authorize";
 
     private static final String BASE = "https://api.github.com";
-    private static final String OAUTH = "https://github.com/login/oauth/authorize";
 
     private static final String USERS = BASE + "/users";
     private static final String USER = USERS + "/%s";
@@ -29,6 +31,10 @@ public class ApiEndpoints {
         params.put("state", STATE);
 
         return buildUrl(OAUTH, params);
+    }
+
+    public static String getRedirectUrl() {
+        return REDIRECT;
     }
 
     public static String getUsersUrl() {

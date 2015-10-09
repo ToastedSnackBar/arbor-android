@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Arbor</string>
 
-    <string name="hello_world">Hello World!</string>
+    <string name="login">Login</string>
 </resources>
