@@ -21,7 +21,7 @@ public class ArborPreferences {
         if (sInstance == null) sInstance = new ArborPreferences(context);
     }
 
-    public ArborPreferences getsInstance() {
+    public static ArborPreferences getInstance() {
         return sInstance;
     }
 
