@@ -54,8 +54,8 @@ public class ApiEndpointsTest {
     @Test
     public void getOAuthUrl_shouldReturnCorrectUrl() {
         String correctUrl = "https://github.com/login/oauth/authorize?" +
-                "scope=user%5C%2Cpublic_repo%5C%2Crepo%5C%2Cdelete_repo%5C%2C" +
-                "notifications%5C%2Cgist&state=1e31b439642ef73721067652dc0ffb15&" +
+                "scope=user%2Cpublic_repo%2Crepo%2C" +
+                "notifications%2Cgist&state=1e31b439642ef73721067652dc0ffb15&" +
                 "client_id=b573f060b42730edf91e";
         String actualUrl = ApiEndpoints.getOAuthUrl();
 
