@@ -8,6 +8,7 @@ import java.util.Map;
 public class ApiEndpoints {
 
     private static final String CLIENT_ID = "b573f060b42730edf91e";
+    private static final String CLIENT_SECRET = "b573f060b42730edf91e";
     private static final String SCOPE = "user,public_repo,repo,notifications,gist";
     private static final String STATE = "1e31b439642ef73721067652dc0ffb15";
     private static final String REDIRECT = "https://www.google.com/";
@@ -31,6 +32,16 @@ public class ApiEndpoints {
         params.put("state", STATE);
 
         return buildUrl(OAUTH, params);
+    }
+
+    public static String getAccessTokenUrl(String code) {
+        Map<String, String> params = new HashMap<>();
+        params.put("client_id", CLIENT_ID);
+        params.put("client_secret", CLIENT_SECRET);
+        params.put("code", code);
+        params.put("state", STATE);
+
+        return buildUrl(ACCESS_TOKEN, params);
     }
 
     public static String getRedirectUrl() {
