@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mLoginWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         mLoginWebView.loadUrl(ApiEndpoints.getOAuthUrl());
         mLoginWebView.setVisibility(View.VISIBLE);
+
         mLoginButton.setVisibility(View.GONE);
     }
 
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mLoginWebView.clearCache(true);
         mLoginWebView.loadUrl("about:blank");
         mLoginWebView.setVisibility(View.GONE);
+
         mLoginButton.setVisibility(View.VISIBLE);
     }
 
