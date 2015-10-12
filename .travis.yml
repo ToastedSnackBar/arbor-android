@@ -1,6 +1,11 @@
 language: android
 jdk: oraclejdk7
 
+notifications:
+  slack:
+    rooms:
+      - toastedsnackbar:fiMajiRqVFuYHWQPmjV3afhB#travis-ci
+
 android:
     components:
         - build-tools-23.0.1
