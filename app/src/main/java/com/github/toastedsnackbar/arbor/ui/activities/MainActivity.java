@@ -25,9 +25,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         mLoginButton = (Button) findViewById(R.id.btn_login);
-        mLoginWebView = (WebView) findViewById(R.id.web_view);
+        mLoginWebView = (WebView) findViewById(R.id.web_view_login);
         mProgressBar = (ProgressBar) findViewById(R.id.pb_web_view);
 
+        mLoginWebView.setWebViewClient(new LoginWebViewClient());
+        mLoginWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         mLoginButton.setOnClickListener(MainActivity.this);
     }
 
@@ -35,8 +37,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.removeAllCookie();
 
-        mLoginWebView.setWebViewClient(new LoginWebViewClient());
-        mLoginWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         mLoginWebView.loadUrl(ApiEndpoints.getOAuthUrl());
         mLoginWebView.setVisibility(View.VISIBLE);
 
@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
         if (mLoginWebView != null) {
             teardownLoginWebView();
+            mLoginWebView.removeAllViews();
             mLoginWebView.destroy();
         }
     }
