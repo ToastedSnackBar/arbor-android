@@ -8,7 +8,7 @@ import java.util.Map;
 public class ApiEndpoints {
 
     private static final String CLIENT_ID = "b573f060b42730edf91e";
-    private static final String CLIENT_SECRET = "b573f060b42730edf91e";
+    private static final String CLIENT_SECRET = "f828b6e35e4d411b3242d8961a51badceb76c20c";
     private static final String SCOPE = "user,public_repo,repo,notifications,gist";
     private static final String STATE = "1e31b439642ef73721067652dc0ffb15";
     private static final String REDIRECT = "https://www.google.com/";
