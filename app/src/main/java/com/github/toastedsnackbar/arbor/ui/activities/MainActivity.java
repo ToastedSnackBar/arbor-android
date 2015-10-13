@@ -16,6 +16,8 @@ import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private WebView mLoginWebView;
+    private LoginWebViewClient mLoginClient;
+
     private Button mLoginButton;
     private ProgressBar mProgressBar;
 
@@ -24,18 +26,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mLoginClient = new LoginWebViewClient();
+
         mLoginButton = (Button) findViewById(R.id.btn_login);
-        mLoginWebView = (WebView) findViewById(R.id.web_view);
+        mLoginWebView = (WebView) findViewById(R.id.web_view_login);
         mProgressBar = (ProgressBar) findViewById(R.id.pb_web_view);
 
         mLoginButton.setOnClickListener(MainActivity.this);
+        mLoginWebView.setWebViewClient(mLoginClient);
     }
 
     private void setupLoginWebView() {
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.removeAllCookie();
 
-        mLoginWebView.setWebViewClient(new LoginWebViewClient());
         mLoginWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         mLoginWebView.loadUrl(ApiEndpoints.getOAuthUrl());
         mLoginWebView.setVisibility(View.VISIBLE);
