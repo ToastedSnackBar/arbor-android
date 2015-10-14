@@ -41,7 +41,6 @@ android {
     // log unit test results
     tasks.withType(Test) {
         testLogging {
-            exceptionFormat "full"
             events "passed", "skipped", "failed"
         }
     }
