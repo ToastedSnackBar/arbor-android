@@ -17,5 +17,5 @@ script:
   - ./gradlew clean test
 
 after_success:
-  - ./gradlew jacocoTestCoverage coveralls
+  - ./gradlew jacocoTestReport coveralls
 
