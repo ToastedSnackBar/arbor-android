@@ -1,5 +1,9 @@
 import groovy.json.JsonBuilder
 
+//==============================================================================//
+// Android
+//==============================================================================//
+
 apply plugin: 'com.android.application'
 
 android {
@@ -44,26 +48,11 @@ android {
             events "passed", "skipped", "failed"
         }
     }
-
-    task generateApiConfig {
-        def json = new JsonBuilder()
-
-        try {
-            json client_id: getSystemEnvVar("ARBOR_CLIENT_ID"),
-                    client_secret: getSystemEnvVar("ARBOR_CLIENT_SECRET"),
-                    client_state: getSystemEnvVar("ARBOR_CLIENT_STATE")
-        } catch (GradleException e) {
-            json client_id: getGradleProp("ARBOR_CLIENT_ID"),
-                    client_secret: getGradleProp("ARBOR_CLIENT_SECRET"),
-                    client_state : getGradleProp("ARBOR_CLIENT_STATE")
-        }
-
-        def outFile = new File("app/src/main/res/raw/api_config.json")
-        outFile.write(json.toPrettyString())
-    }
-
-    preBuild.dependsOn('generateApiConfig')
 }
+
+//==============================================================================//
+// Module dependencies
+//==============================================================================//
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -78,6 +67,29 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.robolectric:robolectric:3.0'
 }
+
+//==============================================================================//
+// Generate api_config.json
+//==============================================================================//
+
+task generateApiConfig {
+    def json = new JsonBuilder()
+
+    try {
+        json client_id: getSystemEnvVar("ARBOR_CLIENT_ID"),
+                client_secret: getSystemEnvVar("ARBOR_CLIENT_SECRET"),
+                client_state: getSystemEnvVar("ARBOR_CLIENT_STATE")
+    } catch (GradleException e) {
+        json client_id: getGradleProp("ARBOR_CLIENT_ID"),
+                client_secret: getGradleProp("ARBOR_CLIENT_SECRET"),
+                client_state : getGradleProp("ARBOR_CLIENT_STATE")
+    }
+
+    def outFile = new File("app/src/main/res/raw/api_config.json")
+    outFile.write(json.toPrettyString())
+}
+
+preBuild.dependsOn('generateApiConfig')
 
 def getSystemEnvVar(String var) {
     def val = System.getenv(var)
@@ -97,4 +109,37 @@ def getGradleProp(String prop) {
     }
 
     return val
+}
+
+//==============================================================================//
+// Test code coverage reporting
+//==============================================================================//
+apply plugin: 'jacoco'
+apply plugin: 'com.github.kt3k.coveralls'
+
+task jacocoTestReport(type: JacocoReport) {
+    group = 'Reporting'
+    description = 'Generate Jacoco coverage reports after running tests.'
+    jacocoClasspath = configurations['androidJacocoAnt']
+
+    reports {
+        xml {
+            enabled true
+            destination "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+        }
+
+        html {
+            enabled = true
+            destination "${buildDir}/reports/jacoco/test/html"
+        }
+    }
+
+    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*',
+                      '**/*Test*.*', 'android/**/*.*']
+    def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
+    def mainSrc = "${projectDir}/src/main/java"
+
+    sourceDirectories = files([mainSrc])
+    classDirectories = files([debugTree])
+    executionData = fileTree(dir: projectDir, includes: ['**/*.exec'])
 }
