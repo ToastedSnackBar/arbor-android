@@ -28,7 +28,7 @@ $ export ARBOR_CLIENT_STATE=[secure]
 
 ### Local machine builds
 
-To be able to build the project on your local machine via the command line or directly from Android studio, you will need to add the following properties into `gradle.properties`. This file is untracked by Git, so you might need to create it.
+To be able to build the project on your local machine via the command line or directly from Android Studio, you will need to add the following properties into `gradle.properties`. This file is untracked by Git, so you might need to create it.
 
 Note that the values in this example are intentionally obscured as well. Please do not track this file!
 
