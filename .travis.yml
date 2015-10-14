@@ -3,16 +3,16 @@ jdk: oraclejdk7
 
 notifications:
   slack:
-    rooms:
-      - toastedsnackbar:fiMajiRqVFuYHWQPmjV3afhB#travis-ci
+    secure: PNSYSnwnnnvRvcwCumbY6qfzWk0QGa1PFCd4j0I6OeJyUqYrdPzQ0plmnUKw2bFmuCeGtykMJsqPAefA5wtVb1JC6O7H//kQvcyl2w21L2mHFdGNa18YBkXb00mgvFmRKDwNWSF4cfpItAjvoLXDPJqReVW7CASH3KuUscSN6IlqxelUvARk6i9w9HgCgGyJNSsAg2wY+w65sHZUhgPlpGIf9RcaUHPKs6QF3YGACtrVnddNmHsB2yxOzuP4krsiHFRCwQxsqt1AW+P1vOi27PsUhe6veyQ2sNKFW6R2krIkogEN/cUZsYpL3UjYx+aujkliFf/bgv+mDSavqteueiLEShCt+yq8iGCW7Y3av2XEM0UM5OsAT0qit6VdlzeIqQI3mvqvBxN9S0+gPyxSZ7XVmuZF0vwsZwHjsJ2C4eyurfpRfFEBGeBQmYcaqiE5VzqFV0jErrYakTx7slKdnn7HLlep3Xm4ps6uukkEYpamsottDWllC1vZbwox+o067YqRhqKO/oPbGhCdGiA1WhuuL9FLu55jVqMpmfKPwKkgdgPyWD9x8g1rBK9C1diJGk+pivxF/obrk4AtetjdVu5LSDZ7D+X7XVyZgLHvvfLEgPj9osee3xpP2OeHoY/qpEnerG7Kdsu3b0kg3mS+XsYvvRWvUrOmu7BfM+5jlBE=
 
 android:
-    components:
-        - build-tools-23.0.1
-        - android-23
-        - extra-android-support
-        - extra-android-m2repository
-        - extra-google-m2repository
+  components:
+  - build-tools-23.0.1
+  - android-23
+  - extra-android-support
+  - extra-android-m2repository
+  - extra-google-m2repository
 
 script:
-    - ./gradlew clean test
+- "./gradlew clean test"
+
