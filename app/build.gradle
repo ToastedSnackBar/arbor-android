@@ -1,3 +1,5 @@
+import groovy.json.JsonBuilder
+
 apply plugin: 'com.android.application'
 
 android {
@@ -43,12 +45,32 @@ android {
             events "passed", "skipped", "failed"
         }
     }
+
+    task generateApiConfig {
+        def json = new JsonBuilder()
+
+        try {
+            json client_id: getSystemEnvVar("ARBOR_CLIENT_ID"),
+                    client_secret: getSystemEnvVar("ARBOR_CLIENT_SECRET"),
+                    client_state: getSystemEnvVar("ARBOR_CLIENT_STATE")
+        } catch (GradleException e) {
+            json client_id: getGradleProp("ARBOR_CLIENT_ID"),
+                    client_secret: getGradleProp("ARBOR_CLIENT_SECRET"),
+                    client_state : getGradleProp("ARBOR_CLIENT_STATE")
+        }
+
+        def outFile = new File("app/src/main/res/raw/api_config.json")
+        outFile.write(json.toPrettyString())
+    }
+
+    preBuild.dependsOn('generateApiConfig')
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:cardview-v7:23.0.1'
+    compile 'com.google.code.gson:gson:2.4'
 
     testCompile('com.squareup.assertj:assertj-android:1.1.0') {
         exclude module: 'support-annotations'
@@ -56,4 +78,24 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     testCompile 'org.robolectric:robolectric:3.0'
+}
+
+def getSystemEnvVar(String var) {
+    def val = System.getenv(var)
+
+    if (val == null)
+        throw new GradleException("Required system environment variable" +
+                "\"" + var + "\" is not set.")
+    return val
+}
+
+def getGradleProp(String prop) {
+    def val = System.getProperty(prop, null)
+
+    if (val == null) {
+        throw new GradleException("Required property \"" + prop + "\"" +
+                "is not set in gradle.properties")
+    }
+
+    return val
 }
