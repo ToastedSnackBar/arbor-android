@@ -16,7 +16,9 @@ To be able to build the project via the Travis-CI shell with the following scrip
 ./gradlew clean test
 ```
 
-You will need to add the following system environment variables to Travis-CI. Note that the values in this example are intentionally obscured. Please do not track this file!:
+You will need to add the following system environment variables to Travis-CI.
+
+Note that the values in this example are intentionally obscured. Please do not track this file!:
 
 ```bash
 $ export ARBOR_CLIENT_ID=[secure]
@@ -24,9 +26,11 @@ $ export ARBOR_CLIENT_SECRET=[secure]
 $ export ARBOR_CLIENT_STATE=[secure]
 ```
 
-### Android Studio builds
+### Local machine builds
 
-You will need to add the following properties into `gradle.properties`. Note tat the values in this example are intentionally obscured as well. Please do not track this file!
+To be able to build the project on your local machine via the command line or directly from Android studio, you will need to add the following properties into `gradle.properties`. This file is untracked by Git, so you might need to create it.
+
+Note that the values in this example are intentionally obscured as well. Please do not track this file!
 
 ```properties
 # Project-wide Gradle settings.
