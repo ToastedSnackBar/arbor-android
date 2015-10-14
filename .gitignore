@@ -1,3 +1,6 @@
+# Stop tracking gradle.properties
+gradle.properties
+
 # Built application files
 *.apk
 *.ap_

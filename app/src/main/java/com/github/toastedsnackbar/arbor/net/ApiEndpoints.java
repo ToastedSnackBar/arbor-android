@@ -1,71 +1,103 @@
 package com.github.toastedsnackbar.arbor.net;
 
+import android.content.Context;
 import android.net.Uri;
 
+import com.github.toastedsnackbar.arbor.R;
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ApiEndpoints {
 
-    private static final String CLIENT_ID = "b573f060b42730edf91e";
-    private static final String CLIENT_SECRET = "f828b6e35e4d411b3242d8961a51badceb76c20c";
-    private static final String SCOPE = "user,public_repo,repo,notifications,gist";
-    private static final String STATE = "1e31b439642ef73721067652dc0ffb15";
-    private static final String REDIRECT = "https://www.google.com/";
-    private static final String ACCESS_TOKEN = "https://github.com/login/oauth/access_token";
-    private static final String OAUTH = "https://github.com/login/oauth/authorize";
+    private static final String CLIENT_SCOPE = "user,public_repo,repo,notifications,gist";
 
-    private static final String BASE = "https://api.github.com";
+    private final String mClientId;
+    private final String mClientSecret;
+    private final String mClientState;
 
-    private static final String USERS = BASE + "/users";
-    private static final String USER = USERS + "/%s";
+    private static class Urls {
+        public static final String CLIENT_REDIRECT_URL = "https://www.google.com/";
+        public static final String CLIENT_OAUTH_URL = "https://github.com/login/oauth/authorize";
+        public static final String CLIENT_TOKEN_URL = "https://github.com/login/oauth/access_token";
 
-    private static final String AUTH_USER = BASE + "/user";
-    private static final String USER_REPOS = USER + "/repos";
+        public static final String BASE = "https://api.github.com";
 
-    private static final String AUTH_USER_REPOS = AUTH_USER + "/repos";
+        public static final String USERS = BASE + "/users";
+        public static final String USER = USERS + "/%s";
+
+        public static final String AUTH_USER = BASE + "/user";
+        public static final String USER_REPOS = USER + "/repos";
+
+        public static final String AUTH_USER_REPOS = AUTH_USER + "/repos";
+    }
+
+    private static ApiEndpoints sInstance;
+
+    public static void init(Context context) {
+        if (sInstance == null) sInstance = new ApiEndpoints(context);
+    }
+
+    private ApiEndpoints(Context context) {
+        ApiConfig apiConfig = getApiConfig(context);
+
+        mClientId = apiConfig.clientId;
+        mClientSecret = apiConfig.clientSecret;
+        mClientState = apiConfig.clientState;
+    }
+
+    private static ApiEndpoints getInstance() {
+        if (sInstance == null) throw new IllegalStateException("ApiEndpoints not initialized yet.");
+        return sInstance;
+    }
 
     public static String getOAuthUrl() {
         Map<String, String> params = new HashMap<>();
-        params.put("client_id", CLIENT_ID);
-        params.put("scope", SCOPE);
-        params.put("state", STATE);
+        params.put("scope", CLIENT_SCOPE);
+        params.put("client_id", getInstance().mClientId);
+        params.put("state", getInstance().mClientState);
 
-        return buildUrl(OAUTH, params);
+        return buildUrl(Urls.CLIENT_OAUTH_URL, params);
     }
 
     public static String getAccessTokenUrl(String code) {
         Map<String, String> params = new HashMap<>();
-        params.put("client_id", CLIENT_ID);
-        params.put("client_secret", CLIENT_SECRET);
         params.put("code", code);
-        params.put("state", STATE);
+        params.put("client_id", getInstance().mClientId);
+        params.put("client_secret", getInstance().mClientSecret);
+        params.put("state", getInstance().mClientState);
 
-        return buildUrl(ACCESS_TOKEN, params);
+        return buildUrl(Urls.CLIENT_TOKEN_URL, params);
     }
 
     public static String getRedirectUrl() {
-        return REDIRECT;
+        return Urls.CLIENT_REDIRECT_URL;
     }
 
     public static String getUsersUrl() {
-        return buildUrl(USERS);
+        return buildUrl(Urls.USERS);
     }
 
     public static String getUserUrl(String username) {
-        return buildUrl(String.format(USER, username));
+        return buildUrl(String.format(Urls.USER, username));
     }
 
     public static String getAuthUserUrl() {
-        return buildUrl(AUTH_USER);
+        return buildUrl(Urls.AUTH_USER);
     }
 
     public static String getUserReposUrl(String username) {
-        return buildUrl(String.format(USER_REPOS, username));
+        return buildUrl(String.format(Urls.USER_REPOS, username));
     }
 
     public static String getAuthUserReposUrl() {
-        return buildUrl(AUTH_USER_REPOS);
+        return buildUrl(Urls.AUTH_USER_REPOS);
     }
 
     private static String buildUrl(String url) {
@@ -83,5 +115,43 @@ public class ApiEndpoints {
         }
 
         return builder.build().toString();
+    }
+
+    private ApiConfig getApiConfig(Context context) {
+        String apiConfigString = getApiConfigString(context);
+        return new Gson().fromJson(apiConfigString, ApiConfig.class);
+    }
+
+    private String getApiConfigString(Context context) {
+        InputStream in = context.getResources().openRawResource(R.raw.api_config);
+        InputStreamReader reader = new InputStreamReader(in);
+        BufferedReader bufferedReader = new BufferedReader(reader);
+
+        String line;
+        StringBuilder builder = new StringBuilder();
+
+        try {
+            while ((line = bufferedReader.readLine()) != null) {
+                builder.append(line);
+                builder.append("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException("Unable to read api_config.json");
+        }
+
+        return builder.toString();
+    }
+
+    private static class ApiConfig {
+
+        @SerializedName("client_id")
+        public String clientId;
+
+        @SerializedName("client_secret")
+        public String clientSecret;
+
+        @SerializedName("client_state")
+        public String clientState;
     }
 }
