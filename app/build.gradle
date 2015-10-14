@@ -117,7 +117,7 @@ def getGradleProp(String prop) {
 apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
 
-task jacocoTestCoverage(type: JacocoReport) {
+task jacocoTestReport(type: JacocoReport) {
     group = 'Reporting'
     description = 'Generate Jacoco coverage reports after running tests.'
     jacocoClasspath = configurations['androidJacocoAnt']
