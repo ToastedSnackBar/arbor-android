@@ -114,3 +114,23 @@ def getGradleProp(String prop) {
 //==============================================================================//
 // Test code coverage reporting
 //==============================================================================//
+apply plugin: 'jacoco'
+
+task jacocoCoverageReport(type: JacocoReport) {
+    group = 'Reporting'
+    description = 'Generate Jacoco coverage reports after running tests.'
+    jacocoClasspath = configurations['androidJacocoAnt']
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+
+    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
+    def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
+    def mainSrc = "${projectDir}/src/main/java"
+
+    sourceDirectories = files([mainSrc])
+    classDirectories = files([debugTree])
+    executionData = fileTree(dir: projectDir, includes: ['**/*.exec'])
+}
