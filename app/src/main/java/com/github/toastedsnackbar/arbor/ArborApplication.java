@@ -3,6 +3,7 @@ package com.github.toastedsnackbar.arbor;
 import android.app.Application;
 
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
+import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
 
 public class ArborApplication extends Application {
 
@@ -11,5 +12,6 @@ public class ArborApplication extends Application {
         super.onCreate();
 
         ArborPreferences.init(getApplicationContext());
+        ApiEndpoints.init(getApplicationContext());
     }
 }
