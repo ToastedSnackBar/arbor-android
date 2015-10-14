@@ -1,8 +1,6 @@
 # Arbor for Android
 
-<p align="right">
-    [![Build Status](https://travis-ci.org/ToastedSnackBar/arbor-android.svg?branch=master)](https://travis-ci.org/ToastedSnackBar/arbor-android) [![Coverage Status](https://coveralls.io/repos/ToastedSnackBar/arbor-android/badge.svg?branch=105683680&service=github)](https://coveralls.io/github/ToastedSnackBar/arbor-android?branch=105683680)
-</p>
+[![Build Status](https://travis-ci.org/ToastedSnackBar/arbor-android.svg?branch=master)](https://travis-ci.org/ToastedSnackBar/arbor-android) [![Coverage Status](https://coveralls.io/repos/ToastedSnackBar/arbor-android/badge.svg?branch=105683680&service=github)](https://coveralls.io/github/ToastedSnackBar/arbor-android?branch=105683680)
 
 ## Description
 
