@@ -82,10 +82,10 @@ task generateApiConfig {
     } catch (GradleException e) {
         json client_id: getGradleProp("ARBOR_CLIENT_ID"),
                 client_secret: getGradleProp("ARBOR_CLIENT_SECRET"),
-                client_state : getGradleProp("ARBOR_CLIENT_STATE")
+                client_state: getGradleProp("ARBOR_CLIENT_STATE")
     }
 
-    def outFile = new File("app/src/main/res/raw/api_config.json")
+    def outFile = file('src/main/res/raw/api_config.json')
     outFile.write(json.toPrettyString())
 }
 
