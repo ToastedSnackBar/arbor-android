@@ -55,8 +55,9 @@ public class ApiEndpoints {
         public static final String KEY_CONTENT_TYPE = "Content-Type";
         public static final String KEY_ACCEPT = "Accept";
 
-        public static final String VALUE_CONTENT_TYPE = "application/json";
-        public static final String VALUE_ACCEPT = "application/vnd.github.v3+json";
+        public static final String VALUE_CONTENT_TYPE_JSON = "application/json";
+        public static final String VALUE_ACCEPT_API_VERSION = "application/vnd.github.v3+json";
+        public static final String VALUE_ACCEPT_JSON = "application/json";
     }
 
     private static ApiEndpoints sInstance;
@@ -92,20 +93,15 @@ public class ApiEndpoints {
 
     public static String getOAuthUrl() {
         Map<String, String> params = new HashMap<>();
-        params.put(Params.SCOPE, CLIENT_SCOPE)
+        params.put(Params.SCOPE, CLIENT_SCOPE);
+        params.put(Params.STATE, getClientState());
         params.put(Params.CLIENT_ID, getClientId());
 
         return buildUrl(Urls.CLIENT_OAUTH_URL, params);
     }
 
-    public static String getAccessTokenUrl(String code) {
-        Map<String, String> params = new HashMap<>();
-        params.put(Params.CODE, code);
-        params.put(Params.CLIENT_ID, getClientId());
-        params.put(Params.CLIENT_SECRET, getClientSecret());
-        params.put(Params.STATE, getClientState());
-
-        return buildUrl(Urls.CLIENT_TOKEN_URL, params);
+    public static String getAccessTokenUrl() {
+        return buildUrl(Urls.CLIENT_TOKEN_URL);
     }
 
     public static String getRedirectUrl() {
@@ -134,8 +130,9 @@ public class ApiEndpoints {
 
     private static Map<String, String> getDefaultHeaders() {
         Map<String, String> headers = new LinkedHashMap<>();
-        headers.put(Headers.KEY_ACCEPT, Headers.VALUE_ACCEPT);
-        headers.put(Headers.KEY_CONTENT_TYPE, Headers.VALUE_CONTENT_TYPE);
+        headers.put(Headers.KEY_ACCEPT, Headers.VALUE_ACCEPT_API_VERSION);
+        headers.put(Headers.KEY_ACCEPT, Headers.VALUE_ACCEPT_JSON);
+        headers.put(Headers.KEY_CONTENT_TYPE, Headers.VALUE_CONTENT_TYPE_JSON);
 
         return headers;
     }

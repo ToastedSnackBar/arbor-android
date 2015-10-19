@@ -81,8 +81,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 String accessToken = response.getAccessToken();
                 ArborPreferences.getInstance().setAccessToken(accessToken);
-
-                Toast.makeText(MainActivity.this, "Successfully logged in!", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

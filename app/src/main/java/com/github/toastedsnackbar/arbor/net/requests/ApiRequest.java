@@ -1,8 +1,8 @@
 package com.github.toastedsnackbar.arbor.net.requests;
 
 import android.os.Parcelable;
-import android.util.Log;
 
+import com.github.toastedsnackbar.arbor.content.ArborPreferences;
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
 import com.github.toastedsnackbar.arbor.net.responses.ApiResponse;
 import com.google.gson.Gson;
@@ -21,7 +21,6 @@ import java.util.Set;
 
 public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
 
-    public static final String METHOD_GET = "GET";
     public static final String METHOD_POST = "POST";
     public static final String METHOD_PATCH = "PATCH";
 
@@ -35,7 +34,6 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
         URL url = new URL(getUrl());
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
         connection.setDoOutput(true);
 
@@ -48,8 +46,6 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
             connection.connect();
             int statusCode = connection.getResponseCode();
 
-            Log.d("ApiRequest", "execute() -- statusCode: " + statusCode);
-
             if (getAcceptedResponseCodes() == null ||
                     getAcceptedResponseCodes().contains(statusCode)) {
                 response = parseResponse(connection);
@@ -57,8 +53,9 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
             }
         } finally {
             connection.disconnect();
-            return response;
         }
+
+        return response;
     }
 
     private T parseResponse(HttpURLConnection connection) throws IOException {
@@ -71,8 +68,6 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
             stringBuilder.append(line);
         }
         reader.close();
-
-        Log.d("ApiRequest", "parseResponse() -- response: " + stringBuilder.toString());
 
         return new Gson().fromJson(stringBuilder.toString(), getResponseClass());
     }
@@ -89,12 +84,16 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
     }
 
     private void addRequestProperties(HttpURLConnection connection) {
+        if (isAuthorizedRequest()) {
+            String accessToken = ArborPreferences.getInstance().getAccessToken();
+            connection.addRequestProperty("Authorization", "token " + accessToken);
+        }
+
         for (String key : ApiEndpoints.DEFAULT_HEADERS.keySet()) {
             connection.addRequestProperty(key, ApiEndpoints.DEFAULT_HEADERS.get(key));
         }
 
         Map<String, String> properties = getProperties();
-
         if (properties == null) return;
         for (String key : properties.keySet()) {
             connection.addRequestProperty(key, properties.get(key));
@@ -110,9 +109,7 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
                 os = connection.getOutputStream();
                 os.write(entity.getBytes());
             } finally {
-                os.close();
-
-                Log.d("ApiRequest", "setRequestEntity() -- entity: " + entity);
+                if (os != null) os.close();
             }
         }
     }
@@ -129,6 +126,8 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
     protected abstract String getUrl();
 
     protected abstract Map<String, String> getProperties();
+
+    protected abstract boolean isAuthorizedRequest();
 
     protected abstract String getRequestMethod();
 

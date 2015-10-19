@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 
-import com.github.toastedsnackbar.arbor.net.requests.AccessTokenRequest;
 import com.github.toastedsnackbar.arbor.net.requests.ApiRequest;
 import com.github.toastedsnackbar.arbor.net.responses.ApiResponse;
 
