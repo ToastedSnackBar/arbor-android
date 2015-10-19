@@ -24,9 +24,11 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
     public static final String METHOD_POST = "POST";
     public static final String METHOD_PATCH = "PATCH";
 
-    public static final Set<String> DEFAULT_ENTITY_METHODS = new LinkedHashSet<>(Arrays.asList(
-            METHOD_POST,
-            METHOD_PATCH));
+    private static final Set<String> DEFAULT_ENTITY_METHODS = new LinkedHashSet<>(Arrays.asList(
+            METHOD_POST, METHOD_PATCH));
+
+    private static final Set<Integer> DEFAULT_ACCEPTED_STATUSES = new LinkedHashSet<>(Arrays.asList(
+            200, 201));
 
     private static final String KEY_METHOD_OVERRIDE = "X-HTTP-Method-Override";
 
@@ -46,8 +48,7 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
             connection.connect();
             int statusCode = connection.getResponseCode();
 
-            if (getAcceptedResponseCodes() == null ||
-                    getAcceptedResponseCodes().contains(statusCode)) {
+            if (shouldAcceptStatusCode(statusCode)) {
                 response = parseResponse(connection);
                 response.setStatusCode(statusCode);
             }
@@ -114,6 +115,14 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
         }
     }
 
+    private boolean shouldAcceptStatusCode(int statusCode) {
+        boolean acceptDefault = DEFAULT_ACCEPTED_STATUSES.contains(statusCode);
+        if (acceptDefault) return true;
+
+        Set<Integer> acceptedStatuses = getAcceptedStatuses();
+        return acceptedStatuses != null && acceptedStatuses.contains(statusCode);
+    }
+
     private Set<String> getEntityMethods() {
         return DEFAULT_ENTITY_METHODS;
     }
@@ -133,7 +142,7 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
 
     protected abstract String getRequestEntity();
 
-    protected abstract Set<Integer> getAcceptedResponseCodes();
+    protected abstract Set<Integer> getAcceptedStatuses();
 
     protected abstract Class<T> getResponseClass();
 }
