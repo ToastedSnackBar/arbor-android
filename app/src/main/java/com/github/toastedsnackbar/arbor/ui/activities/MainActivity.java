@@ -1,7 +1,9 @@
 package com.github.toastedsnackbar.arbor.ui.activities;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.webkit.CookieManager;
@@ -9,21 +11,32 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.github.toastedsnackbar.arbor.R;
+import com.github.toastedsnackbar.arbor.content.ArborPreferences;
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
+import com.github.toastedsnackbar.arbor.net.ApiReceiver;
+import com.github.toastedsnackbar.arbor.net.ApiService;
+import com.github.toastedsnackbar.arbor.net.requests.AccessTokenRequest;
+import com.github.toastedsnackbar.arbor.net.responses.AccessTokenResponse;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,
+        ApiReceiver.ReceiveResultListener {
 
     private WebView mLoginWebView;
 
     private Button mLoginButton;
     private ProgressBar mProgressBar;
 
+    private ApiReceiver mApiReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mApiReceiver = new ApiReceiver(new Handler());
 
         mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginWebView = (WebView) findViewById(R.id.web_view_login);
@@ -34,10 +47,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mLoginButton.setOnClickListener(MainActivity.this);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mApiReceiver.setResultListener(MainActivity.this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mApiReceiver.setResultListener(null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mLoginWebView != null) {
+            teardownLoginWebView();
+            mLoginWebView.removeAllViews();
+            mLoginWebView.destroy();
+        }
+    }
+
+    @Override
+    public void onReceiveResult(int resultCode, Bundle resultData) {
+        switch (resultCode) {
+            case ApiService.ResultCodes.RUNNING:
+                break;
+
+            case ApiService.ResultCodes.SUCCESS:
+                AccessTokenResponse response = resultData.getParcelable(ApiService.EXTRA_RESPONSE);
+                if (response == null) return;
+
+                String accessToken = response.getAccessToken();
+                ArborPreferences.getInstance().setAccessToken(accessToken);
+
+                Toast.makeText(MainActivity.this, "Successfully logged in!", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
     private void setupLoginWebView() {
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.removeAllCookie();
-        
+
         mLoginWebView.loadUrl(ApiEndpoints.getOAuthUrl());
         mLoginWebView.setVisibility(View.VISIBLE);
 
@@ -53,14 +106,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mLoginButton.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mLoginWebView != null) {
-            teardownLoginWebView();
-            mLoginWebView.removeAllViews();
-            mLoginWebView.destroy();
-        }
+    private void executeAccessTokenRequest(String url) {
+        Uri uri = Uri.parse(url);
+        String code = uri.getQueryParameter(ApiEndpoints.Params.CODE);
+        String clientId = uri.getQueryParameter(ApiEndpoints.Params.CLIENT_ID);
+        String secret = uri.getQueryParameter(ApiEndpoints.Params.CLIENT_SECRET);
+        String state = uri.getQueryParameter(ApiEndpoints.Params.STATE);
+
+        AccessTokenRequest request = new AccessTokenRequest(code, clientId, secret, state);
+        ApiService.executeRequest(MainActivity.this, request, mApiReceiver);
     }
 
     @Override
@@ -91,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public boolean shouldOverrideUrlLoading(WebView webView, String url) {
             if (url.startsWith(ApiEndpoints.getRedirectUrl())) {
                 mLoginWebView.setVisibility(View.GONE);
+                executeAccessTokenRequest(url);
             } else {
                 mLoginWebView.loadUrl(url);
             }
