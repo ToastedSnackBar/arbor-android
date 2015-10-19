@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.webkit.CookieManager;
@@ -11,7 +12,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ApiReceiver.ReceiveResultListener {
 
     private WebView mLoginWebView;
-
     private Button mLoginButton;
     private ProgressBar mProgressBar;
 
@@ -81,6 +80,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 String accessToken = response.getAccessToken();
                 ArborPreferences.getInstance().setAccessToken(accessToken);
+
+                Snackbar.make(findViewById(android.R.id.content), "Successfully logged in!",
+                        Snackbar.LENGTH_SHORT).show();
                 break;
         }
     }
