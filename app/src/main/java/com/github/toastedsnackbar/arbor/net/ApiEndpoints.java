@@ -73,21 +73,37 @@ public class ApiEndpoints {
         mClientState = apiConfig.clientState;
     }
 
+    public static String getClientId() {
+        return getInstance().mClientId;
+    }
+
+    public static String getClientSecret() {
+        return getInstance().mClientSecret;
+    }
+
+    public static String getClientState() {
+        return getInstance().mClientState;
+    }
+
     private static ApiEndpoints getInstance() {
         if (sInstance == null) throw new IllegalStateException("ApiEndpoints not initialized yet.");
         return sInstance;
     }
 
     public static String getOAuthUrl() {
-        return buildUrl(Urls.CLIENT_OAUTH_URL);
+        Map<String, String> params = new HashMap<>();
+        params.put(Params.SCOPE, CLIENT_SCOPE)
+        params.put(Params.CLIENT_ID, getClientId());
+
+        return buildUrl(Urls.CLIENT_OAUTH_URL, params);
     }
 
     public static String getAccessTokenUrl(String code) {
         Map<String, String> params = new HashMap<>();
         params.put(Params.CODE, code);
-        params.put(Params.CLIENT_ID, getInstance().mClientId);
-        params.put(Params.CLIENT_SECRET, getInstance().mClientSecret);
-        params.put(Params.STATE, getInstance().mClientState);
+        params.put(Params.CLIENT_ID, getClientId());
+        params.put(Params.CLIENT_SECRET, getClientSecret());
+        params.put(Params.STATE, getClientState());
 
         return buildUrl(Urls.CLIENT_TOKEN_URL, params);
     }

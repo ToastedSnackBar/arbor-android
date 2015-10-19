@@ -1,6 +1,7 @@
 package com.github.toastedsnackbar.arbor.net.requests;
 
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
 import com.github.toastedsnackbar.arbor.net.responses.ApiResponse;
@@ -46,6 +47,9 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
         try {
             connection.connect();
             int statusCode = connection.getResponseCode();
+
+            Log.d("ApiRequest", "execute() -- statusCode: " + statusCode);
+
             if (getAcceptedResponseCodes() == null ||
                     getAcceptedResponseCodes().contains(statusCode)) {
                 response = parseResponse(connection);
@@ -67,6 +71,8 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
             stringBuilder.append(line);
         }
         reader.close();
+
+        Log.d("ApiRequest", "parseResponse() -- response: " + stringBuilder.toString());
 
         return new Gson().fromJson(stringBuilder.toString(), getResponseClass());
     }
@@ -105,6 +111,8 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
                 os.write(entity.getBytes());
             } finally {
                 os.close();
+
+                Log.d("ApiRequest", "setRequestEntity() -- entity: " + entity);
             }
         }
     }

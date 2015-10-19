@@ -109,11 +109,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void executeAccessTokenRequest(String url) {
         Uri uri = Uri.parse(url);
         String code = uri.getQueryParameter(ApiEndpoints.Params.CODE);
-        String clientId = uri.getQueryParameter(ApiEndpoints.Params.CLIENT_ID);
-        String secret = uri.getQueryParameter(ApiEndpoints.Params.CLIENT_SECRET);
-        String state = uri.getQueryParameter(ApiEndpoints.Params.STATE);
+        String clientId = ApiEndpoints.getClientId();
+        String clientSecret = ApiEndpoints.getClientSecret();
+        String state = ApiEndpoints.getClientState();
 
-        AccessTokenRequest request = new AccessTokenRequest(code, clientId, secret, state);
+        AccessTokenRequest request = new AccessTokenRequest(code, clientId, clientSecret, state);
         ApiService.executeRequest(MainActivity.this, request, mApiReceiver);
     }
 
