@@ -12,15 +12,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ApiEndpoints {
+
+    public static final String SERVER_TIME_FORMAT = "YYYY-MM-DDTHH:MM:SSZ";
+
+    public static final Map<String, String> DEFAULT_HEADERS = getDefaultHeaders();
 
     private static final String CLIENT_SCOPE = "user,public_repo,repo,notifications,gist";
 
     private final String mClientId;
     private final String mClientSecret;
     private final String mClientState;
+
+    public static class Params {
+        public static final String SCOPE = "scope";
+        public static final String CLIENT_ID = "client_id";
+        public static final String STATE = "state";
+        public static final String CODE = "code";
+        public static final String CLIENT_SECRET = "client_secret";
+    }
 
     private static class Urls {
         public static final String CLIENT_REDIRECT_URL = "https://www.google.com/";
@@ -38,6 +51,15 @@ public class ApiEndpoints {
         public static final String AUTH_USER_REPOS = AUTH_USER + "/repos";
     }
 
+    private static class Headers {
+        public static final String KEY_CONTENT_TYPE = "Content-Type";
+        public static final String KEY_ACCEPT = "Accept";
+
+        public static final String VALUE_CONTENT_TYPE_JSON = "application/json";
+        public static final String VALUE_ACCEPT_API_VERSION = "application/vnd.github.v3+json";
+        public static final String VALUE_ACCEPT_JSON = "application/json";
+    }
+
     private static ApiEndpoints sInstance;
 
     public static void init(Context context) {
@@ -52,6 +74,18 @@ public class ApiEndpoints {
         mClientState = apiConfig.clientState;
     }
 
+    public static String getClientId() {
+        return getInstance().mClientId;
+    }
+
+    public static String getClientSecret() {
+        return getInstance().mClientSecret;
+    }
+
+    public static String getClientState() {
+        return getInstance().mClientState;
+    }
+
     private static ApiEndpoints getInstance() {
         if (sInstance == null) throw new IllegalStateException("ApiEndpoints not initialized yet.");
         return sInstance;
@@ -59,21 +93,15 @@ public class ApiEndpoints {
 
     public static String getOAuthUrl() {
         Map<String, String> params = new HashMap<>();
-        params.put("scope", CLIENT_SCOPE);
-        params.put("client_id", getInstance().mClientId);
-        params.put("state", getInstance().mClientState);
+        params.put(Params.SCOPE, CLIENT_SCOPE);
+        params.put(Params.STATE, getClientState());
+        params.put(Params.CLIENT_ID, getClientId());
 
         return buildUrl(Urls.CLIENT_OAUTH_URL, params);
     }
 
-    public static String getAccessTokenUrl(String code) {
-        Map<String, String> params = new HashMap<>();
-        params.put("code", code);
-        params.put("client_id", getInstance().mClientId);
-        params.put("client_secret", getInstance().mClientSecret);
-        params.put("state", getInstance().mClientState);
-
-        return buildUrl(Urls.CLIENT_TOKEN_URL, params);
+    public static String getAccessTokenUrl() {
+        return buildUrl(Urls.CLIENT_TOKEN_URL);
     }
 
     public static String getRedirectUrl() {
@@ -98,6 +126,15 @@ public class ApiEndpoints {
 
     public static String getAuthUserReposUrl() {
         return buildUrl(Urls.AUTH_USER_REPOS);
+    }
+
+    private static Map<String, String> getDefaultHeaders() {
+        Map<String, String> headers = new LinkedHashMap<>();
+        headers.put(Headers.KEY_ACCEPT, Headers.VALUE_ACCEPT_API_VERSION);
+        headers.put(Headers.KEY_ACCEPT, Headers.VALUE_ACCEPT_JSON);
+        headers.put(Headers.KEY_CONTENT_TYPE, Headers.VALUE_CONTENT_TYPE_JSON);
+
+        return headers;
     }
 
     private static String buildUrl(String url) {
