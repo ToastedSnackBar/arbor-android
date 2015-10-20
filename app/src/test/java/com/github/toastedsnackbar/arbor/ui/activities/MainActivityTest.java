@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.github.toastedsnackbar.arbor.ArborTestRunner;
 import com.github.toastedsnackbar.arbor.R;
@@ -29,8 +30,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(ArborTestRunner.class)
 public class MainActivityTest {
 
-    private static final String TEST_REDIRECT_URL = ApiEndpoints.getRedirectUrl()
-            + "?code=code&state=state";
+    private static final String TEST_OAUTH_URL = ApiEndpoints.getOAuthUrl();
+    private static final String TEST_REDIRECT_URL = "https://www.google.com/?code=code&state=state";
 
     private MainActivity mActivity;
     private ActivityController<MainActivity> mActivityController;
@@ -91,9 +92,55 @@ public class MainActivityTest {
         WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view_login);
         ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(loginWebView);
 
-        String correctUrl = ApiEndpoints.getOAuthUrl();
         String actualUrl = shadowLoginWebView.getLastLoadedUrl();
-        assertThat(actualUrl).isEqualTo(correctUrl);
+        assertThat(actualUrl).isEqualTo(TEST_OAUTH_URL);
+    }
+
+    @Test
+    public void loginWebView_shouldLoadUrl() {
+        Button loginBtn = (Button) mActivity.findViewById(R.id.btn_login);
+        loginBtn.performClick();
+
+        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view_login);
+        ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(loginWebView);
+
+        WebViewClient webViewClient = shadowLoginWebView.getWebViewClient();
+        webViewClient.shouldOverrideUrlLoading(loginWebView, TEST_OAUTH_URL);
+
+        String actualUrl = shadowLoginWebView.getLastLoadedUrl();
+        assertThat(actualUrl).isEqualTo(TEST_OAUTH_URL);
+    }
+
+    @Test
+    public void loginWebView_progressBarShouldBeVisibleOnPageLoadStart() {
+        Button loginBtn = (Button) mActivity.findViewById(R.id.btn_login);
+        loginBtn.performClick();
+
+        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view_login);
+        ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(loginWebView);
+
+        WebViewClient webViewClient = shadowLoginWebView.getWebViewClient();
+        webViewClient.onPageStarted(loginWebView, TEST_OAUTH_URL, null);
+
+        ProgressBar progressBar = (ProgressBar) mActivity.findViewById(R.id.pb_web_view);
+        assertThat(progressBar).isNotNull();
+        assertThat(progressBar).isVisible();
+    }
+
+    @Test
+    public void loginWebView_progressBarShouldBeGoneOnPageLoadFinish() {
+        Button loginBtn = (Button) mActivity.findViewById(R.id.btn_login);
+        loginBtn.performClick();
+
+        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view_login);
+        ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(loginWebView);
+
+        WebViewClient webViewClient = shadowLoginWebView.getWebViewClient();
+        webViewClient.onPageFinished(loginWebView, TEST_OAUTH_URL);
+
+        ProgressBar progressBar = (ProgressBar) mActivity.findViewById(R.id.pb_web_view);
+        assertThat(progressBar).isNotNull();
+        assertThat(progressBar).isGone();
     }
 
     @Test
