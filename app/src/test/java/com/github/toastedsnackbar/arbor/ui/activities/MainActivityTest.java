@@ -2,6 +2,8 @@ package com.github.toastedsnackbar.arbor.ui.activities;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.os.Bundle;
+import android.os.Parcel;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -9,10 +11,12 @@ import android.widget.ProgressBar;
 
 import com.github.toastedsnackbar.arbor.ArborTestRunner;
 import com.github.toastedsnackbar.arbor.R;
+import com.github.toastedsnackbar.arbor.content.ArborPreferences;
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
 import com.github.toastedsnackbar.arbor.net.ApiReceiver;
 import com.github.toastedsnackbar.arbor.net.ApiService;
 import com.github.toastedsnackbar.arbor.net.requests.AccessTokenRequest;
+import com.github.toastedsnackbar.arbor.net.responses.AccessTokenResponse;
 
 import org.junit.After;
 import org.junit.Before;
@@ -169,7 +173,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void oauth_onRedirect_shouldStartApiServiceWithCorrectExtras() {
+    public void oauth_onRedirect_shouldExecuteApiRequest() {
         Button loginBtn = (Button) mActivity.findViewById(R.id.btn_login);
         loginBtn.performClick();
 
@@ -191,6 +195,62 @@ public class MainActivityTest {
         assertThat(startedIntent).hasExtra(ApiService.EXTRA_RESULT_RECEIVER);
         assertThat(startedIntent.getParcelableExtra(ApiService.EXTRA_RESULT_RECEIVER)).isInstanceOf(
                 ApiReceiver.class);
+    }
+
+    @Test
+    public void oauth_onReceiveRunning_progressBarShouldBeVisible() {
+        mActivity.onReceiveResult(ApiService.ResultCodes.RUNNING, Bundle.EMPTY);
+
+        ProgressBar progressBar = (ProgressBar) mActivity.findViewById(R.id.pb_web_view);
+        assertThat(progressBar).isNotNull();
+        assertThat(progressBar).isVisible();
+    }
+
+    @Test
+    public void oauth_onReceiveSuccess_progressBarShouldBeGone() {
+        Parcel in = Parcel.obtain();
+        in.writeString("access_token");
+        in.writeString("scope");
+        in.writeString("token_type");
+        AccessTokenResponse response = new AccessTokenResponse(in);
+
+        Bundle resultData = new Bundle();
+        resultData.putParcelable(ApiService.EXTRA_RESPONSE, response);
+        mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, resultData);
+
+        ProgressBar progressBar = (ProgressBar) mActivity.findViewById(R.id.pb_web_view);
+        assertThat(progressBar).isNotNull();
+        assertThat(progressBar).isGone();
+    }
+
+    @Test
+    public void oauth_onReceiveSuccess_shouldStoreAccessTokenInSharedPrefs() {
+        AccessTokenResponse response;
+        Parcel in = Parcel.obtain();
+        Parcel out = Parcel.obtain();
+
+        try {
+            in.writeInt(200);
+            in.writeString("access_token");
+            in.writeString("code");
+            in.writeString("token_type");
+            byte[] data = in.marshall();
+
+            out.unmarshall(data, 0, data.length);
+            out.setDataPosition(0);
+            response = new AccessTokenResponse(out);
+        } finally {
+            in.recycle();
+            out.recycle();
+        }
+
+        assertThat(response).isNotNull();
+
+        Bundle resultData = new Bundle();
+        resultData.putParcelable(ApiService.EXTRA_RESPONSE, response);
+        mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, resultData);
+
+        assertThat(ArborPreferences.getAccessToken()).isEqualTo("access_token");
     }
 
     @Test

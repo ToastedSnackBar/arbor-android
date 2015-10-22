@@ -87,7 +87,7 @@ public class ApiEndpoints {
     }
 
     private static ApiEndpoints getInstance() {
-        if (sInstance == null) throw new IllegalStateException("ApiEndpoints not initialized yet.");
+        if (sInstance == null) throw new IllegalStateException("ApiEndpoints not initialized.");
         return sInstance;
     }
 

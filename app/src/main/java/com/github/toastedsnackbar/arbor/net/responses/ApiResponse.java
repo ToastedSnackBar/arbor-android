@@ -7,6 +7,8 @@ public abstract class ApiResponse implements Parcelable {
 
     private int mStatusCode = -1;
 
+    public ApiResponse() {}
+
     public ApiResponse(Parcel source) {
         mStatusCode = source.readInt();
     }

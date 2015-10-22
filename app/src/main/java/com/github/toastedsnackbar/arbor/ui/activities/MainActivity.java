@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onReceiveResult(int resultCode, Bundle resultData) {
         switch (resultCode) {
             case ApiService.ResultCodes.RUNNING:
+                mProgressBar.setVisibility(View.VISIBLE);
                 break;
 
             case ApiService.ResultCodes.SUCCESS:
@@ -79,8 +80,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (response == null) return;
 
                 String accessToken = response.getAccessToken();
-                ArborPreferences.getInstance().setAccessToken(accessToken);
+                ArborPreferences.setAccessToken(accessToken);
 
+                mProgressBar.setVisibility(View.GONE);
                 Snackbar.make(findViewById(android.R.id.content), "Successfully logged in!",
                         Snackbar.LENGTH_SHORT).show();
                 break;

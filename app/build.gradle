@@ -1,9 +1,6 @@
-import groovy.json.JsonBuilder
-
 //==============================================================================//
 // Android
 //==============================================================================//
-
 apply plugin: 'com.android.application'
 
 android {
@@ -53,7 +50,6 @@ android {
 //==============================================================================//
 // Module dependencies
 //==============================================================================//
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.0.1'
@@ -72,6 +68,7 @@ dependencies {
 //==============================================================================//
 // Generate api_config.json
 //==============================================================================//
+import groovy.json.JsonBuilder
 
 task generateApiConfig {
     def json = new JsonBuilder()

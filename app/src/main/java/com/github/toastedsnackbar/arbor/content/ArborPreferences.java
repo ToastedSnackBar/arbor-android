@@ -21,31 +21,32 @@ public class ArborPreferences {
         if (sInstance == null) sInstance = new ArborPreferences(context);
     }
 
-    public static ArborPreferences getInstance() {
+    private static ArborPreferences getInstance() {
+        if (sInstance == null) throw new IllegalStateException("ArborPreferences not initialized");
         return sInstance;
     }
 
-    public String getUsername() {
+    public static String getUsername() {
         return getString(KEY_USERNAME);
     }
 
-    public String getAccessToken() {
+    public static String getAccessToken() {
         return getString(KEY_ACCESS_TOKEN);
     }
 
-    public void setUsername(String username) {
+    public static void setUsername(String username) {
         putString(KEY_USERNAME, username);
     }
 
-    public void setAccessToken(String accessToken) {
+    public static void setAccessToken(String accessToken) {
         putString(KEY_ACCESS_TOKEN, accessToken);
     }
 
-    private String getString(final String key) {
-        return mPreferences.getString(key, "");
+    private static String getString(final String key) {
+        return getInstance().mPreferences.getString(key, "");
     }
 
-    private void putString(final String key, final String value) {
-        mPreferences.edit().putString(key, value).apply();
+    private static void putString(final String key, final String value) {
+        getInstance().mPreferences.edit().putString(key, value).apply();
     }
 }

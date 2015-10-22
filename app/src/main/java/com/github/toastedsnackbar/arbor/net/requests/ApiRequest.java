@@ -86,7 +86,7 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
 
     private void addRequestProperties(HttpURLConnection connection) {
         if (isAuthorizedRequest()) {
-            String accessToken = ArborPreferences.getInstance().getAccessToken();
+            String accessToken = ArborPreferences.getAccessToken();
             connection.addRequestProperty("Authorization", "token " + accessToken);
         }
 
