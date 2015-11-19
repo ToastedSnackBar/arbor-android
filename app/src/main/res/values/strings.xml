@@ -2,4 +2,5 @@
     <string name="app_name">Arbor</string>
 
     <string name="login">Login</string>
+    <string name="home_screen_activity_label">Home Screen</string>
 </resources>

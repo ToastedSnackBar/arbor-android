@@ -1,10 +1,10 @@
 package com.github.toastedsnackbar.arbor.ui.activities;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.webkit.CookieManager;
@@ -83,8 +83,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ArborPreferences.setAccessToken(accessToken);
 
                 mProgressBar.setVisibility(View.GONE);
-                Snackbar.make(findViewById(android.R.id.content), "Successfully logged in!",
-                        Snackbar.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(this, HomeScreenActivity.class);
+                startActivity(intent);
                 break;
         }
     }
