@@ -1,4 +1,4 @@
-package com.github.toastedsnackbar.arbor.ui.Fragments;
+package com.github.toastedsnackbar.arbor.ui.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,6 +24,6 @@ public class RepositoriesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.repositories_view, container, false);
+        return inflater.inflate(R.layout.fragment_repositories, container, false);
     }
 }

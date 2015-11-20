@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 mProgressBar.setVisibility(View.GONE);
 
-                Intent intent = new Intent(this, HomeScreenActivity.class);
+                Intent intent = new Intent(MainActivity.this, HomeScreenActivity.class);
                 startActivity(intent);
                 break;
         }

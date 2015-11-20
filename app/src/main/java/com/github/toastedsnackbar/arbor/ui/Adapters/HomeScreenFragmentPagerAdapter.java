@@ -1,12 +1,13 @@
-package com.github.toastedsnackbar.arbor.ui.Adapters;
+package com.github.toastedsnackbar.arbor.ui.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.github.toastedsnackbar.arbor.ui.Fragments.RepositoriesFragment;
+import com.github.toastedsnackbar.arbor.ui.fragments.RepositoriesFragment;
 
 public class HomeScreenFragmentPagerAdapter extends FragmentStatePagerAdapter {
+
     public HomeScreenFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
     }
