@@ -27,7 +27,6 @@ public class HomeScreenActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setText("Repos"));
         tabLayout.addTab(tabLayout.newTab().setText("News"));
         tabLayout.addTab(tabLayout.newTab().setText("Follows"));
-        tabLayout.addTab(tabLayout.newTab().setText("Stuff"));
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
