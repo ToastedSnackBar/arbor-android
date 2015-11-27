@@ -1,8 +1,10 @@
-package com.github.toastedsnackbar.arbor.net.models;
+package com.github.toastedsnackbar.arbor.net.responses;
+
+import android.os.Parcel;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Owner {
+public class OwnerResponse extends ApiResponse {
 
     @SerializedName("login")
     private String login;
@@ -54,6 +56,26 @@ public class Owner {
 
     @SerializedName("site_admin")
     private boolean siteAdmin;
+
+    public OwnerResponse(Parcel source) {
+        login = source.readString();
+        userID = source.readString();
+        avatarUrl = source.readString();
+        gravatarId = source.readString();
+        url = source.readString();
+        htmlUrl = source.readString();
+        followersUrl = source.readString();
+        followingUrl = source.readString();
+        gistsUrl = source.readString();
+        starredUrl = source.readString();
+        subscriptionsUrl = source.readString();
+        organizationsUrl = source.readString();
+        reposUrl = source.readString();
+        eventsUrl = source.readString();
+        receivedEventsUrl = source.readString();
+        type = source.readString();
+        siteAdmin = source.readByte() != 0;
+    }
 
     public String getLogin() {
         return login;
@@ -189,5 +211,41 @@ public class Owner {
 
     public void setSiteAdmin(boolean siteAdmin) {
         this.siteAdmin = siteAdmin;
+    }
+
+    public static Creator<OwnerResponse> CREATOR = new Creator<OwnerResponse>() {
+
+        @Override
+        public OwnerResponse createFromParcel(Parcel source) {
+            return new OwnerResponse(source);
+        }
+
+        @Override
+        public OwnerResponse[] newArray(int size) {
+            return new OwnerResponse[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+
+        dest.writeString(login);
+        dest.writeString(userID);
+        dest.writeString(avatarUrl);
+        dest.writeString(gravatarId);
+        dest.writeString(url);
+        dest.writeString(htmlUrl);
+        dest.writeString(followersUrl);
+        dest.writeString(followingUrl);
+        dest.writeString(gistsUrl);
+        dest.writeString(starredUrl);
+        dest.writeString(subscriptionsUrl);
+        dest.writeString(organizationsUrl);
+        dest.writeString(reposUrl);
+        dest.writeString(eventsUrl);
+        dest.writeString(receivedEventsUrl);
+        dest.writeString(type);
+        dest.writeByte((byte) (siteAdmin ? 1 : 0));
     }
 }

@@ -11,14 +11,8 @@ import com.github.toastedsnackbar.arbor.R;
 
 public class NewsFragment extends Fragment {
 
-    public static NewsFragment newInstance(int num) {
-        NewsFragment newsFragment = new NewsFragment();
-
-        Bundle args = new Bundle();
-        args.putInt("num", num);
-        newsFragment.setArguments(args);
-
-        return newsFragment;
+    public static NewsFragment newInstance() {
+        return new NewsFragment();
     }
 
     @Nullable

@@ -1,8 +1,10 @@
-package com.github.toastedsnackbar.arbor.net.models;
+package com.github.toastedsnackbar.arbor.net.responses;
+
+import android.os.Parcel;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Repository {
+public class RepositoryResponse extends ApiResponse {
 
     @SerializedName("id")
     private int repoID;
@@ -14,7 +16,7 @@ public class Repository {
     private String full_name;
 
     @SerializedName("owner")
-    private Owner owner;
+    private OwnerResponse owner;
 
     @SerializedName("private")
     private boolean isPrivate;
@@ -205,6 +207,76 @@ public class Repository {
     @SerializedName("default_branch")
     private String default_branch;
 
+    public RepositoryResponse(Parcel source) {
+        repoID = source.readInt();
+        name = source.readString();
+        full_name = source.readString();
+        owner = source.readParcelable(getClass().getClassLoader());
+        isPrivate = source.readByte() != 0;
+        html_url = source.readString();
+        description = source.readString();
+        hasFork = source.readByte() != 0;
+        url = source.readString();
+        forks_url = source.readString();
+        keys_url = source.readString();
+        collaborators_url = source.readString();
+        teams_url = source.readString();
+        hooks_url = source.readString();
+        issue_events_url = source.readString();
+        events_url = source.readString();
+        assignees_url = source.readString();
+        branches_url = source.readString();
+        tags_url = source.readString();
+        blobs_url = source.readString();
+        git_tags_url = source.readString();
+        git_refs_url = source.readString();
+        trees_url = source.readString();
+        statuses_url = source.readString();
+        languages_url = source.readString();
+        stargazers_url = source.readString();
+        contributors_url = source.readString();
+        subscribers_url = source.readString();
+        subscription_url = source.readString();
+        commits_url = source.readString();
+        git_commits_url = source.readString();
+        comments_url = source.readString();
+        issue_comment_url = source.readString();
+        contents_url = source.readString();
+        compare_url = source.readString();
+        merges_url = source.readString();
+        archive_url = source.readString();
+        downloads_url = source.readString();
+        issues_url = source.readString();
+        pulls_url = source.readString();
+        milestones_url = source.readString();
+        notifications_url = source.readString();
+        labels_url = source.readString();
+        releases_url = source.readString();
+        created_at = source.readString();
+        updated_at = source.readString();
+        pushed_at = source.readString();
+        git_url = source.readString();
+        ssh_url = source.readString();
+        clone_url = source.readString();
+        svn_url = source.readString();
+        homepage = source.readString();
+        size = source.readInt();
+        stargazers_count = source.readInt();
+        watchers_count = source.readInt();
+        repoLanguage = source.readString();
+        has_issues = source.readByte() != 0;
+        has_downloads = source.readByte() != 0;
+        has_wiki = source.readByte() != 0;
+        has_pages = source.readByte() != 0;
+        forks_count = source.readInt();
+        mirror_url = source.readString();
+        open_issues_count = source.readInt();
+        forks = source.readInt();
+        open_issues = source.readInt();
+        watchers = source.readInt();
+        default_branch = source.readString();
+    }
+
     public int getRepoID() {
         return repoID;
     }
@@ -229,11 +301,11 @@ public class Repository {
         this.full_name = full_name;
     }
 
-    public Owner getOwner() {
+    public OwnerResponse getOwner() {
         return owner;
     }
 
-    public void setOwner(Owner owner) {
+    public void setOwner(OwnerResponse owner) {
         this.owner = owner;
     }
 
@@ -739,5 +811,91 @@ public class Repository {
 
     public void setDefault_branch(String default_branch) {
         this.default_branch = default_branch;
+    }
+
+    public static final Creator<RepositoryResponse> CREATOR = new Creator<RepositoryResponse>() {
+
+        @Override
+        public RepositoryResponse createFromParcel(Parcel source) {
+            return new RepositoryResponse(source);
+        }
+
+        @Override
+        public RepositoryResponse[] newArray(int size) {
+            return new RepositoryResponse[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+
+        dest.writeInt(repoID);
+        dest.writeString(name);
+        dest.writeString(full_name);
+        dest.writeParcelable(owner, flags);
+        dest.writeByte((byte) (isPrivate ? 1 : 0));
+        dest.writeString(html_url);
+        dest.writeString(description);
+        dest.writeByte((byte) (hasFork ? 1 : 0));
+        dest.writeString(url);
+        dest.writeString(forks_url);
+        dest.writeString(keys_url);
+        dest.writeString(collaborators_url);
+        dest.writeString(teams_url);
+        dest.writeString(hooks_url);
+        dest.writeString(issue_events_url);
+        dest.writeString(events_url);
+        dest.writeString(assignees_url);
+        dest.writeString(branches_url);
+        dest.writeString(tags_url);
+        dest.writeString(blobs_url);
+        dest.writeString(git_tags_url);
+        dest.writeString(git_refs_url);
+        dest.writeString(trees_url);
+        dest.writeString(statuses_url);
+        dest.writeString(languages_url);
+        dest.writeString(stargazers_url);
+        dest.writeString(contributors_url);
+        dest.writeString(subscribers_url);
+        dest.writeString(subscription_url);
+        dest.writeString(commits_url);
+        dest.writeString(git_commits_url);
+        dest.writeString(comments_url);
+        dest.writeString(issue_comment_url);
+        dest.writeString(contents_url);
+        dest.writeString(compare_url);
+        dest.writeString(merges_url);
+        dest.writeString(archive_url);
+        dest.writeString(downloads_url);
+        dest.writeString(issues_url);
+        dest.writeString(pulls_url);
+        dest.writeString(milestones_url);
+        dest.writeString(notifications_url);
+        dest.writeString(labels_url);
+        dest.writeString(releases_url);
+        dest.writeString(created_at);
+        dest.writeString(updated_at);
+        dest.writeString(pushed_at);
+        dest.writeString(git_url);
+        dest.writeString(ssh_url);
+        dest.writeString(clone_url);
+        dest.writeString(svn_url);
+        dest.writeString(homepage);
+        dest.writeInt(size);
+        dest.writeInt(stargazers_count);
+        dest.writeInt(watchers_count);
+        dest.writeString(repoLanguage);
+        dest.writeByte((byte) (has_issues ? 1 : 0));
+        dest.writeByte((byte) (has_downloads ? 1 : 0));
+        dest.writeByte((byte) (has_wiki ? 1 : 0));
+        dest.writeByte((byte) (has_pages ? 1 : 0));
+        dest.writeInt(forks_count);
+        dest.writeString(mirror_url);
+        dest.writeInt(open_issues_count);
+        dest.writeInt(forks);
+        dest.writeInt(open_issues);
+        dest.writeInt(watchers);
+        dest.writeString(default_branch);
     }
 }

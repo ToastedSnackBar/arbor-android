@@ -18,11 +18,11 @@ public class HomeScreenFragmentPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return RepositoriesFragment.newInstance(position);
+                return RepositoriesFragment.newInstance();
             case 1:
-                return NewsFragment.newInstance(position);
+                return NewsFragment.newInstance();
             default:
-                return FollowersFragment.newInstance(position);
+                return FollowersFragment.newInstance();
         }
     }
 

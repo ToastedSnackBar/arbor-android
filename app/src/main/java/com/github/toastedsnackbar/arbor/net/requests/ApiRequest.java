@@ -23,6 +23,7 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
 
     public static final String METHOD_POST = "POST";
     public static final String METHOD_PATCH = "PATCH";
+    public static final String METHOD_GET = "GET";
 
     private static final Set<String> DEFAULT_ENTITY_METHODS = new LinkedHashSet<>(Arrays.asList(
             METHOD_POST, METHOD_PATCH));

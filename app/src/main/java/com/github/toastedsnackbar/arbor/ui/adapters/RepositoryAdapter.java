@@ -8,18 +8,28 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.toastedsnackbar.arbor.R;
+import com.github.toastedsnackbar.arbor.net.responses.RepositoryResponse;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.RepositoryViewHolder> {
 
+    private List<RepositoryResponse> mItems;
+
     public RepositoryAdapter() {
+        mItems = new ArrayList<>();
+    }
+
+    public void setItems(List<RepositoryResponse> items) {
+        mItems.addAll(items);
     }
 
     public static class RepositoryViewHolder extends RecyclerView.ViewHolder {
-
         CardView cardView;
         TextView repositoryName;
         TextView lastUpdatedDateTime;
@@ -27,9 +37,9 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Re
         TextView repoStars;
         TextView repoFollowing;
 
-
         public RepositoryViewHolder(View itemView) {
             super(itemView);
+
             cardView = (CardView) itemView.findViewById(R.id.card_view);
             repositoryName = (TextView) itemView.findViewById(R.id.repo_name);
             lastUpdatedDateTime = (TextView) itemView.findViewById(R.id.last_updated_date);
@@ -41,23 +51,24 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Re
 
     @Override
     public RepositoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_element, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_repository,
+                parent, false);
         return new RepositoryViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(RepositoryViewHolder repositoryViewHolder, int position) {
-        SimpleDateFormat parserSDF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        SimpleDateFormat mySDF = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat parserSDF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.CANADA);
+        SimpleDateFormat mySDF = new SimpleDateFormat("yyyy-MM-dd", Locale.CANADA);
 
-        repositoryViewHolder.repositoryName.setText(repositories.get(position).getName());
+        repositoryViewHolder.repositoryName.setText(mItems.get(position).getName());
 
         String createdFormattedDate = "";
         String updatedFormattedDate = "";
 
         try {
-            Date createdRawDate = parserSDF.parse(repositories.get(position).getCreated_at());
-            Date updatedRawDated = parserSDF.parse(repositories.get(position).getUpdated_at());
+            Date createdRawDate = parserSDF.parse(mItems.get(position).getCreated_at());
+            Date updatedRawDated = parserSDF.parse(mItems.get(position).getUpdated_at());
 
             createdFormattedDate = mySDF.format(createdRawDate);
             updatedFormattedDate = mySDF.format(updatedRawDated);
@@ -68,13 +79,13 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Re
 
         repositoryViewHolder.createdDateTime.setText("Created on: " + createdFormattedDate);
         repositoryViewHolder.lastUpdatedDateTime.setText("Last Updated: " + updatedFormattedDate);
-        repositoryViewHolder.repoStars.setText("Stars: " + repositories.get(position).getStargazers_count().toString());
-        repositoryViewHolder.repoFollowing.setText("Following: " + repositories.get(position).getWatchers_count().toString());
+        repositoryViewHolder.repoStars.setText("Stars: " + mItems.get(position).getStargazers_count());
+        repositoryViewHolder.repoFollowing.setText("Following: " + mItems.get(position).getWatchers_count());
     }
 
     @Override
     public int getItemCount() {
-        return repositories.size();
+        return mItems.size();
     }
 
     @Override

@@ -11,14 +11,8 @@ import com.github.toastedsnackbar.arbor.R;
 
 public class FollowersFragment extends Fragment {
 
-    public static FollowersFragment newInstance(int num) {
-        FollowersFragment followersFragment = new FollowersFragment();
-
-        Bundle args = new Bundle();
-        args.putInt("num", num);
-        followersFragment.setArguments(args);
-
-        return followersFragment;
+    public static FollowersFragment newInstance() {
+        return new FollowersFragment();
     }
 
     @Nullable
