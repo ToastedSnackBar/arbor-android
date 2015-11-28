@@ -14,9 +14,6 @@ import java.util.Set;
 
 public class AccessTokenRequest extends ApiRequest<AccessTokenResponse> {
 
-    private static final Set<Integer> ACCEPTED_STATUSES = new HashSet<>(Arrays.asList(
-            200, 201));
-
     private String mUrl;
     private String mRequestEntity;
 
@@ -78,7 +75,7 @@ public class AccessTokenRequest extends ApiRequest<AccessTokenResponse> {
 
     @Override
     protected Set<Integer> getAcceptedStatuses() {
-        return ACCEPTED_STATUSES;
+        return null;
     }
 
     @Override
