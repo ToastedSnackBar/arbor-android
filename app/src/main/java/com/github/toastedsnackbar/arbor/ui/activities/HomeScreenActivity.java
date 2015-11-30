@@ -1,5 +1,7 @@
 package com.github.toastedsnackbar.arbor.ui.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -9,6 +11,13 @@ import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.ui.adapters.HomeScreenFragmentPagerAdapter;
 
 public class HomeScreenActivity extends AppCompatActivity {
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, HomeScreenActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
 
     private HomeScreenFragmentPagerAdapter mPagerAdapter;
     private ViewPager mViewPager;

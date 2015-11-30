@@ -1,11 +1,11 @@
 package com.github.toastedsnackbar.arbor.ui.activities;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.WebView;
@@ -44,6 +44,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mLoginWebView.setWebViewClient(new LoginWebViewClient());
         mLoginWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         mLoginButton.setOnClickListener(MainActivity.this);
+
+        String accessToken = ArborPreferences.getAccessToken();
+        if (!TextUtils.isEmpty(accessToken)) {
+            HomeScreenActivity.start(MainActivity.this);
+            finish();
+        }
     }
 
     @Override
@@ -83,9 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ArborPreferences.setAccessToken(accessToken);
 
                 mProgressBar.setVisibility(View.GONE);
-
-                Intent intent = new Intent(MainActivity.this, HomeScreenActivity.class);
-                startActivity(intent);
+                HomeScreenActivity.start(MainActivity.this);
                 break;
         }
     }
