@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.net.ApiReceiver;
@@ -21,6 +22,8 @@ public class RepositoriesFragment extends Fragment implements ApiReceiver.Receiv
 
     private ApiReceiver mApiReceiver;
     private RepositoryAdapter mAdapter;
+
+    private ProgressBar mProgressBar;
 
     public static RepositoriesFragment newInstance() {
         return new RepositoriesFragment();
@@ -36,6 +39,8 @@ public class RepositoriesFragment extends Fragment implements ApiReceiver.Receiv
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         mAdapter = new RepositoryAdapter();
         mApiReceiver = new ApiReceiver(new Handler());
+
+        mProgressBar = (ProgressBar) view.findViewById(R.id.pb_recycler_view);
 
         RecyclerView repositoriesList = (RecyclerView) view.findViewById(R.id.recycler_view);
         repositoriesList.setAdapter(mAdapter);
@@ -61,6 +66,7 @@ public class RepositoriesFragment extends Fragment implements ApiReceiver.Receiv
     public void onReceiveResult(int resultCode, Bundle resultData) {
         switch (resultCode) {
             case ApiService.ResultCodes.RUNNING:
+                mProgressBar.setVisibility(View.VISIBLE);
                 break;
 
             case ApiService.ResultCodes.SUCCESS:
@@ -69,9 +75,11 @@ public class RepositoriesFragment extends Fragment implements ApiReceiver.Receiv
 
                 mAdapter.setItems(response.getItems());
                 mAdapter.notifyDataSetChanged();
+                mProgressBar.setVisibility(View.GONE);
                 break;
 
             case ApiService.ResultCodes.ERROR:
+                mProgressBar.setVisibility(View.GONE);
                 break;
         }
     }
