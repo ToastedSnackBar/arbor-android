@@ -208,11 +208,16 @@ public class MainActivityTest {
 
     @Test
     public void oauth_onReceiveSuccess_progressBarShouldBeGone() {
+        AccessTokenResponse response;
         Parcel in = Parcel.obtain();
-        in.writeString("access_token");
-        in.writeString("scope");
-        in.writeString("token_type");
-        AccessTokenResponse response = new AccessTokenResponse(in);
+        try {
+            in.writeString("access_token");
+            in.writeString("scope");
+            in.writeString("token_type");
+            response = new AccessTokenResponse(in);
+        } finally {
+            in.recycle();
+        }
 
         Bundle resultData = new Bundle();
         resultData.putParcelable(ApiService.EXTRA_RESPONSE, response);
@@ -265,7 +270,6 @@ public class MainActivityTest {
         loginBtn.performClick();
 
         mActivity.onBackPressed();
-        assertThat(mActivity).isNotFinishing();
 
         WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view_login);
         assertThat(loginWebView).isNotNull();
