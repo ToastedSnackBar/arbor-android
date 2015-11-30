@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
+import org.robolectric.Shadows;
 import org.robolectric.internal.ShadowExtractor;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowWebView;
@@ -51,6 +53,30 @@ public class MainActivityTest {
         mActivityController.pause().stop().destroy();
         mActivityController = null;
         mActivity = null;
+    }
+
+    @Test
+    public void onCreate_accessTokenPrefNotEmpty_shouldLaunchHomeScreenActivityAndFinish() {
+        ArborPreferences.setAccessToken("access_token");
+        teardown();
+        setup();
+
+        ShadowActivity shadowMainActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
+        Intent startedIntent = shadowMainActivity.getNextStartedActivity();
+        assertThat(startedIntent).isNotNull();
+        assertThat(startedIntent).hasComponent(new ComponentName(mActivity,
+                HomeScreenActivity.class));
+
+        assertThat(mActivity).isFinishing();
+    }
+
+    @Test
+    public void onCreate_accessTokenPrefEmpty_shouldNotLaunchHomeScreenActivityAndFinish() {
+        ArborPreferences.setAccessToken("");
+        teardown();
+        setup();
+
+        assertThat(mActivity).isNotFinishing();
     }
 
     @Test
@@ -208,16 +234,8 @@ public class MainActivityTest {
 
     @Test
     public void oauth_onReceiveSuccess_progressBarShouldBeGone() {
-        AccessTokenResponse response;
-        Parcel in = Parcel.obtain();
-        try {
-            in.writeString("access_token");
-            in.writeString("scope");
-            in.writeString("token_type");
-            response = new AccessTokenResponse(in);
-        } finally {
-            in.recycle();
-        }
+        AccessTokenResponse response = buildAccessTokenResponse();
+        assertThat(response).isNotNull();
 
         Bundle resultData = new Bundle();
         resultData.putParcelable(ApiService.EXTRA_RESPONSE, response);
@@ -230,6 +248,53 @@ public class MainActivityTest {
 
     @Test
     public void oauth_onReceiveSuccess_shouldStoreAccessTokenInSharedPrefs() {
+        AccessTokenResponse response = buildAccessTokenResponse();
+        assertThat(response).isNotNull();
+
+        Bundle resultData = new Bundle();
+        resultData.putParcelable(ApiService.EXTRA_RESPONSE, response);
+        mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, resultData);
+
+        assertThat(ArborPreferences.getAccessToken()).isEqualTo("access_token");
+    }
+
+    @Test
+    public void oauth_onReceiveSuccess_shouldLaunchHomeScreenActivity() {
+        AccessTokenResponse response = buildAccessTokenResponse();
+        assertThat(response).isNotNull();
+
+        Bundle resultData = new Bundle();
+        resultData.putParcelable(ApiService.EXTRA_RESPONSE, response);
+        mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, resultData);
+
+        ShadowActivity shadowMainActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
+        Intent startedIntent = shadowMainActivity.getNextStartedActivity();
+        assertThat(startedIntent).isNotNull();
+        assertThat(startedIntent).hasComponent(new ComponentName(mActivity,
+                HomeScreenActivity.class));
+
+        assertThat(mActivity).isFinishing();
+    }
+
+    @Test
+    public void onBackPressed_shouldFinishIfLoginWebViewNotVisible() {
+        mActivity.onBackPressed();
+        assertThat(mActivity).isFinishing();
+    }
+
+    @Test
+    public void onBackPressed_loginWebViewShouldCloseIfVisible() {
+        Button loginBtn = (Button) mActivity.findViewById(R.id.btn_login);
+        loginBtn.performClick();
+
+        mActivity.onBackPressed();
+
+        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view_login);
+        assertThat(loginWebView).isNotNull();
+        assertThat(loginWebView).isGone();
+    }
+
+    private static AccessTokenResponse buildAccessTokenResponse() {
         AccessTokenResponse response;
         Parcel in = Parcel.obtain();
         Parcel out = Parcel.obtain();
@@ -249,30 +314,6 @@ public class MainActivityTest {
             out.recycle();
         }
 
-        assertThat(response).isNotNull();
-
-        Bundle resultData = new Bundle();
-        resultData.putParcelable(ApiService.EXTRA_RESPONSE, response);
-        mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, resultData);
-
-        assertThat(ArborPreferences.getAccessToken()).isEqualTo("access_token");
-    }
-
-    @Test
-    public void onBackPressed_shouldFinishIfLoginWebViewNotVisible() {
-        mActivity.onBackPressed();
-        assertThat(mActivity).isFinishing();
-    }
-
-    @Test
-    public void onBackPressed_loginWebViewShouldCloseIfVisible() {
-        Button loginBtn = (Button) mActivity.findViewById(R.id.btn_login);
-        loginBtn.performClick();
-
-        mActivity.onBackPressed();
-
-        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view_login);
-        assertThat(loginWebView).isNotNull();
-        assertThat(loginWebView).isGone();
+        return response;
     }
 }

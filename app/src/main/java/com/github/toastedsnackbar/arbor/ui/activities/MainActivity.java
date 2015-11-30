@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 mProgressBar.setVisibility(View.GONE);
                 HomeScreenActivity.start(MainActivity.this);
+                finish();
                 break;
         }
     }
