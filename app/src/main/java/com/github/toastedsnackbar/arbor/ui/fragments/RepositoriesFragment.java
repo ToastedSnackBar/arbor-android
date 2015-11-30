@@ -20,10 +20,10 @@ import com.github.toastedsnackbar.arbor.ui.adapters.RepositoryAdapter;
 
 public class RepositoriesFragment extends Fragment implements ApiReceiver.ReceiveResultListener {
 
-    private ApiReceiver mApiReceiver;
     private RepositoryAdapter mAdapter;
-
     private ProgressBar mProgressBar;
+
+    private ApiReceiver mApiReceiver;
 
     public static RepositoriesFragment newInstance() {
         return new RepositoriesFragment();

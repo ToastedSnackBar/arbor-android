@@ -26,6 +26,10 @@ public class ArborPreferences {
         return sInstance;
     }
 
+    public static void clear() {
+        getInstance().mPreferences.edit().clear().apply();
+    }
+
     public static String getUsername() {
         return getString(KEY_USERNAME);
     }

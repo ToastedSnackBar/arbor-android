@@ -4,7 +4,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcel;
-import android.support.annotation.NonNull;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -24,7 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.Shadows;
 import org.robolectric.internal.ShadowExtractor;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowWebView;
@@ -50,6 +48,7 @@ public class MainActivityTest {
 
     @After
     public void teardown() {
+        ArborPreferences.clear();
         mActivityController.pause().stop().destroy();
         mActivityController = null;
         mActivity = null;
@@ -57,8 +56,8 @@ public class MainActivityTest {
 
     @Test
     public void onCreate_accessTokenPrefNotEmpty_shouldLaunchHomeScreenActivityAndFinish() {
-        ArborPreferences.setAccessToken("access_token");
         teardown();
+        ArborPreferences.setAccessToken("access_token");
         setup();
 
         ShadowActivity shadowMainActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
@@ -72,9 +71,9 @@ public class MainActivityTest {
 
     @Test
     public void onCreate_accessTokenPrefEmpty_shouldNotLaunchHomeScreenActivityAndFinish() {
-        ArborPreferences.setAccessToken("");
-        teardown();
-        setup();
+        ShadowActivity shadowMainActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
+        Intent startedIntent = shadowMainActivity.getNextStartedActivity();
+        assertThat(startedIntent).isNull();
 
         assertThat(mActivity).isNotFinishing();
     }
