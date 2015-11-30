@@ -2,11 +2,14 @@ package com.github.toastedsnackbar.arbor.net.responses;
 
 import android.os.Parcel;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class RepositoryListResponse extends ApiResponse {
 
+    @SerializedName("data")
     private List<RepositoryResponse> mItems;
 
     public RepositoryListResponse(Parcel source) {

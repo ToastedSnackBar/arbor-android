@@ -8,26 +8,29 @@ import com.github.toastedsnackbar.arbor.ui.fragments.FollowersFragment;
 import com.github.toastedsnackbar.arbor.ui.fragments.NewsFragment;
 import com.github.toastedsnackbar.arbor.ui.fragments.RepositoriesFragment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class HomeScreenFragmentPagerAdapter extends FragmentStatePagerAdapter {
+
+    private List<Fragment> mFragments;
 
     public HomeScreenFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
+
+        mFragments = new ArrayList<>();
+        mFragments.add(RepositoriesFragment.newInstance());
+        mFragments.add(NewsFragment.newInstance());
+        mFragments.add(FollowersFragment.newInstance());
     }
 
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                return RepositoriesFragment.newInstance();
-            case 1:
-                return NewsFragment.newInstance();
-            default:
-                return FollowersFragment.newInstance();
-        }
+        return mFragments.get(position);
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return mFragments.size();
     }
 }
