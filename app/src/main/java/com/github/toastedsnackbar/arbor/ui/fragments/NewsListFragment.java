@@ -9,15 +9,16 @@ import android.view.ViewGroup;
 
 import com.github.toastedsnackbar.arbor.R;
 
-public class NewsFragment extends Fragment {
+public class NewsListFragment extends Fragment {
 
-    public static NewsFragment newInstance() {
-        return new NewsFragment();
+    public static NewsListFragment newInstance() {
+        return new NewsListFragment();
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
+            savedInstanceState) {
         return inflater.inflate(R.layout.fragment_news, container, false);
     }
 }

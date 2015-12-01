@@ -18,20 +18,21 @@ import com.github.toastedsnackbar.arbor.net.requests.RepositoryListRequest;
 import com.github.toastedsnackbar.arbor.net.responses.RepositoryListResponse;
 import com.github.toastedsnackbar.arbor.ui.adapters.RepositoryAdapter;
 
-public class RepositoriesFragment extends Fragment implements ApiReceiver.ReceiveResultListener {
+public class RepositoryListFragment extends Fragment implements ApiReceiver.ReceiveResultListener {
 
     private RepositoryAdapter mAdapter;
     private ProgressBar mProgressBar;
 
     private ApiReceiver mApiReceiver;
 
-    public static RepositoriesFragment newInstance() {
-        return new RepositoriesFragment();
+    public static RepositoryListFragment newInstance() {
+        return new RepositoryListFragment();
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_repositories, container, false);
     }
 
@@ -53,7 +54,7 @@ public class RepositoriesFragment extends Fragment implements ApiReceiver.Receiv
     @Override
     public void onStart() {
         super.onStart();
-        mApiReceiver.setResultListener(RepositoriesFragment.this);
+        mApiReceiver.setResultListener(RepositoryListFragment.this);
     }
 
     @Override
@@ -70,8 +71,11 @@ public class RepositoriesFragment extends Fragment implements ApiReceiver.Receiv
                 break;
 
             case ApiService.ResultCodes.SUCCESS:
-                RepositoryListResponse response = resultData.getParcelable(ApiService.EXTRA_RESPONSE);
-                if (response == null) return;
+                RepositoryListResponse response = resultData.getParcelable(ApiService
+                        .EXTRA_RESPONSE);
+                if (response == null) {
+                    return;
+                }
 
                 mAdapter.setItems(response.getItems());
                 mAdapter.notifyDataSetChanged();

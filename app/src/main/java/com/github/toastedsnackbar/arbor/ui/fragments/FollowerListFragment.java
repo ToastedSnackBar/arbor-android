@@ -9,15 +9,16 @@ import android.view.ViewGroup;
 
 import com.github.toastedsnackbar.arbor.R;
 
-public class FollowersFragment extends Fragment {
+public class FollowerListFragment extends Fragment {
 
-    public static FollowersFragment newInstance() {
-        return new FollowersFragment();
+    public static FollowerListFragment newInstance() {
+        return new FollowerListFragment();
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
+            savedInstanceState) {
         return inflater.inflate(R.layout.fragment_followers, container, false);
     }
 }

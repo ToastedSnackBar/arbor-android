@@ -4,9 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.github.toastedsnackbar.arbor.ui.fragments.FollowersFragment;
-import com.github.toastedsnackbar.arbor.ui.fragments.NewsFragment;
-import com.github.toastedsnackbar.arbor.ui.fragments.RepositoriesFragment;
+import com.github.toastedsnackbar.arbor.ui.fragments.FollowerListFragment;
+import com.github.toastedsnackbar.arbor.ui.fragments.NewsListFragment;
+import com.github.toastedsnackbar.arbor.ui.fragments.RepositoryListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +19,9 @@ public class HomeScreenFragmentPagerAdapter extends FragmentStatePagerAdapter {
         super(fm);
 
         mFragments = new ArrayList<>();
-        mFragments.add(RepositoriesFragment.newInstance());
-        mFragments.add(NewsFragment.newInstance());
-        mFragments.add(FollowersFragment.newInstance());
+        mFragments.add(RepositoryListFragment.newInstance());
+        mFragments.add(NewsListFragment.newInstance());
+        mFragments.add(FollowerListFragment.newInstance());
     }
 
     @Override
