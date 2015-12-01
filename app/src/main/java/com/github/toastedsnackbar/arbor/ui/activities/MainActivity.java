@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mApiReceiver = new ApiReceiver(new Handler());
 
-        mLoginWebView = (WebView) findViewById(R.id.web_view_login);
+        mLoginWebView = (WebView) findViewById(R.id.web_view);
         mLoginWebView.setWebViewClient(new LoginWebViewClient());
         mLoginWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
