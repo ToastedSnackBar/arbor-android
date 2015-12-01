@@ -6,7 +6,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="@color/primary_dark" />
 
     <ProgressBar
         android:id="@+id/pb_recycler_view"
@@ -16,6 +17,6 @@
         android:indeterminate="true"
         android:indeterminateTint="@color/accent"
         android:indeterminateTintMode="src_atop"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </RelativeLayout>
