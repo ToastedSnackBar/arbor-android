@@ -85,7 +85,7 @@ public class MainActivityTest {
         assertThat(loginBtn).isNotNull();
         assertThat(loginBtn).isVisible();
         assertThat(loginBtn).isClickable();
-        assertThat(loginBtn).hasText(R.string.login);
+        assertThat(loginBtn).hasText(R.string.splash_login);
     }
 
     @Test

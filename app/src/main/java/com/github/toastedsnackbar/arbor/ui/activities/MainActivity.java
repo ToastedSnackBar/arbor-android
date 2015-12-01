@@ -1,5 +1,7 @@
 package com.github.toastedsnackbar.arbor.ui.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,11 +26,24 @@ import com.github.toastedsnackbar.arbor.net.responses.AccessTokenResponse;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         ApiReceiver.ReceiveResultListener {
 
+    private enum WebViewMode {
+        LOGIN, REGISTER
+    }
+
     private WebView mLoginWebView;
-    private Button mLoginButton;
     private ProgressBar mProgressBar;
 
+    private Button mLoginButton;
+    private Button mRegisterButton;
+
     private ApiReceiver mApiReceiver;
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +52,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mApiReceiver = new ApiReceiver(new Handler());
 
-        mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginWebView = (WebView) findViewById(R.id.web_view_login);
-        mProgressBar = (ProgressBar) findViewById(R.id.pb_web_view);
-
         mLoginWebView.setWebViewClient(new LoginWebViewClient());
         mLoginWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
+        mProgressBar = (ProgressBar) findViewById(R.id.pb_web_view);
+
+        mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(MainActivity.this);
+
+        mRegisterButton = (Button) findViewById(R.id.btn_register);
+        mRegisterButton.setOnClickListener(MainActivity.this);
 
         String accessToken = ArborPreferences.getAccessToken();
         if (!TextUtils.isEmpty(accessToken)) {
@@ -83,7 +102,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case ApiService.ResultCodes.SUCCESS:
                 AccessTokenResponse response = resultData.getParcelable(ApiService.EXTRA_RESPONSE);
-                if (response == null) return;
+                if (response == null) {
+                    return;
+                }
 
                 String accessToken = response.getAccessToken();
                 ArborPreferences.setAccessToken(accessToken);
@@ -95,14 +116,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void setupLoginWebView() {
+    @SuppressWarnings("deprecation")
+    private void setupLoginWebView(WebViewMode mode) {
         CookieManager cookieManager = CookieManager.getInstance();
         cookieManager.removeAllCookie();
 
-        mLoginWebView.loadUrl(ApiEndpoints.getOAuthUrl());
+        String url;
+        if (mode == WebViewMode.LOGIN) {
+            url = ApiEndpoints.getOAuthUrl();
+        } else {
+            url = ApiEndpoints.getRegisterUrl();
+        }
+
+        mLoginWebView.loadUrl(url);
         mLoginWebView.setVisibility(View.VISIBLE);
 
-        mLoginButton.setVisibility(View.GONE);
+        setButtonsVisibility(View.GONE);
     }
 
     private void teardownLoginWebView() {
@@ -111,7 +140,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mLoginWebView.loadUrl("about:blank");
         mLoginWebView.setVisibility(View.GONE);
 
-        mLoginButton.setVisibility(View.VISIBLE);
+        setButtonsVisibility(View.VISIBLE);
+    }
+
+    private void setButtonsVisibility(int visibility) {
+        mLoginButton.setVisibility(visibility);
+        mRegisterButton.setVisibility(visibility);
+
+        boolean enabled = visibility == View.VISIBLE;
+        mLoginButton.setEnabled(enabled);
+        mRegisterButton.setEnabled(enabled);
     }
 
     private void executeAccessTokenRequest(String url) {
@@ -132,7 +170,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (id) {
             case R.id.btn_login:
                 if (mLoginWebView.getVisibility() != View.VISIBLE) {
-                    setupLoginWebView();
+                    setupLoginWebView(WebViewMode.LOGIN);
+                }
+                break;
+
+            case R.id.btn_register:
+                if (mLoginWebView.getVisibility() != View.VISIBLE) {
+                    setupLoginWebView(WebViewMode.REGISTER);
                 }
                 break;
         }
@@ -152,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public boolean shouldOverrideUrlLoading(WebView webView, String url) {
             if (url.startsWith(ApiEndpoints.getRedirectUrl())) {
+                setButtonsVisibility(View.VISIBLE);
                 mLoginWebView.setVisibility(View.GONE);
                 executeAccessTokenRequest(url);
             } else {
