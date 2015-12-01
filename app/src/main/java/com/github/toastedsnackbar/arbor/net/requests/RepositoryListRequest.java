@@ -20,7 +20,8 @@ public class RepositoryListRequest extends ApiRequest<RepositoryListResponse> {
         mUrl = source.readString();
     }
 
-    public static final Creator<RepositoryListRequest> CREATOR = new Creator<RepositoryListRequest>() {
+    public static final Creator<RepositoryListRequest> CREATOR =
+            new Creator<RepositoryListRequest>() {
         @Override
         public RepositoryListRequest createFromParcel(Parcel source) {
             return new RepositoryListRequest(source);

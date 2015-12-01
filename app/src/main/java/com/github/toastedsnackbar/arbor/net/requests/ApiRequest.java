@@ -81,7 +81,7 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
         }
 
         String response = stringBuilder.toString();
-        Log.d("ApiRequest", "[" + getRequestMethod() + "] " + getUrl()+ " : "
+        Log.d("ApiRequest", "[" + getRequestMethod() + "] " + getUrl() + " : "
                 + response);
 
         return new Gson().fromJson(response, getResponseClass());

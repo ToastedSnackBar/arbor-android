@@ -23,7 +23,8 @@ public class RepositoryListResponse extends ApiResponse {
         return mItems;
     }
 
-    public static final Creator<RepositoryListResponse> CREATOR = new Creator<RepositoryListResponse>() {
+    public static final Creator<RepositoryListResponse> CREATOR = new
+            Creator<RepositoryListResponse>() {
 
         @Override
         public RepositoryListResponse createFromParcel(Parcel source) {

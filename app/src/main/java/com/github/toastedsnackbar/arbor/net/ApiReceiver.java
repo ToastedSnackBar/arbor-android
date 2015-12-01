@@ -3,7 +3,6 @@ package com.github.toastedsnackbar.arbor.net;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcel;
 import android.os.ResultReceiver;
 
 @SuppressLint("ParcelCreator")
