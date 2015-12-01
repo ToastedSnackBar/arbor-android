@@ -1,5 +1,6 @@
 package com.github.toastedsnackbar.arbor.ui.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +10,6 @@ import android.widget.TextView;
 
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.net.responses.RepositoryResponse;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,9 +19,11 @@ import java.util.Locale;
 
 public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.RepositoryViewHolder> {
 
+    private Context mContext;
     private List<RepositoryResponse> mItems;
 
-    public RepositoryAdapter() {
+    public RepositoryAdapter(Context context) {
+        mContext = context;
         mItems = new ArrayList<>();
     }
 
@@ -51,8 +53,7 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Re
 
     @Override
     public RepositoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_repository,
-                parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_repository, parent, false);
         return new RepositoryViewHolder(v);
     }
 
@@ -69,7 +70,6 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Re
         try {
             Date createdRawDate = parserSDF.parse(mItems.get(position).getCreated_at());
             Date updatedRawDated = parserSDF.parse(mItems.get(position).getUpdated_at());
-
             createdFormattedDate = mySDF.format(createdRawDate);
             updatedFormattedDate = mySDF.format(updatedRawDated);
 
@@ -77,10 +77,10 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryAdapter.Re
             e.printStackTrace();
         }
 
-        repositoryViewHolder.createdDateTime.setText("Created on: " + createdFormattedDate);
-        repositoryViewHolder.lastUpdatedDateTime.setText("Last Updated: " + updatedFormattedDate);
-        repositoryViewHolder.repoStars.setText("Stars: " + mItems.get(position).getStargazers_count());
-        repositoryViewHolder.repoFollowing.setText("Following: " + mItems.get(position).getWatchers_count());
+        repositoryViewHolder.createdDateTime.setText(String.format(mContext.getString(R.string.repository_created_date_time), createdFormattedDate));
+        repositoryViewHolder.lastUpdatedDateTime.setText(String.format(mContext.getString((R.string.repository_last_updated_date)), updatedFormattedDate));
+        repositoryViewHolder.repoStars.setText(String.format(mContext.getString((R.string.repository_repo_stars)), mItems.get(position).getStargazers_count()));
+        repositoryViewHolder.repoFollowing.setText(String.format(mContext.getString((R.string.repository_following_count)), mItems.get(position).getWatchers_count()));
     }
 
     @Override

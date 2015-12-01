@@ -37,7 +37,7 @@ public class RepositoriesFragment extends Fragment implements ApiReceiver.Receiv
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        mAdapter = new RepositoryAdapter();
+        mAdapter = new RepositoryAdapter(getActivity());
         mApiReceiver = new ApiReceiver(new Handler());
 
         mProgressBar = (ProgressBar) view.findViewById(R.id.pb_recycler_view);

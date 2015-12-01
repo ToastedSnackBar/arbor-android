@@ -3,4 +3,8 @@
 
     <string name="login">Login</string>
     <string name="home_screen_activity_label">Home Screen</string>
+    <string name="repository_created_date_time" formatted="false">"Created on: %s"</string>
+    <string name="repository_last_updated_date" formatted="false">"Last Updated: %s"</string>
+    <string name="repository_repo_stars" formatted="false">"Stars: %s"</string>
+    <string name="repository_following_count" formatted="false">"Following: %s"</string>
 </resources>
