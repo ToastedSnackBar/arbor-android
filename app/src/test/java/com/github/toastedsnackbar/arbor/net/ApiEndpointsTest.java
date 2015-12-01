@@ -70,6 +70,14 @@ public class ApiEndpointsTest {
         assertThat(actualUrl).isEqualTo(correctUrl);
     }
 
+    @Test
+    public void getRegisterUrl_shouldReturnCorrectUrl() {
+        String correctUrl = "https://github.com/join";
+        String actualUrl = ApiEndpoints.getRegisterUrl();
+
+        assertThat(actualUrl).isEqualTo(correctUrl);
+    }
+
     private String getCorrectOAuthUrl(Context context) {
         ApiConfig apiConfig = getApiConfig(context);
 
