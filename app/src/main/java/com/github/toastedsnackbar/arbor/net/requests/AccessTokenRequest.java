@@ -12,8 +12,8 @@ import java.util.Set;
 
 public class AccessTokenRequest extends ApiRequest<AccessTokenResponse> {
 
-    private String mUrl;
-    private String mRequestEntity;
+    String mUrl;
+    String mRequestEntity;
 
     public AccessTokenRequest(String code, String clientId, String secret, String state) {
         mUrl = ApiEndpoints.getAccessTokenUrl();
