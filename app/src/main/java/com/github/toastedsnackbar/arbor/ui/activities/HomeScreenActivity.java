@@ -4,13 +4,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.design.widget.TabLayout.OnTabSelectedListener;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.github.toastedsnackbar.arbor.R;
+import com.github.toastedsnackbar.arbor.content.ArborPreferences;
 import com.github.toastedsnackbar.arbor.ui.adapters.HomeScreenFragmentPagerAdapter;
 
-public class HomeScreenActivity extends AppCompatActivity {
+public class HomeScreenActivity extends AppCompatActivity implements OnTabSelectedListener {
+
+    private ViewPager mViewPager;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, HomeScreenActivity.class);
@@ -19,41 +27,60 @@ public class HomeScreenActivity extends AppCompatActivity {
         context.startActivity(intent);
     }
 
-    private HomeScreenFragmentPagerAdapter mPagerAdapter;
-    private ViewPager mViewPager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
 
-        mPagerAdapter = new HomeScreenFragmentPagerAdapter(
-                getSupportFragmentManager());
+        FragmentManager fm = getSupportFragmentManager();
+        HomeScreenFragmentPagerAdapter pagerAdapter = new HomeScreenFragmentPagerAdapter(fm);
         mViewPager = (ViewPager) findViewById(R.id.home_screen_view_pager);
-        mViewPager.setAdapter(mPagerAdapter);
+        mViewPager.setOffscreenPageLimit(3);
+        mViewPager.setAdapter(pagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("Repos"));
-        tabLayout.addTab(tabLayout.newTab().setText("News"));
-        tabLayout.addTab(tabLayout.newTab().setText("Follows"));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.repos));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.news));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.follows));
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                mViewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
+        tabLayout.setOnTabSelectedListener(HomeScreenActivity.this);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_home_screen, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_log_out:
+                ArborPreferences.clear();
+                MainActivity.start(HomeScreenActivity.this);
+                finish();
+                break;
+
+            default:
+                return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        mViewPager.setCurrentItem(tab.getPosition());
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) { }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) { }
 }
 
