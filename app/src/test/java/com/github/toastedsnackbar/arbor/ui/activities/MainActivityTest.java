@@ -35,6 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MainActivityTest {
 
     private static final String TEST_OAUTH_URL = ApiEndpoints.getOAuthUrl();
+    private static final String TEST_REGISTER_URL = ApiEndpoints.getRegisterUrl();
     private static final String TEST_REDIRECT_URL = "https://www.google.com/?code=code&state=state";
 
     private MainActivity mActivity;
@@ -48,9 +49,34 @@ public class MainActivityTest {
 
     @After
     public void teardown() {
+        ArborPreferences.clear();
         mActivityController.pause().stop().destroy();
         mActivityController = null;
         mActivity = null;
+    }
+
+    @Test
+    public void onCreate_accessTokenPrefNotEmpty_shouldLaunchHomeScreenActivityAndFinish() {
+        teardown();
+        ArborPreferences.setAccessToken("access_token");
+        setup();
+
+        ShadowActivity shadowMainActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
+        Intent startedIntent = shadowMainActivity.getNextStartedActivity();
+        assertThat(startedIntent).isNotNull();
+        assertThat(startedIntent).hasComponent(new ComponentName(mActivity,
+                HomeScreenActivity.class));
+
+        assertThat(mActivity).isFinishing();
+    }
+
+    @Test
+    public void onCreate_accessTokenPrefEmpty_shouldNotLaunchHomeScreenActivityAndFinish() {
+        ShadowActivity shadowMainActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
+        Intent startedIntent = shadowMainActivity.getNextStartedActivity();
+        assertThat(startedIntent).isNull();
+
+        assertThat(mActivity).isNotFinishing();
     }
 
     @Test
@@ -60,12 +86,12 @@ public class MainActivityTest {
         assertThat(loginBtn).isNotNull();
         assertThat(loginBtn).isVisible();
         assertThat(loginBtn).isClickable();
-        assertThat(loginBtn).hasText(R.string.login);
+        assertThat(loginBtn).hasText(R.string.splash_login);
     }
 
     @Test
     public void onCreate_loginWebViewShouldBeGone() {
-        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view_login);
+        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view);
 
         assertThat(loginWebView).isNotNull();
         assertThat(loginWebView).isGone();
@@ -73,27 +99,25 @@ public class MainActivityTest {
 
     @Test
     public void loginBtnClick_loginBtnShouldBeGone() {
-        Button loginBtn = (Button) mActivity.findViewById(R.id.btn_login);
-        loginBtn.performClick();
+        Button loginButton = (Button) mActivity.findViewById(R.id.btn_login);
+        loginButton.performClick();
 
-        assertThat(loginBtn).isGone();
+        assertThat(loginButton).isGone();
     }
 
     @Test
     public void loginBtnClick_loginWebViewShouldBeVisible() {
-        Button loginBtn = (Button) mActivity.findViewById(R.id.btn_login);
-        loginBtn.performClick();
+        clickOnButton(R.id.btn_login);
 
-        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view_login);
+        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view);
         assertThat(loginWebView).isVisible();
     }
 
     @Test
     public void loginBtnClick_loginWebViewShouldLoadOAuthUrl() {
-        Button loginBtn = (Button) mActivity.findViewById(R.id.btn_login);
-        loginBtn.performClick();
+        clickOnButton(R.id.btn_login);
 
-        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view_login);
+        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view);
         ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(loginWebView);
 
         String actualUrl = shadowLoginWebView.getLastLoadedUrl();
@@ -101,11 +125,37 @@ public class MainActivityTest {
     }
 
     @Test
-    public void loginWebView_shouldLoadUrl() {
-        Button loginBtn = (Button) mActivity.findViewById(R.id.btn_login);
-        loginBtn.performClick();
+    public void registerBtnClick_registerBtnShouldBeGone() {
+        Button registerButton = (Button) mActivity.findViewById(R.id.btn_register);
+        registerButton.performClick();
 
-        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view_login);
+        assertThat(registerButton).isGone();
+    }
+
+    @Test
+    public void registerBtnClick_registerWebViewShouldBeVisible() {
+        clickOnButton(R.id.btn_register);
+
+        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view);
+        assertThat(loginWebView).isVisible();
+    }
+
+    @Test
+    public void registerBtnClick_registerWebViewShouldLoadOAuthUrl() {
+        clickOnButton(R.id.btn_register);
+
+        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view);
+        ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(loginWebView);
+
+        String actualUrl = shadowLoginWebView.getLastLoadedUrl();
+        assertThat(actualUrl).isEqualTo(TEST_REGISTER_URL);
+    }
+
+    @Test
+    public void loginWebView_shouldLoadUrl() {
+        clickOnButton(R.id.btn_login);
+
+        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view);
         ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(loginWebView);
 
         WebViewClient webViewClient = shadowLoginWebView.getWebViewClient();
@@ -117,10 +167,9 @@ public class MainActivityTest {
 
     @Test
     public void loginWebView_progressBarShouldBeVisibleOnPageLoadStart() {
-        Button loginBtn = (Button) mActivity.findViewById(R.id.btn_login);
-        loginBtn.performClick();
+        clickOnButton(R.id.btn_login);
 
-        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view_login);
+        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view);
         ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(loginWebView);
 
         WebViewClient webViewClient = shadowLoginWebView.getWebViewClient();
@@ -133,10 +182,9 @@ public class MainActivityTest {
 
     @Test
     public void loginWebView_progressBarShouldBeGoneOnPageLoadFinish() {
-        Button loginBtn = (Button) mActivity.findViewById(R.id.btn_login);
-        loginBtn.performClick();
+        clickOnButton(R.id.btn_login);
 
-        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view_login);
+        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view);
         ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(loginWebView);
 
         WebViewClient webViewClient = shadowLoginWebView.getWebViewClient();
@@ -149,10 +197,9 @@ public class MainActivityTest {
 
     @Test
     public void oauth_onRedirect_loginWebViewShouldBeGone() {
-        Button loginBtn = (Button) mActivity.findViewById(R.id.btn_login);
-        loginBtn.performClick();
+        clickOnButton(R.id.btn_login);
 
-        final WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view_login);
+        final WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view);
         ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(loginWebView);
 
         WebViewClient webViewClient = shadowLoginWebView.getWebViewClient();
@@ -166,7 +213,7 @@ public class MainActivityTest {
         Button loginBtn = (Button) mActivity.findViewById(R.id.btn_login);
         loginBtn.performClick();
 
-        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view_login);
+        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view);
         loginWebView.loadUrl(TEST_REDIRECT_URL);
 
         assertThat(loginBtn).isGone();
@@ -174,10 +221,9 @@ public class MainActivityTest {
 
     @Test
     public void oauth_onRedirect_shouldExecuteApiRequest() {
-        Button loginBtn = (Button) mActivity.findViewById(R.id.btn_login);
-        loginBtn.performClick();
+        clickOnButton(R.id.btn_login);
 
-        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view_login);
+        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view);
         ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(loginWebView);
 
         WebViewClient webViewClient = shadowLoginWebView.getWebViewClient();
@@ -208,11 +254,8 @@ public class MainActivityTest {
 
     @Test
     public void oauth_onReceiveSuccess_progressBarShouldBeGone() {
-        Parcel in = Parcel.obtain();
-        in.writeString("access_token");
-        in.writeString("scope");
-        in.writeString("token_type");
-        AccessTokenResponse response = new AccessTokenResponse(in);
+        AccessTokenResponse response = buildAccessTokenResponse();
+        assertThat(response).isNotNull();
 
         Bundle resultData = new Bundle();
         resultData.putParcelable(ApiService.EXTRA_RESPONSE, response);
@@ -225,6 +268,57 @@ public class MainActivityTest {
 
     @Test
     public void oauth_onReceiveSuccess_shouldStoreAccessTokenInSharedPrefs() {
+        AccessTokenResponse response = buildAccessTokenResponse();
+        assertThat(response).isNotNull();
+
+        Bundle resultData = new Bundle();
+        resultData.putParcelable(ApiService.EXTRA_RESPONSE, response);
+        mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, resultData);
+
+        assertThat(ArborPreferences.getAccessToken()).isEqualTo("access_token");
+    }
+
+    @Test
+    public void oauth_onReceiveSuccess_shouldLaunchHomeScreenActivity() {
+        AccessTokenResponse response = buildAccessTokenResponse();
+        assertThat(response).isNotNull();
+
+        Bundle resultData = new Bundle();
+        resultData.putParcelable(ApiService.EXTRA_RESPONSE, response);
+        mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, resultData);
+
+        ShadowActivity shadowMainActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
+        Intent startedIntent = shadowMainActivity.getNextStartedActivity();
+        assertThat(startedIntent).isNotNull();
+        assertThat(startedIntent).hasComponent(new ComponentName(mActivity,
+                HomeScreenActivity.class));
+
+        assertThat(mActivity).isFinishing();
+    }
+
+    @Test
+    public void onBackPressed_shouldFinishIfLoginWebViewNotVisible() {
+        mActivity.onBackPressed();
+        assertThat(mActivity).isFinishing();
+    }
+
+    @Test
+    public void onBackPressed_loginWebViewShouldCloseIfVisible() {
+        clickOnButton(R.id.btn_login);
+
+        mActivity.onBackPressed();
+
+        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view);
+        assertThat(loginWebView).isNotNull();
+        assertThat(loginWebView).isGone();
+    }
+    
+    private void clickOnButton(int buttonId) {
+        Button button = (Button) mActivity.findViewById(buttonId);
+        button.performClick();
+    }
+
+    private static AccessTokenResponse buildAccessTokenResponse() {
         AccessTokenResponse response;
         Parcel in = Parcel.obtain();
         Parcel out = Parcel.obtain();
@@ -244,31 +338,6 @@ public class MainActivityTest {
             out.recycle();
         }
 
-        assertThat(response).isNotNull();
-
-        Bundle resultData = new Bundle();
-        resultData.putParcelable(ApiService.EXTRA_RESPONSE, response);
-        mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, resultData);
-
-        assertThat(ArborPreferences.getAccessToken()).isEqualTo("access_token");
-    }
-
-    @Test
-    public void onBackPressed_shouldFinishIfLoginWebViewNotVisible() {
-        mActivity.onBackPressed();
-        assertThat(mActivity).isFinishing();
-    }
-
-    @Test
-    public void onBackPressed_loginWebViewShouldCloseIfVisible() {
-        Button loginBtn = (Button) mActivity.findViewById(R.id.btn_login);
-        loginBtn.performClick();
-
-        mActivity.onBackPressed();
-        assertThat(mActivity).isNotFinishing();
-
-        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view_login);
-        assertThat(loginWebView).isNotNull();
-        assertThat(loginWebView).isGone();
+        return response;
     }
 }

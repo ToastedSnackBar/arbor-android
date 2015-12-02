@@ -1,6 +1,7 @@
 package com.github.toastedsnackbar.arbor.net.requests;
 
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
@@ -23,6 +24,7 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
 
     public static final String METHOD_POST = "POST";
     public static final String METHOD_PATCH = "PATCH";
+    public static final String METHOD_GET = "GET";
 
     private static final Set<String> DEFAULT_ENTITY_METHODS = new LinkedHashSet<>(Arrays.asList(
             METHOD_POST, METHOD_PATCH));
@@ -36,8 +38,10 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
         URL url = new URL(getUrl());
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setDoInput(true);
-        connection.setDoOutput(true);
+
+        if (getEntityMethods().contains(getRequestMethod())) {
+            connection.setDoOutput(true);
+        }
 
         setRequestMethod(connection);
         addRequestProperties(connection);
@@ -70,7 +74,17 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
         }
         reader.close();
 
-        return new Gson().fromJson(stringBuilder.toString(), getResponseClass());
+        // wrap arrays in "data" object
+        if (stringBuilder.charAt(0) == '[') {
+            stringBuilder.insert(0, "{\"data\":");
+            stringBuilder.insert(stringBuilder.length(), "}");
+        }
+
+        String response = stringBuilder.toString();
+        Log.d("ApiRequest", "[" + getRequestMethod() + "] " + getUrl() + " : "
+                + response);
+
+        return new Gson().fromJson(response, getResponseClass());
     }
 
     private void setRequestMethod(HttpURLConnection connection)

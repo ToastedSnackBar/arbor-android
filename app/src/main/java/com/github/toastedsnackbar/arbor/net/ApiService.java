@@ -25,7 +25,7 @@ public class ApiService extends IntentService {
     public static final String EXTRA_ERROR = "extra_error";
 
     public ApiService() {
-        super("com.gitub.toastedsnackbar.arbor.net.ApiService");
+        super("com.github.toastedsnackbar.arbor.net.ApiService");
     }
 
     public ApiService(String name) {

@@ -7,18 +7,13 @@ import com.github.toastedsnackbar.arbor.net.requests.entities.AccessTokenEntity;
 import com.github.toastedsnackbar.arbor.net.responses.AccessTokenResponse;
 import com.google.gson.Gson;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class AccessTokenRequest extends ApiRequest<AccessTokenResponse> {
 
-    private static final Set<Integer> ACCEPTED_STATUSES = new HashSet<>(Arrays.asList(
-            200, 201));
-
-    private String mUrl;
-    private String mRequestEntity;
+    String mUrl;
+    String mRequestEntity;
 
     public AccessTokenRequest(String code, String clientId, String secret, String state) {
         mUrl = ApiEndpoints.getAccessTokenUrl();
@@ -78,7 +73,7 @@ public class AccessTokenRequest extends ApiRequest<AccessTokenResponse> {
 
     @Override
     protected Set<Integer> getAcceptedStatuses() {
-        return ACCEPTED_STATUSES;
+        return null;
     }
 
     @Override

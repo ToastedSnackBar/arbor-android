@@ -1,9 +1,11 @@
 package com.github.toastedsnackbar.arbor.net;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 
+@SuppressLint("ParcelCreator")
 public class ApiReceiver extends ResultReceiver {
 
     private ReceiveResultListener mListener;
@@ -24,6 +26,6 @@ public class ApiReceiver extends ResultReceiver {
     }
 
     public interface ReceiveResultListener {
-        public void onReceiveResult(int resultCode, Bundle resultData);
+        void onReceiveResult(int resultCode, Bundle resultData);
     }
 }
