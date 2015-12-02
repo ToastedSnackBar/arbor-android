@@ -8,9 +8,11 @@ import android.support.design.widget.TabLayout.OnTabSelectedListener;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
@@ -31,6 +33,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnTabSelect
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+        setupSupportActionBar();
 
         FragmentManager fm = getSupportFragmentManager();
         HomeScreenFragmentPagerAdapter pagerAdapter = new HomeScreenFragmentPagerAdapter(fm);
@@ -45,6 +48,11 @@ public class HomeScreenActivity extends AppCompatActivity implements OnTabSelect
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(HomeScreenActivity.this);
+    }
+
+    private void setupSupportActionBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_home);
+        setSupportActionBar(toolbar);
     }
 
     @Override
