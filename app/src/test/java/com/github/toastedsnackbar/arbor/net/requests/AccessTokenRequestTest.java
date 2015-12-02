@@ -1,26 +1,33 @@
 package com.github.toastedsnackbar.arbor.net.requests;
 
-import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcel;
 
 import com.github.toastedsnackbar.arbor.ArborTestRunner;
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
-import com.github.toastedsnackbar.arbor.net.ApiReceiver;
-import com.github.toastedsnackbar.arbor.net.ApiReceiver.ReceiveResultListener;
-import com.github.toastedsnackbar.arbor.net.ApiService;
+import com.github.toastedsnackbar.arbor.net.responses.AccessTokenResponse;
+import com.squareup.okhttp.mockwebserver.MockResponse;
+import com.squareup.okhttp.mockwebserver.MockWebServer;
 
-import org.apache.http.client.methods.HttpPost;
-import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.shadows.httpclient.FakeHttp;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.rule.PowerMockRule;
+
+import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(ArborTestRunner.class)
+@PowerMockIgnore({"org.mockito.*", "org.robolectric.*", "android.*"})
+@PrepareForTest(ApiEndpoints.class)
 public class AccessTokenRequestTest {
+
+    @Rule
+    public PowerMockRule mPowerMockRule = new PowerMockRule();
 
     @Test
     public void parcelable_shouldCreateFromParcel() {
@@ -47,24 +54,32 @@ public class AccessTokenRequestTest {
         }
     }
 
-    @Ignore
     @Test
-    public void execute_shouldExecuteHttpRequestWithCorrectParams() {
+    public void execute_shouldExecuteHttpRequestWithCorrectParams() throws IOException {
+        MockResponse mockResponse = new MockResponse();
+        mockResponse.setResponseCode(200);
+        mockResponse.setBody(MOCK_RESPONSE_BODY);
+
+        MockWebServer mockServer = new MockWebServer();
+        mockServer.enqueue(mockResponse);
+        mockServer.start();
+
+        String mockUrl = mockServer.url("/login/oauth/access_token").toString();
+        PowerMockito.mockStatic(ApiEndpoints.class);
+        Mockito.when(ApiEndpoints.getAccessTokenUrl()).thenReturn(mockUrl);
+
         AccessTokenRequest request = new AccessTokenRequest("code", "client_id", "secret", "state");
+        AccessTokenResponse response = request.execute();
 
-        ReceiveResultListener listener = new ReceiveResultListener() {
-            @Override
-            public void onReceiveResult(int resultCode, Bundle resultData) {
-            }
-        };
-        ApiReceiver receiver = new ApiReceiver(new Handler());
-        receiver.setResultListener(listener);
-
-        ApiService.executeRequest(RuntimeEnvironment.application, request, receiver);
-        HttpPost sentRequest = (HttpPost) FakeHttp.getLatestSentHttpRequest();
-
-        String expectedUrl = ApiEndpoints.getAccessTokenUrl();
-        String actualUrl = sentRequest.getURI().toString();
-        assertThat(actualUrl).isEqualTo(expectedUrl);
+        assertThat(response.getStatusCode()).isEqualTo(200);
+        assertThat(response.getAccessToken()).isEqualTo("mock_access_token");
+        assertThat(response.getTokenType()).isEqualTo("mock_token_type");
     }
+
+    private static final String MOCK_RESPONSE_BODY =
+            "{\n" +
+            "  \"access_token\": \"mock_access_token\",\n" +
+            "  \"token_type\": \"mock_token_type\",\n" +
+            "  \"scope\": \"mock_scope\"\n" +
+            "}";
 }

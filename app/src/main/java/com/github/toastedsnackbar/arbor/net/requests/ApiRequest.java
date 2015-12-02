@@ -39,7 +39,7 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-        if (getEntityMethods().contains(getRequestEntity())) {
+        if (getEntityMethods().contains(getRequestMethod())) {
             connection.setDoOutput(true);
         }
 
