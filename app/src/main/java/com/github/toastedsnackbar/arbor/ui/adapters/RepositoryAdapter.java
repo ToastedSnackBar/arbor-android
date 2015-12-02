@@ -81,10 +81,10 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryViewHolder
         String updatedFormattedDate = "";
 
         try {
-            Date createdRawDate = mSourceDateFormat.parse(item.getCreated_at());
+            Date createdRawDate = mSourceDateFormat.parse(item.getCreatedAt());
             createdFormattedDate = mDestinationDateFormat.format(createdRawDate);
 
-            Date updatedRawDated = mSourceDateFormat.parse(item.getUpdated_at());
+            Date updatedRawDated = mSourceDateFormat.parse(item.getUpdatedAt());
             updatedFormattedDate = mDestinationDateFormat.format(updatedRawDated);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -99,7 +99,7 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryViewHolder
         repositoryViewHolder.lastUpdatedDateTime.setText(Html.fromHtml(lastUpdatedDateTime));
 
         String repoStars = mContext.getString(R.string.repository_repo_stars,
-                item.getStargazers_count());
+                item.getStargazersCount());
         repositoryViewHolder.repoStars.setText(Html.fromHtml(repoStars));
 
         String repoFollowing = mContext.getString(R.string.repository_following_count,
