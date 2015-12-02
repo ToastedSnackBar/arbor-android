@@ -19,6 +19,10 @@ public class RepositoryResponseTest {
                 RepositoryResponse.class);
 
         assertThat(response.getName()).isEqualTo("coding-challenge");
+        assertThat(response.getCreatedAt()).isEqualTo("2014-04-26T04:30:57Z");
+        assertThat(response.getUpdatedAt()).isEqualTo("2014-07-31T14:52:31Z");
+        assertThat(response.getStargazersCount()).isEqualTo(0);
+        assertThat(response.getWatchersCount()).isEqualTo(0);
     }
 
     @Test

@@ -295,7 +295,7 @@ public class RepositoryResponse extends ApiResponse {
         return mStargazersCount;
     }
 
-    public int getWatchers_count() {
+    public int getWatchersCount() {
         return mWatchersCount;
     }
 

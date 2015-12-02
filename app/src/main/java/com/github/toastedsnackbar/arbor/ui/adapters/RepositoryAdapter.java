@@ -103,7 +103,7 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryViewHolder
         repositoryViewHolder.repoStars.setText(Html.fromHtml(repoStars));
 
         String repoFollowing = mContext.getString(R.string.repository_following_count,
-                item.getWatchers_count());
+                item.getWatchersCount());
         repositoryViewHolder.repoFollowing.setText(Html.fromHtml(repoFollowing));
     }
 
