@@ -31,7 +31,7 @@ public class RepositoryListResponseTest {
         parcel.setDataPosition(0);
         RepositoryListResponse parcelled = RepositoryListResponse.CREATOR.createFromParcel(parcel);
 
-        assertThat(parcelled.getItems().size()).isEqualTo(2);
+        assertThat(parcelled.getItems().size()).isEqualTo(response.getItems().size());
     }
 
     @Test

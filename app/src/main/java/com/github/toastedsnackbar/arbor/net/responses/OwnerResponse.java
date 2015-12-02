@@ -79,6 +79,14 @@ public class OwnerResponse extends ApiResponse {
         mSiteAdmin = source.readByte() != 0;
     }
 
+    public String getLogin() {
+        return mLogin;
+    }
+
+    public String getUserId() {
+        return mUserId;
+    }
+
     public static Creator<OwnerResponse> CREATOR = new Creator<OwnerResponse>() {
 
         @Override

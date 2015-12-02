@@ -32,8 +32,8 @@ public class AccessTokenResponseTest {
         parcel.setDataPosition(0);
         AccessTokenResponse parcelled = AccessTokenResponse.CREATOR.createFromParcel(parcel);
 
-        assertThat(parcelled.getAccessToken()).isEqualTo("mock_access_token");
-        assertThat(parcelled.getTokenType()).isEqualTo("mock_token_type");
+        assertThat(parcelled.getAccessToken()).isEqualTo(response.getAccessToken());
+        assertThat(parcelled.getTokenType()).isEqualTo(response.getTokenType());
     }
 
     @Test
