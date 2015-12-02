@@ -61,6 +61,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.robolectric:robolectric:3.0'
     testCompile 'org.robolectric:shadows-httpclient:3.0'
+    testCompile "org.robolectric:shadows-support-v4:3.0"
     testCompile 'com.squareup.okhttp:mockwebserver:2.6.0'
     testCompile "org.powermock:powermock-module-junit4:1.6.3"
     testCompile "org.powermock:powermock-module-junit4-rule:1.6.3"

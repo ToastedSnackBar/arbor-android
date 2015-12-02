@@ -41,7 +41,7 @@ public class RepositoryListFragment extends Fragment implements ApiReceiver.Rece
         mAdapter = new RepositoryAdapter(getActivity());
         mApiReceiver = new ApiReceiver(new Handler());
 
-        mProgressBar = (ProgressBar) view.findViewById(R.id.pb_recycler_view);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
 
         RecyclerView repositoriesList = (RecyclerView) view.findViewById(R.id.recycler_view);
         repositoriesList.setAdapter(mAdapter);
