@@ -13,7 +13,7 @@
         <item name="android:textColorSecondary">@android:color/secondary_text_dark</item>
     </style>
 
-    <style name="Theme.AppCompat.Light.NoActionBar.FullScreen" parent="@style/AppTheme">
+    <style name="AppFullscreenTheme" parent="@style/AppTheme">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
