@@ -36,10 +36,10 @@ public class AccessTokenRequestTest {
         request.writeToParcel(parcel, 0);
 
         parcel.setDataPosition(0);
-        AccessTokenRequest recreatedRequest = AccessTokenRequest.CREATOR.createFromParcel(parcel);
+        AccessTokenRequest parcelled = AccessTokenRequest.CREATOR.createFromParcel(parcel);
 
-        assertThat(recreatedRequest.mUrl).isEqualTo(request.mUrl);
-        assertThat(recreatedRequest.mRequestEntity).isEqualTo(request.mRequestEntity);
+        assertThat(parcelled.getUrl()).isEqualTo(request.getUrl());
+        assertThat(parcelled.getRequestEntity()).isEqualTo(request.getRequestEntity());
     }
 
     @Test
