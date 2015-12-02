@@ -4,6 +4,7 @@ package com.github.toastedsnackbar.arbor.ui.activities;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -132,6 +133,24 @@ public class HomeScreenActivityTest {
     }
 
     @Test
+    public void tabLayout_reselectTab_shouldNotRecreateFragment() {
+        TabLayout tabLayout = (TabLayout) mActivity.findViewById(R.id.tab_layout);
+        ViewPager viewPager = (ViewPager) mActivity.findViewById(R.id.home_screen_view_pager);
+        FragmentStatePagerAdapter adapter = (FragmentStatePagerAdapter) viewPager.getAdapter();
+
+        mActivity.onTabSelected(tabLayout.getTabAt(0));
+        int currentItemPosition1 = viewPager.getCurrentItem();
+        Fragment item = adapter.getItem(currentItemPosition1);
+
+        mActivity.onTabSelected(tabLayout.getTabAt(0));
+        int currentItemPosition2 = viewPager.getCurrentItem();
+        Fragment item2 = adapter.getItem(currentItemPosition1);
+
+        assertThat(currentItemPosition2).isEqualTo(currentItemPosition1);
+        assertThat(item2).isEqualTo(item);
+    }
+
+    @Test
     public void optionsMenu_shouldShowActionItems() {
         ShadowActivity shadowActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
         Menu optionsMenu = shadowActivity.getOptionsMenu();
@@ -154,5 +173,13 @@ public class HomeScreenActivityTest {
         assertThat(startedIntent).hasComponent(new ComponentName(mActivity, MainActivity.class));
 
         assertThat(mActivity).isFinishing();
+    }
+
+    @Test
+    public void optionsMenu_invalidActionSelected_shouldNotConsumeSelection() {
+        ShadowActivity shadowActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
+        boolean consumed = shadowActivity.clickMenuItem(-1);
+
+        assertThat(consumed).isFalse();
     }
 }

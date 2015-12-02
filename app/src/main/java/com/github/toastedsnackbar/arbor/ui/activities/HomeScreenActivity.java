@@ -91,4 +91,3 @@ public class HomeScreenActivity extends AppCompatActivity implements OnTabSelect
     @Override
     public void onTabReselected(TabLayout.Tab tab) { }
 }
-
