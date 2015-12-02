@@ -60,7 +60,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnTabSelect
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_home_screen, menu);
 
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
