@@ -7,212 +7,76 @@ import com.google.gson.annotations.SerializedName;
 public class OwnerResponse extends ApiResponse {
 
     @SerializedName("login")
-    private String login;
+    private String mLogin;
 
     @SerializedName("id")
-    private String userID;
+    private String mUserId;
 
     @SerializedName("avatar_url")
-    private String avatarUrl;
+    private String mAvatarUrl;
 
     @SerializedName("gravatar_id")
-    private String gravatarId;
+    private String mGravatarId;
 
     @SerializedName("url")
-    private String url;
+    private String mUrl;
 
     @SerializedName("html_url")
-    private String htmlUrl;
+    private String mHtmlUrl;
 
     @SerializedName("followers_url")
-    private String followersUrl;
+    private String mFollowersUrl;
 
     @SerializedName("following_url")
-    private String followingUrl;
+    private String mFollowingUrl;
 
     @SerializedName("gists_url")
-    private String gistsUrl;
+    private String mGistsUrl;
 
     @SerializedName("starred_url")
-    private String starredUrl;
+    private String mStarredUrl;
 
     @SerializedName("subscriptions_url")
-    private String subscriptionsUrl;
+    private String mSubscriptionsUrl;
 
     @SerializedName("organizations_url")
-    private String organizationsUrl;
+    private String mOrganizationsUrl;
 
     @SerializedName("repos_url")
-    private String reposUrl;
+    private String mReposUrl;
 
     @SerializedName("events_url")
-    private String eventsUrl;
+    private String mEventsUrl;
 
     @SerializedName("received_events_url")
-    private String receivedEventsUrl;
+    private String mReceivedEventsUrl;
 
     @SerializedName("type")
-    private String type;
+    private String mType;
 
     @SerializedName("site_admin")
-    private boolean siteAdmin;
+    private boolean mSiteAdmin;
 
     public OwnerResponse(Parcel source) {
         super(source);
 
-        login = source.readString();
-        userID = source.readString();
-        avatarUrl = source.readString();
-        gravatarId = source.readString();
-        url = source.readString();
-        htmlUrl = source.readString();
-        followersUrl = source.readString();
-        followingUrl = source.readString();
-        gistsUrl = source.readString();
-        starredUrl = source.readString();
-        subscriptionsUrl = source.readString();
-        organizationsUrl = source.readString();
-        reposUrl = source.readString();
-        eventsUrl = source.readString();
-        receivedEventsUrl = source.readString();
-        type = source.readString();
-        siteAdmin = source.readByte() != 0;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getUserID() {
-        return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
-
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
-
-    public String getGravatarId() {
-        return gravatarId;
-    }
-
-    public void setGravatarId(String gravatarId) {
-        this.gravatarId = gravatarId;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getHtmlUrl() {
-        return htmlUrl;
-    }
-
-    public void setHtmlUrl(String htmlUrl) {
-        this.htmlUrl = htmlUrl;
-    }
-
-    public String getFollowersUrl() {
-        return followersUrl;
-    }
-
-    public void setFollowersUrl(String followersUrl) {
-        this.followersUrl = followersUrl;
-    }
-
-    public String getFollowingUrl() {
-        return followingUrl;
-    }
-
-    public void setFollowingUrl(String followingUrl) {
-        this.followingUrl = followingUrl;
-    }
-
-    public String getGistsUrl() {
-        return gistsUrl;
-    }
-
-    public void setGistsUrl(String gistsUrl) {
-        this.gistsUrl = gistsUrl;
-    }
-
-    public String getStarredUrl() {
-        return starredUrl;
-    }
-
-    public void setStarredUrl(String starredUrl) {
-        this.starredUrl = starredUrl;
-    }
-
-    public String getSubscriptionsUrl() {
-        return subscriptionsUrl;
-    }
-
-    public void setSubscriptionsUrl(String subscriptionsUrl) {
-        this.subscriptionsUrl = subscriptionsUrl;
-    }
-
-    public String getOrganizationsUrl() {
-        return organizationsUrl;
-    }
-
-    public void setOrganizationsUrl(String organizationsUrl) {
-        this.organizationsUrl = organizationsUrl;
-    }
-
-    public String getReposUrl() {
-        return reposUrl;
-    }
-
-    public void setReposUrl(String reposUrl) {
-        this.reposUrl = reposUrl;
-    }
-
-    public String getEventsUrl() {
-        return eventsUrl;
-    }
-
-    public void setEventsUrl(String eventsUrl) {
-        this.eventsUrl = eventsUrl;
-    }
-
-    public String getReceivedEventsUrl() {
-        return receivedEventsUrl;
-    }
-
-    public void setReceivedEventsUrl(String receivedEventsUrl) {
-        this.receivedEventsUrl = receivedEventsUrl;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public boolean getSiteAdmin() {
-        return siteAdmin;
-    }
-
-    public void setSiteAdmin(boolean siteAdmin) {
-        this.siteAdmin = siteAdmin;
+        mLogin = source.readString();
+        mUserId = source.readString();
+        mAvatarUrl = source.readString();
+        mGravatarId = source.readString();
+        mUrl = source.readString();
+        mHtmlUrl = source.readString();
+        mFollowersUrl = source.readString();
+        mFollowingUrl = source.readString();
+        mGistsUrl = source.readString();
+        mStarredUrl = source.readString();
+        mSubscriptionsUrl = source.readString();
+        mOrganizationsUrl = source.readString();
+        mReposUrl = source.readString();
+        mEventsUrl = source.readString();
+        mReceivedEventsUrl = source.readString();
+        mType = source.readString();
+        mSiteAdmin = source.readByte() != 0;
     }
 
     public static Creator<OwnerResponse> CREATOR = new Creator<OwnerResponse>() {
@@ -232,22 +96,22 @@ public class OwnerResponse extends ApiResponse {
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
 
-        dest.writeString(login);
-        dest.writeString(userID);
-        dest.writeString(avatarUrl);
-        dest.writeString(gravatarId);
-        dest.writeString(url);
-        dest.writeString(htmlUrl);
-        dest.writeString(followersUrl);
-        dest.writeString(followingUrl);
-        dest.writeString(gistsUrl);
-        dest.writeString(starredUrl);
-        dest.writeString(subscriptionsUrl);
-        dest.writeString(organizationsUrl);
-        dest.writeString(reposUrl);
-        dest.writeString(eventsUrl);
-        dest.writeString(receivedEventsUrl);
-        dest.writeString(type);
-        dest.writeByte((byte) (siteAdmin ? 1 : 0));
+        dest.writeString(mLogin);
+        dest.writeString(mUserId);
+        dest.writeString(mAvatarUrl);
+        dest.writeString(mGravatarId);
+        dest.writeString(mUrl);
+        dest.writeString(mHtmlUrl);
+        dest.writeString(mFollowersUrl);
+        dest.writeString(mFollowingUrl);
+        dest.writeString(mGistsUrl);
+        dest.writeString(mStarredUrl);
+        dest.writeString(mSubscriptionsUrl);
+        dest.writeString(mOrganizationsUrl);
+        dest.writeString(mReposUrl);
+        dest.writeString(mEventsUrl);
+        dest.writeString(mReceivedEventsUrl);
+        dest.writeString(mType);
+        dest.writeByte((byte) (mSiteAdmin ? 1 : 0));
     }
 }
