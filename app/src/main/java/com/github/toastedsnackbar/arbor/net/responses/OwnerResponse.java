@@ -58,6 +58,8 @@ public class OwnerResponse extends ApiResponse {
     private boolean siteAdmin;
 
     public OwnerResponse(Parcel source) {
+        super(source);
+
         login = source.readString();
         userID = source.readString();
         avatarUrl = source.readString();

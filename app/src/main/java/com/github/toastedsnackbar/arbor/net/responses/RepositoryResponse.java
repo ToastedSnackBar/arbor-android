@@ -208,6 +208,8 @@ public class RepositoryResponse extends ApiResponse {
     private String default_branch;
 
     public RepositoryResponse(Parcel source) {
+        super(source);
+
         repoID = source.readInt();
         name = source.readString();
         full_name = source.readString();
