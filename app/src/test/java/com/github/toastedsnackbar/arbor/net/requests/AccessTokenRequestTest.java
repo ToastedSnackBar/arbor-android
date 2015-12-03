@@ -2,6 +2,8 @@ package com.github.toastedsnackbar.arbor.net.requests;
 
 import android.os.Parcel;
 
+import com.github.toastedsnackbar.arbor.ArborTestConstants;
+import com.github.toastedsnackbar.arbor.ArborTestConstants.MockResponses;
 import com.github.toastedsnackbar.arbor.ArborTestRunner;
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
 import com.github.toastedsnackbar.arbor.net.responses.AccessTokenResponse;
@@ -58,7 +60,7 @@ public class AccessTokenRequestTest {
     public void execute_shouldExecuteHttpRequestWithCorrectParams() throws IOException {
         MockResponse mockResponse = new MockResponse();
         mockResponse.setResponseCode(200);
-        mockResponse.setBody(MOCK_RESPONSE_BODY);
+        mockResponse.setBody(MockResponses.ACCESS_TOKEN);
 
         MockWebServer mockServer = new MockWebServer();
         mockServer.enqueue(mockResponse);
@@ -75,11 +77,4 @@ public class AccessTokenRequestTest {
         assertThat(response.getAccessToken()).isEqualTo("mock_access_token");
         assertThat(response.getTokenType()).isEqualTo("mock_token_type");
     }
-
-    private static final String MOCK_RESPONSE_BODY =
-            "{\n" +
-            "  \"access_token\": \"mock_access_token\",\n" +
-            "  \"token_type\": \"mock_token_type\",\n" +
-            "  \"scope\": \"mock_scope\"\n" +
-            "}";
 }
