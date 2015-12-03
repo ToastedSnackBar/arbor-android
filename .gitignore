@@ -53,5 +53,4 @@ build/
 .idea/
 
 # Device screenshots
-*.png
 screenshots/
