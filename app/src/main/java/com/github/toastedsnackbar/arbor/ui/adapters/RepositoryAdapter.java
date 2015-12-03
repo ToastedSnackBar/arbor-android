@@ -98,13 +98,11 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryViewHolder
                 updatedFormattedDate);
         repositoryViewHolder.lastUpdatedDateTime.setText(Html.fromHtml(lastUpdatedDateTime));
 
-        String repoStars = mContext.getString(R.string.repository_repo_stars,
-                item.getStargazersCount());
-        repositoryViewHolder.repoStars.setText(Html.fromHtml(repoStars));
+        String repoStars = String.valueOf(item.getStargazersCount());
+        repositoryViewHolder.repoStars.setText(repoStars);
 
-        String repoFollowing = mContext.getString(R.string.repository_following_count,
-                item.getWatchersCount());
-        repositoryViewHolder.repoFollowing.setText(Html.fromHtml(repoFollowing));
+        String repoFollowing = String.valueOf(item.getWatchersCount());
+        repositoryViewHolder.repoFollowing.setText(repoFollowing);
     }
 
     @Override
