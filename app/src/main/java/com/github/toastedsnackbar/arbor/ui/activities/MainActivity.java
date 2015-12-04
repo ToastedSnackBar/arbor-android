@@ -21,7 +21,9 @@ import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
 import com.github.toastedsnackbar.arbor.net.ApiReceiver;
 import com.github.toastedsnackbar.arbor.net.ApiService;
 import com.github.toastedsnackbar.arbor.net.requests.AccessTokenRequest;
+import com.github.toastedsnackbar.arbor.net.requests.AuthUserRequest;
 import com.github.toastedsnackbar.arbor.net.responses.AccessTokenResponse;
+import com.github.toastedsnackbar.arbor.net.responses.AuthUserResponse;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         ApiReceiver.ReceiveResultListener {
@@ -37,6 +39,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button mRegisterButton;
 
     private ApiReceiver mApiReceiver;
+
+    private String mAccessTokenRequestId;
+    private String mAuthUserRequestId;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -101,17 +106,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case ApiService.ResultCodes.SUCCESS:
-                AccessTokenResponse response = resultData.getParcelable(ApiService.EXTRA_RESPONSE);
-                if (response == null) {
+                String requestId = resultData.getString(ApiService.EXTRA_REQUEST_ID);
+                if (TextUtils.isEmpty(requestId)) {
                     return;
                 }
 
-                String accessToken = response.getAccessToken();
-                ArborPreferences.setAccessToken(accessToken);
+                if (requestId.equals(mAccessTokenRequestId)) {
+                    AccessTokenResponse response = resultData.getParcelable(ApiService.EXTRA_RESPONSE);
+                    if (response == null) {
+                        return;
+                    }
 
-                mProgressBar.setVisibility(View.GONE);
-                HomeScreenActivity.start(MainActivity.this);
-                finish();
+                    String accessToken = response.getAccessToken();
+                    ArborPreferences.setAccessToken(accessToken);
+                    executeAuthUserRequest();
+                } else if (requestId.equals(mAuthUserRequestId)) {
+                    AuthUserResponse response = resultData.getParcelable(ApiService.EXTRA_RESPONSE);
+                    if (response == null) {
+                        return;
+                    }
+
+                    String username = response.getLogin();
+                    ArborPreferences.setUsername(username);
+
+                    mProgressBar.setVisibility(View.GONE);
+                    HomeScreenActivity.start(MainActivity.this);
+                    finish();
+                }
                 break;
         }
     }
@@ -152,6 +173,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRegisterButton.setEnabled(enabled);
     }
 
+    private void executeAuthUserRequest() {
+        AuthUserRequest request = new AuthUserRequest();
+        mAuthUserRequestId = request.getRequestId();
+
+        ApiService.executeRequest(MainActivity.this, request, mApiReceiver);
+    }
+
     private void executeAccessTokenRequest(String url) {
         Uri uri = Uri.parse(url);
         String code = uri.getQueryParameter(ApiEndpoints.Params.CODE);
@@ -160,6 +188,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String state = ApiEndpoints.getClientState();
 
         AccessTokenRequest request = new AccessTokenRequest(code, clientId, clientSecret, state);
+        mAccessTokenRequestId = request.getRequestId();
         ApiService.executeRequest(MainActivity.this, request, mApiReceiver);
     }
 

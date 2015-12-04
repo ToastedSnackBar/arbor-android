@@ -2,8 +2,6 @@ package com.github.toastedsnackbar.arbor.net.responses;
 
 import android.os.Parcel;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.ArrayList;
 import java.util.List;
 

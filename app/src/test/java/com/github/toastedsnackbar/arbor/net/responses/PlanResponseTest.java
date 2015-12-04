@@ -12,44 +12,45 @@ import org.junit.runner.RunWith;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(ArborTestRunner.class)
-public class RepositoryResponseTest {
+public class PlanResponseTest {
 
     @Test
     public void gson_shouldParseCorrectly() {
-        RepositoryResponse response = GsonHelper.fromJson(MockResponses.REPOSITORY,
-                RepositoryResponse.class);
+        PlanResponse response = GsonHelper.fromJson(MockResponses.PLAN, PlanResponse.class);
 
-        assertThat(response.getName()).isEqualTo("coding-challenge");
-        assertThat(response.getCreatedAt()).isEqualTo("2014-04-26T04:30:57Z");
-        assertThat(response.getUpdatedAt()).isEqualTo("2014-07-31T14:52:31Z");
-        assertThat(response.getStargazersCount()).isEqualTo(0);
-        assertThat(response.getWatchersCount()).isEqualTo(0);
+        assertThat(response).isNotNull();
+        assertThat(response.getName()).isEqualTo("name");
+        assertThat(response.getSpace()).isEqualTo(1);
+        assertThat(response.getPrivateRepoCount()).isEqualTo(1);
+        assertThat(response.getCollaboratorCount()).isEqualTo(1);
     }
 
     @Test
     public void parcelable_shouldCreateFromParcel() {
-        RepositoryResponse response = GsonHelper.fromJson(MockResponses.REPOSITORY,
-                RepositoryResponse.class);
+        PlanResponse response = GsonHelper.fromJson(MockResponses.PLAN, PlanResponse.class);
         response.setStatusCode(200);
         Parcel parcel = Parcel.obtain();
         response.writeToParcel(parcel, 0);
 
         parcel.setDataPosition(0);
-        RepositoryResponse parcelled = RepositoryResponse.CREATOR.createFromParcel(parcel);
+        PlanResponse parcelled = PlanResponse.CREATOR.createFromParcel(parcel);
 
         assertThat(parcelled).isNotNull();
         assertThat(parcelled.getStatusCode()).isEqualTo(response.getStatusCode());
         assertThat(parcelled.getName()).isEqualTo(response.getName());
+        assertThat(parcelled.getSpace()).isEqualTo(response.getSpace());
+        assertThat(parcelled.getPrivateRepoCount()).isEqualTo(response.getPrivateRepoCount());
+        assertThat(parcelled.getCollaboratorCount()).isEqualTo(response.getCollaboratorCount());
     }
 
     @Test
     public void parcelable_shouldCreateArrayFromParcel() {
         final int SIZE = 10;
 
-        RepositoryResponse[] responses = RepositoryResponse.CREATOR.newArray(SIZE);
+        PlanResponse[] responses = PlanResponse.CREATOR.newArray(SIZE);
         assertThat(responses.length).isEqualTo(SIZE);
 
-        for (RepositoryResponse response : responses) {
+        for (PlanResponse response : responses) {
             assertThat(response).isNull();
         }
     }

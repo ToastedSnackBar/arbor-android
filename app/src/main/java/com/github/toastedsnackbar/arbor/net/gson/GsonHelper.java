@@ -30,4 +30,12 @@ public class GsonHelper {
 
         return sInstance.mGson.fromJson(json, typeOfT);
     }
+
+    public static <T> String toJson(T src) {
+        if (sInstance == null) {
+            throw new IllegalStateException("GsonHelper not initialized!");
+        }
+
+        return sInstance.mGson.toJson(src);
+    }
 }

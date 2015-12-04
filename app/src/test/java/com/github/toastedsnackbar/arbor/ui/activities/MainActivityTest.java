@@ -254,10 +254,17 @@ public class MainActivityTest {
 
     @Test
     public void oauth_onReceiveSuccess_progressBarShouldBeGone() {
+        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view);
+        ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(loginWebView);
+
+        WebViewClient webViewClient = shadowLoginWebView.getWebViewClient();
+        webViewClient.shouldOverrideUrlLoading(loginWebView, TEST_REDIRECT_URL);
+
         AccessTokenResponse response = buildAccessTokenResponse();
         assertThat(response).isNotNull();
 
         Bundle resultData = new Bundle();
+        resultData.putString(ApiService.EXTRA_REQUEST_ID, ApiEndpoints.getAccessTokenUrl());
         resultData.putParcelable(ApiService.EXTRA_RESPONSE, response);
         mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, resultData);
 
@@ -268,32 +275,21 @@ public class MainActivityTest {
 
     @Test
     public void oauth_onReceiveSuccess_shouldStoreAccessTokenInSharedPrefs() {
+        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view);
+        ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(loginWebView);
+
+        WebViewClient webViewClient = shadowLoginWebView.getWebViewClient();
+        webViewClient.shouldOverrideUrlLoading(loginWebView, TEST_REDIRECT_URL);
+
         AccessTokenResponse response = buildAccessTokenResponse();
         assertThat(response).isNotNull();
 
         Bundle resultData = new Bundle();
+        resultData.putString(ApiService.EXTRA_REQUEST_ID, ApiEndpoints.getAccessTokenUrl());
         resultData.putParcelable(ApiService.EXTRA_RESPONSE, response);
         mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, resultData);
 
         assertThat(ArborPreferences.getAccessToken()).isEqualTo("access_token");
-    }
-
-    @Test
-    public void oauth_onReceiveSuccess_shouldLaunchHomeScreenActivity() {
-        AccessTokenResponse response = buildAccessTokenResponse();
-        assertThat(response).isNotNull();
-
-        Bundle resultData = new Bundle();
-        resultData.putParcelable(ApiService.EXTRA_RESPONSE, response);
-        mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, resultData);
-
-        ShadowActivity shadowMainActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
-        Intent startedIntent = shadowMainActivity.getNextStartedActivity();
-        assertThat(startedIntent).isNotNull();
-        assertThat(startedIntent).hasComponent(new ComponentName(mActivity,
-                HomeScreenActivity.class));
-
-        assertThat(mActivity).isFinishing();
     }
 
     @Test

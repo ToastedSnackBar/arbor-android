@@ -18,4 +18,10 @@
     <string name="repository_last_updated_date"><![CDATA[<b>Last Updated</b>: %1$s]]></string>
     <string name="repository_repo_stars"><![CDATA[<b>Stars</b>: %1$s]]></string>
     <string name="repository_following_count"><![CDATA[<b>Following</b>: %1$s]]></string>
+
+    <string name="days">days</string>
+    <string name="hours">hours</string>
+    <string name="minutes">minutes</string>
+    <string name="seconds">seconds</string>
+    <string name="ago">ago</string>
 </resources>

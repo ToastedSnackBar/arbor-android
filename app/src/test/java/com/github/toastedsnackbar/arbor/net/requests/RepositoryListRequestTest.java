@@ -43,6 +43,8 @@ public class RepositoryListRequestTest {
         RepositoryListRequest parcelled = RepositoryListRequest.CREATOR.createFromParcel
                 (parcel);
 
+        assertThat(parcelled).isNotNull();
+        assertThat(parcelled.getRequestId()).isEqualTo(request.getRequestId());
         assertThat(parcelled.getUrl()).isEqualTo(request.getUrl());
     }
 

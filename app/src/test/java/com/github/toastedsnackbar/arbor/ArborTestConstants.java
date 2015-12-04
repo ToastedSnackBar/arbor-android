@@ -513,6 +513,59 @@ public class ArborTestConstants {
                 "  \"avatar_url\": \"avatar_url\"\n" +
                 "}";
 
+        public static final String PLAN =
+                "{\n" +
+                "  \"name\": \"name\",\n" +
+                "  \"space\": 1,\n" +
+                "  \"private_repos\": 1,\n" +
+                "  \"collaborators\": 1\n" +
+                "}";
+
+        public static final String AUTH_USER =
+                "{\n" +
+                "  \"login\": \"login\",\n" +
+                "  \"id\": 1,\n" +
+                "  \"avatar_url\": \"avatar_url\",\n" +
+                "  \"gravatar_id\": \"gravatar_id\",\n" +
+                "  \"url\": \"url\",\n" +
+                "  \"html_url\": \"html_url\",\n" +
+                "  \"followers_url\": \"followers_url\",\n" +
+                "  \"following_url\": \"following_url\",\n" +
+                "  \"gists_url\": \"gists_url\",\n" +
+                "  \"starred_url\": \"starred_url\",\n" +
+                "  \"subscriptions_url\": \"subscriptions_url\",\n" +
+                "  \"organizations_url\": \"organizations_url\",\n" +
+                "  \"repos_url\": \"repos_url\",\n" +
+                "  \"events_url\": \"events_url\",\n" +
+                "  \"received_events_url\": \"received_events_url\",\n" +
+                "  \"type\": \"type\",\n" +
+                "  \"site_admin\": true,\n" +
+                "  \"name\": \"name\",\n" +
+                "  \"company\": \"company\",\n" +
+                "  \"blog\": \"blog\",\n" +
+                "  \"location\": \"location\",\n" +
+                "  \"email\": \"email\",\n" +
+                "  \"hireable\": true,\n" +
+                "  \"bio\": \"bio\",\n" +
+                "  \"public_repos\": 1,\n" +
+                "  \"public_gists\": 2,\n" +
+                "  \"followers\": 3,\n" +
+                "  \"following\": 4,\n" +
+                "  \"created_at\": \"created_at\",\n" +
+                "  \"updated_at\": \"updated_at\",\n" +
+                "  \"total_private_repos\": 5,\n" +
+                "  \"owned_private_repos\": 6,\n" +
+                "  \"private_gists\": 7,\n" +
+                "  \"disk_usage\": 8,\n" +
+                "  \"collaborators\": 9,\n" +
+                "  \"plan\": {\n" +
+                "    \"name\": \"name\",\n" +
+                "    \"space\": 1,\n" +
+                "    \"private_repos\": 1,\n" +
+                "    \"collaborators\": 1\n" +
+                "  }\n" +
+                "}";
+
         public static final String EVENT_PUSH =
                 "{\n" +
                 "  \"id\": \"id\",\n" +

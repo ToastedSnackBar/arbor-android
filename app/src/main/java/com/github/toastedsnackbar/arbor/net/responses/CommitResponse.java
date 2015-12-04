@@ -52,6 +52,7 @@ public class CommitResponse extends ApiResponse {
     }
 
     public static final Creator<CommitResponse> CREATOR = new Creator<CommitResponse>() {
+
         @Override
         public CommitResponse createFromParcel(Parcel source) {
             return new CommitResponse(source);

@@ -4,7 +4,7 @@ import android.os.Parcel;
 
 import com.github.toastedsnackbar.arbor.ArborTestConstants.MockResponses;
 import com.github.toastedsnackbar.arbor.ArborTestRunner;
-import com.google.gson.Gson;
+import com.github.toastedsnackbar.arbor.net.gson.GsonHelper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +16,7 @@ public class ActorResponseTest {
 
     @Test
     public void gson_shouldParseCorrectly() {
-        ActorResponse response = new Gson().fromJson(MockResponses.ACTOR, ActorResponse.class);
+        ActorResponse response = GsonHelper.fromJson(MockResponses.ACTOR, ActorResponse.class);
 
         assertThat(response).isNotNull();
         assertThat(response.getId()).isEqualTo(1);
@@ -28,7 +28,8 @@ public class ActorResponseTest {
 
     @Test
     public void parcelable_shouldCreateFromParcel() {
-        ActorResponse response = new Gson().fromJson(MockResponses.ACTOR, ActorResponse.class);
+        ActorResponse response = GsonHelper.fromJson(MockResponses.ACTOR, ActorResponse.class);
+        response.setStatusCode(200);
         Parcel parcel = Parcel.obtain();
         response.writeToParcel(parcel, 0);
 
@@ -36,6 +37,7 @@ public class ActorResponseTest {
         ActorResponse parcelled = ActorResponse.CREATOR.createFromParcel(parcel);
 
         assertThat(parcelled).isNotNull();
+        assertThat(parcelled.getStatusCode()).isEqualTo(response.getStatusCode());
         assertThat(parcelled.getId()).isEqualTo(response.getId());
         assertThat(parcelled.getLogin()).isEqualTo(response.getLogin());
         assertThat(parcelled.getGravatarId()).isEqualTo(response.getGravatarId());

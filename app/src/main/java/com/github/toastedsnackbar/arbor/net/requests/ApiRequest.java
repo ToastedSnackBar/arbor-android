@@ -55,6 +55,7 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
             if (shouldAcceptStatusCode(statusCode)) {
                 response = parseResponse(connection);
                 response.setStatusCode(statusCode);
+                response.setObtainedAt(System.currentTimeMillis());
             }
         } finally {
             connection.disconnect();
@@ -131,13 +132,15 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
         return acceptedStatuses != null && acceptedStatuses.contains(statusCode);
     }
 
-    private Set<String> getEntityMethods() {
-        return DEFAULT_ENTITY_METHODS;
-    }
-
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public abstract String getRequestId();
+
+    private Set<String> getEntityMethods() {
+        return DEFAULT_ENTITY_METHODS;
     }
 
     protected abstract String getUrl();

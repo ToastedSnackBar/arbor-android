@@ -4,7 +4,7 @@ import android.os.Parcel;
 
 import com.github.toastedsnackbar.arbor.ArborTestConstants.MockResponses;
 import com.github.toastedsnackbar.arbor.ArborTestRunner;
-import com.google.gson.Gson;
+import com.github.toastedsnackbar.arbor.net.gson.GsonHelper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +16,7 @@ public class OwnerResponseTest {
 
     @Test
     public void gson_shouldParseCorrectly() {
-        OwnerResponse response = new Gson().fromJson(MockResponses.OWNER, OwnerResponse.class);
+        OwnerResponse response = GsonHelper.fromJson(MockResponses.OWNER, OwnerResponse.class);
 
         assertThat(response.getLogin()).isEqualTo("okamayana");
         assertThat(response.getUserId()).isEqualTo("3643607");
@@ -24,13 +24,16 @@ public class OwnerResponseTest {
 
     @Test
     public void parcelable_shouldCreateFromParcel() {
-        OwnerResponse response = new Gson().fromJson(MockResponses.OWNER, OwnerResponse.class);
+        OwnerResponse response = GsonHelper.fromJson(MockResponses.OWNER, OwnerResponse.class);
+        response.setStatusCode(200);
         Parcel parcel = Parcel.obtain();
         response.writeToParcel(parcel, 0);
 
         parcel.setDataPosition(0);
         OwnerResponse parcelled = OwnerResponse.CREATOR.createFromParcel(parcel);
 
+        assertThat(parcelled).isNotNull();
+        assertThat(parcelled.getStatusCode()).isEqualTo(response.getStatusCode());
         assertThat(parcelled.getLogin()).isEqualTo(response.getLogin());
         assertThat(parcelled.getUserId()).isEqualTo(response.getUserId());
     }

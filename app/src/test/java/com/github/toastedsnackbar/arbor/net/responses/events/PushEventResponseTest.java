@@ -33,6 +33,7 @@ public class PushEventResponseTest {
     @Test
     public void parcelable_shouldCreateFromParcel() {
         EventResponse response = GsonHelper.fromJson(MockResponses.EVENT_PUSH, EventResponse.class);
+        response.setStatusCode(200);
         Parcel parcel = Parcel.obtain();
         response.writeToParcel(parcel, 0);
 
@@ -40,6 +41,7 @@ public class PushEventResponseTest {
         EventResponse parcelled = EventResponse.CREATOR.createFromParcel(parcel);
 
         assertThat(parcelled).isNotNull();
+        assertThat(parcelled.getStatusCode()).isEqualTo(response.getStatusCode());
         assertThat(parcelled.getId()).isEqualTo(response.getId());
         assertThat(parcelled.getType()).isEqualTo(response.getType());
         assertThat(parcelled.isIsPublic()).isEqualTo(response.isIsPublic());

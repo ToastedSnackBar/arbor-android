@@ -2,7 +2,6 @@ package com.github.toastedsnackbar.arbor.net.requests;
 
 import android.os.Parcel;
 
-import com.github.toastedsnackbar.arbor.ArborTestConstants;
 import com.github.toastedsnackbar.arbor.ArborTestConstants.MockResponses;
 import com.github.toastedsnackbar.arbor.ArborTestRunner;
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
@@ -41,6 +40,8 @@ public class AccessTokenRequestTest {
         parcel.setDataPosition(0);
         AccessTokenRequest parcelled = AccessTokenRequest.CREATOR.createFromParcel(parcel);
 
+        assertThat(parcelled).isNotNull();
+        assertThat(parcelled.getRequestId()).isEqualTo(request.getRequestId());
         assertThat(parcelled.getUrl()).isEqualTo(request.getUrl());
         assertThat(parcelled.getRequestEntity()).isEqualTo(request.getRequestEntity());
     }

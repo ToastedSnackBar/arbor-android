@@ -28,6 +28,7 @@ public class AuthorResponse extends ApiResponse {
     }
 
     public static Creator<AuthorResponse> CREATOR = new Creator<AuthorResponse>() {
+
         @Override
         public AuthorResponse createFromParcel(Parcel source) {
             return new AuthorResponse(source);

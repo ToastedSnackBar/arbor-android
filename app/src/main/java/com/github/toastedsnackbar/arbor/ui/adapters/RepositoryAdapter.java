@@ -3,6 +3,8 @@ package com.github.toastedsnackbar.arbor.ui.adapters;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Adapter;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +20,32 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryViewHolder> {
+public class RepositoryAdapter extends Adapter<RepositoryViewHolder> {
+
+    public static class RepositoryViewHolder extends ViewHolder {
+        CardView cardView;
+        TextView repositoryName;
+        TextView lastUpdatedDateTime;
+        TextView createdDateTime;
+        TextView repoStars;
+        TextView repoFollowing;
+
+        public RepositoryViewHolder(View itemView) {
+            super(itemView);
+
+            cardView = (CardView) itemView.findViewById(R.id.card_view);
+            repositoryName = (TextView) itemView.findViewById(R.id.repo_name);
+            lastUpdatedDateTime = (TextView) itemView.findViewById(R.id.last_updated_date);
+            createdDateTime = (TextView) itemView.findViewById(R.id.creation_date);
+            repoStars = (TextView) itemView.findViewById(R.id.stars);
+            repoFollowing = (TextView) itemView.findViewById(R.id.following);
+        }
+    }
 
     public static final String DATE_FORMAT = "MMMM d, yyyy";
 
@@ -41,28 +64,8 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryViewHolder
         mDestinationDateFormat = new SimpleDateFormat(DATE_FORMAT, currentLocale);
     }
 
-    public void setItems(List<RepositoryResponse> items) {
+    public void addAll(Collection<? extends RepositoryResponse> items) {
         mItems.addAll(items);
-    }
-
-    public static class RepositoryViewHolder extends RecyclerView.ViewHolder {
-        CardView cardView;
-        TextView repositoryName;
-        TextView lastUpdatedDateTime;
-        TextView createdDateTime;
-        TextView repoStars;
-        TextView repoFollowing;
-
-        public RepositoryViewHolder(View itemView) {
-            super(itemView);
-
-            cardView = (CardView) itemView.findViewById(R.id.card_view);
-            repositoryName = (TextView) itemView.findViewById(R.id.repo_name);
-            lastUpdatedDateTime = (TextView) itemView.findViewById(R.id.last_updated_date);
-            createdDateTime = (TextView) itemView.findViewById(R.id.creation_date);
-            repoStars = (TextView) itemView.findViewById(R.id.stars);
-            repoFollowing = (TextView) itemView.findViewById(R.id.following);
-        }
     }
 
     @Override

@@ -21,6 +21,7 @@ public class ApiService extends IntentService {
 
     public static final String EXTRA_RESULT_RECEIVER = "extra_result_receiver";
     public static final String EXTRA_REQUEST = "extra_request";
+    public static final String EXTRA_REQUEST_ID = "extra_request_id";
     public static final String EXTRA_RESPONSE = "extra_response";
     public static final String EXTRA_ERROR = "extra_error";
 
@@ -34,12 +35,14 @@ public class ApiService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        ResultReceiver receiver = intent.getParcelableExtra(EXTRA_RESULT_RECEIVER);
-        receiver.send(ResultCodes.RUNNING, Bundle.EMPTY);
-
+        ApiRequest request = intent.getParcelableExtra(EXTRA_REQUEST);
         Bundle resultData = new Bundle();
+        resultData.putString(EXTRA_REQUEST_ID, request.getRequestId());
+
+        ResultReceiver receiver = intent.getParcelableExtra(EXTRA_RESULT_RECEIVER);
+        receiver.send(ResultCodes.RUNNING, resultData);
+
         try {
-            ApiRequest request = intent.getParcelableExtra(EXTRA_REQUEST);
             ApiResponse response = request.execute();
 
             resultData.putParcelable(EXTRA_RESPONSE, response);

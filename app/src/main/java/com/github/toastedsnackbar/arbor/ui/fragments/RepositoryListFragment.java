@@ -77,7 +77,7 @@ public class RepositoryListFragment extends Fragment implements ApiReceiver.Rece
                     return;
                 }
 
-                mAdapter.setItems(response.getItems());
+                mAdapter.addAll(response.getItems());
                 mAdapter.notifyDataSetChanged();
                 mProgressBar.setVisibility(View.GONE);
                 break;

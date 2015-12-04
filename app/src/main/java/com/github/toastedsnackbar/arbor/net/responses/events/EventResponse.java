@@ -93,6 +93,7 @@ public class EventResponse extends ApiResponse {
     }
 
     public static final Creator<EventResponse> CREATOR = new Creator<EventResponse>() {
+
         @Override
         public EventResponse createFromParcel(Parcel source) {
             return new EventResponse(source);

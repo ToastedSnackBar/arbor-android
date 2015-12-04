@@ -3,36 +3,35 @@ package com.github.toastedsnackbar.arbor.net.requests;
 import android.os.Parcel;
 
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
-import com.github.toastedsnackbar.arbor.net.responses.RepositoryListResponse;
+import com.github.toastedsnackbar.arbor.net.responses.AuthUserResponse;
 
 import java.util.Map;
 import java.util.Set;
 
-public class RepositoryListRequest extends ApiRequest<RepositoryListResponse> {
+public class AuthUserRequest extends ApiRequest {
 
-    private String mUrl;
-    private String mRequestId;
+    String mUrl;
+    String mRequestId;
 
-    public RepositoryListRequest() {
-        mUrl = ApiEndpoints.getAuthUserReposUrl();
+    public AuthUserRequest() {
+        mUrl = ApiEndpoints.getAuthUserUrl();
         mRequestId = mUrl;
     }
 
-    public RepositoryListRequest(Parcel source) {
+    public AuthUserRequest(Parcel source) {
         mUrl = source.readString();
         mRequestId = source.readString();
     }
 
-    public static final Creator<RepositoryListRequest> CREATOR =
-            new Creator<RepositoryListRequest>() {
+    public static final Creator<AuthUserRequest> CREATOR = new Creator<AuthUserRequest>() {
         @Override
-        public RepositoryListRequest createFromParcel(Parcel source) {
-            return new RepositoryListRequest(source);
+        public AuthUserRequest createFromParcel(Parcel source) {
+            return new AuthUserRequest(source);
         }
 
         @Override
-        public RepositoryListRequest[] newArray(int size) {
-            return new RepositoryListRequest[size];
+        public AuthUserRequest[] newArray(int size) {
+            return new AuthUserRequest[size];
         }
     };
 
@@ -64,7 +63,7 @@ public class RepositoryListRequest extends ApiRequest<RepositoryListResponse> {
 
     @Override
     protected String getRequestMethod() {
-        return ApiRequest.METHOD_GET;
+        return METHOD_GET;
     }
 
     @Override
@@ -78,7 +77,7 @@ public class RepositoryListRequest extends ApiRequest<RepositoryListResponse> {
     }
 
     @Override
-    protected Class<RepositoryListResponse> getResponseClass() {
-        return RepositoryListResponse.class;
+    protected Class getResponseClass() {
+        return AuthUserResponse.class;
     }
 }

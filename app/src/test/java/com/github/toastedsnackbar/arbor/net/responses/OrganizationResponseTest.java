@@ -4,7 +4,7 @@ import android.os.Parcel;
 
 import com.github.toastedsnackbar.arbor.ArborTestConstants.MockResponses;
 import com.github.toastedsnackbar.arbor.ArborTestRunner;
-import com.google.gson.Gson;
+import com.github.toastedsnackbar.arbor.net.gson.GsonHelper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,8 +16,9 @@ public class OrganizationResponseTest {
 
     @Test
     public void gson_shouldParseCorrectly() {
-        OrganizationResponse response = new Gson().fromJson(MockResponses.ORGANIZATION,
+        OrganizationResponse response = GsonHelper.fromJson(MockResponses.ORGANIZATION,
                 OrganizationResponse.class);
+        response.setStatusCode(200);
 
         assertThat(response).isNotNull();
         assertThat(response.getId()).isEqualTo(1);
@@ -29,7 +30,7 @@ public class OrganizationResponseTest {
 
     @Test
     public void parcelable_shouldCreateFromParcel() {
-        OrganizationResponse response = new Gson().fromJson(MockResponses.ORGANIZATION,
+        OrganizationResponse response = GsonHelper.fromJson(MockResponses.ORGANIZATION,
                 OrganizationResponse.class);
         Parcel parcel = Parcel.obtain();
         response.writeToParcel(parcel, 0);
@@ -37,6 +38,8 @@ public class OrganizationResponseTest {
         parcel.setDataPosition(0);
         OrganizationResponse parcelled = OrganizationResponse.CREATOR.createFromParcel(parcel);
 
+        assertThat(parcelled).isNotNull();
+        assertThat(parcelled.getStatusCode()).isEqualTo(response.getStatusCode());
         assertThat(parcelled.getId()).isEqualTo(response.getId());
         assertThat(parcelled.getLogin()).isEqualTo(response.getLogin());
         assertThat(parcelled.getGravatarId()).isEqualTo(response.getGravatarId());

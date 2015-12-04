@@ -4,9 +4,9 @@ import android.os.Parcel;
 
 import com.github.toastedsnackbar.arbor.ArborTestConstants.MockResponses;
 import com.github.toastedsnackbar.arbor.ArborTestRunner;
+import com.github.toastedsnackbar.arbor.net.gson.GsonHelper;
 import com.github.toastedsnackbar.arbor.net.responses.AuthorResponse;
 import com.github.toastedsnackbar.arbor.net.responses.CommitResponse;
-import com.google.gson.Gson;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +20,7 @@ public class PushEventPayloadResponseTest {
 
     @Test
     public void gson_shouldParseCorrectly() {
-        PushEventPayloadResponse response = new Gson().fromJson(MockResponses.PAYLOAD_PUSH_EVENT,
+        PushEventPayloadResponse response = GsonHelper.fromJson(MockResponses.PAYLOAD_PUSH_EVENT,
                 PushEventPayloadResponse.class);
 
         assertThat(response).isNotNull();
@@ -60,8 +60,9 @@ public class PushEventPayloadResponseTest {
 
     @Test
     public void parcelable_shouldCreateFromParcel() {
-        PushEventPayloadResponse response = new Gson().fromJson(MockResponses.PAYLOAD_PUSH_EVENT,
+        PushEventPayloadResponse response = GsonHelper.fromJson(MockResponses.PAYLOAD_PUSH_EVENT,
                 PushEventPayloadResponse.class);
+        response.setStatusCode(200);
         Parcel parcel = Parcel.obtain();
         response.writeToParcel(parcel, 0);
 
@@ -70,6 +71,7 @@ public class PushEventPayloadResponseTest {
                 parcel);
 
         assertThat(parcelled).isNotNull();
+        assertThat(parcelled.getStatusCode()).isEqualTo(response.getStatusCode());
         assertThat(parcelled.getPushId()).isEqualTo(response.getPushId());
         assertThat(parcelled.getSize()).isEqualTo(response.getSize());
         assertThat(parcelled.getDistinctSize()).isEqualTo(response.getDistinctSize());

@@ -2,7 +2,6 @@ package com.github.toastedsnackbar.arbor.net.responses.events;
 
 import android.os.Parcel;
 
-import com.github.toastedsnackbar.arbor.net.responses.ApiResponse;
 import com.github.toastedsnackbar.arbor.net.responses.CommitResponse;
 import com.google.gson.annotations.SerializedName;
 

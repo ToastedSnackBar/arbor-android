@@ -4,7 +4,7 @@ import android.os.Parcel;
 
 import com.github.toastedsnackbar.arbor.ArborTestConstants.MockResponses;
 import com.github.toastedsnackbar.arbor.ArborTestRunner;
-import com.google.gson.Gson;
+import com.github.toastedsnackbar.arbor.net.gson.GsonHelper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +16,7 @@ public class CommitResponseTest {
 
     @Test
     public void gson_shouldParseCorrectly() {
-        CommitResponse response = new Gson().fromJson(MockResponses.COMMIT, CommitResponse.class);
+        CommitResponse response = GsonHelper.fromJson(MockResponses.COMMIT, CommitResponse.class);
 
         assertThat(response).isNotNull();
         assertThat(response.getSha()).isEqualTo("sha");
@@ -32,7 +32,8 @@ public class CommitResponseTest {
 
     @Test
     public void parcelable_shouldCreateFromParcel() {
-        CommitResponse response = new Gson().fromJson(MockResponses.COMMIT, CommitResponse.class);
+        CommitResponse response = GsonHelper.fromJson(MockResponses.COMMIT, CommitResponse.class);
+        response.setStatusCode(200);
         Parcel parcel = Parcel.obtain();
         response.writeToParcel(parcel, 0);
 
@@ -40,6 +41,7 @@ public class CommitResponseTest {
         CommitResponse parcelled = CommitResponse.CREATOR.createFromParcel(parcel);
 
         assertThat(parcelled).isNotNull();
+        assertThat(parcelled.getStatusCode()).isEqualTo(response.getStatusCode());
         assertThat(parcelled.getSha()).isEqualTo(response.getSha());
         assertThat(parcelled.isDistinct()).isEqualTo(response.isDistinct());
         assertThat(parcelled.getUrl()).isEqualTo(response.getUrl());
