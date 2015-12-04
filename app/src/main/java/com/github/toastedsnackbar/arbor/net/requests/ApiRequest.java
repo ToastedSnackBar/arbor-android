@@ -7,6 +7,9 @@ import com.github.toastedsnackbar.arbor.content.ArborPreferences;
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
 import com.github.toastedsnackbar.arbor.net.responses.ApiResponse;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapterFactory;
+import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -84,7 +87,13 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
         Log.d("ApiRequest", "[" + getRequestMethod() + "] " + getUrl() + " : "
                 + response);
 
-        return new Gson().fromJson(response, getResponseClass());
+        GsonBuilder builder = new GsonBuilder();
+        TypeAdapterFactory typeAdapterFactory = getTypeAdapterFactory();
+        if (typeAdapterFactory != null) {
+            builder.registerTypeAdapterFactory(typeAdapterFactory);
+        }
+
+        return builder.create().fromJson(response, getResponseClass());
     }
 
     private void setRequestMethod(HttpURLConnection connection)
@@ -159,4 +168,6 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
     protected abstract Set<Integer> getAcceptedStatuses();
 
     protected abstract Class<T> getResponseClass();
+
+    protected abstract TypeAdapterFactory getTypeAdapterFactory();
 }
