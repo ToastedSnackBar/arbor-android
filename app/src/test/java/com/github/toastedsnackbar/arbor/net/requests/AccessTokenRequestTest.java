@@ -6,6 +6,7 @@ import com.github.toastedsnackbar.arbor.ArborTestConstants;
 import com.github.toastedsnackbar.arbor.ArborTestConstants.MockResponses;
 import com.github.toastedsnackbar.arbor.ArborTestRunner;
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
+import com.github.toastedsnackbar.arbor.net.gson.GsonHelper;
 import com.github.toastedsnackbar.arbor.net.responses.AccessTokenResponse;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -69,6 +70,8 @@ public class AccessTokenRequestTest {
         String mockUrl = mockServer.url("/login/oauth/access_token").toString();
         PowerMockito.mockStatic(ApiEndpoints.class);
         Mockito.when(ApiEndpoints.getAccessTokenUrl()).thenReturn(mockUrl);
+
+        GsonHelper.init();
 
         AccessTokenRequest request = new AccessTokenRequest("code", "client_id", "secret", "state");
         AccessTokenResponse response = request.execute();

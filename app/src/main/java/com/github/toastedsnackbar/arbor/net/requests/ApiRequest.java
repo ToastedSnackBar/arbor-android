@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
+import com.github.toastedsnackbar.arbor.net.gson.GsonHelper;
 import com.github.toastedsnackbar.arbor.net.responses.ApiResponse;
-import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -74,17 +74,11 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
         }
         reader.close();
 
-        // wrap arrays in "data" object
-        if (stringBuilder.charAt(0) == '[') {
-            stringBuilder.insert(0, "{\"data\":");
-            stringBuilder.insert(stringBuilder.length(), "}");
-        }
-
         String response = stringBuilder.toString();
         Log.d("ApiRequest", "[" + getRequestMethod() + "] " + getUrl() + " : "
                 + response);
 
-        return new Gson().fromJson(response, getResponseClass());
+        return GsonHelper.fromJson(response, getResponseClass());
     }
 
     private void setRequestMethod(HttpURLConnection connection)

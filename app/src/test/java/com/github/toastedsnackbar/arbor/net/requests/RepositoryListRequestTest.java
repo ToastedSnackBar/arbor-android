@@ -6,6 +6,7 @@ import com.github.toastedsnackbar.arbor.ArborTestConstants.MockResponses;
 import com.github.toastedsnackbar.arbor.ArborTestRunner;
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
+import com.github.toastedsnackbar.arbor.net.gson.GsonHelper;
 import com.github.toastedsnackbar.arbor.net.responses.RepositoryListResponse;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -69,6 +70,8 @@ public class RepositoryListRequestTest {
 
         ArborPreferences.init(RuntimeEnvironment.application);
         ArborPreferences.setAccessToken("access_token");
+
+        GsonHelper.init();
 
         String mockUrl = mockServer.url("/user/repos").toString();
         PowerMockito.mockStatic(ApiEndpoints.class);

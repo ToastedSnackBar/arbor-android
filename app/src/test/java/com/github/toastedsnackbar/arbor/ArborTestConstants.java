@@ -11,8 +11,7 @@ public class ArborTestConstants {
                 "}";
 
         public static final String REPOSITORY_LIST =
-                "{\n" +
-                "  \"data\": [\n" +
+                "  [\n" +
                 "    {\n" +
                 "      \"id\": 1,\n" +
                 "      \"name\": \"coding-challenge\",\n" +
@@ -294,8 +293,7 @@ public class ArborTestConstants {
                 "      \"watchers\": 0,\n" +
                 "      \"default_branch\": \"master\"\n" +
                 "    }\n" +
-                "  ]\n" +
-                "}";
+                "  ]\n";
 
         public static final String REPOSITORY =
                 "{\n" +
@@ -470,6 +468,128 @@ public class ArborTestConstants {
                 ".com\\/users\\/okamayana\\/received_events\",\n" +
                 "  \"type\": \"User\",\n" +
                 "  \"site_admin\": false\n" +
+                "}";
+
+        public static final String ACTOR =
+                "{\n" +
+                "  \"id\": 1,\n" +
+                "  \"login\": \"login\",\n" +
+                "  \"gravatar_id\": \"gravatar_id\",\n" +
+                "  \"url\": \"url\",\n" +
+                "  \"avatar_url\": \"avatar_url\"\n" +
+                "}";
+
+        public static final String REPO =
+                "{\n" +
+                "  \"id\": 1,\n" +
+                "  \"name\": \"name\",\n" +
+                "  \"url\": \"url\"\n" +
+                "}";
+
+        public static final String AUTHOR =
+                "{\n" +
+                "  \"email\": \"email\",\n" +
+                "  \"name\": \"name\"\n" +
+                "}";
+
+        public static final String COMMIT =
+                "{\n" +
+                "  \"sha\": \"sha\",\n" +
+                "  \"author\": {\n" +
+                "    \"email\": \"email\",\n" +
+                "    \"name\": \"name\"\n" +
+                "  },\n" +
+                "  \"message\": \"message\",\n" +
+                "  \"distinct\": true,\n" +
+                "  \"url\": \"url\"\n" +
+                "}";
+
+        public static final String ORGANIZATION =
+                "{\n" +
+                "  \"id\": 1,\n" +
+                "  \"login\": \"login\",\n" +
+                "  \"gravatar_id\": \"gravatar_id\",\n" +
+                "  \"url\": \"url\",\n" +
+                "  \"avatar_url\": \"avatar_url\"\n" +
+                "}";
+
+        public static final String EVENT_PUSH =
+                "{\n" +
+                "  \"id\": \"id\",\n" +
+                "  \"type\": \"PushEvent\",\n" +
+                "  \"actor\": {\n" +
+                "    \"id\": 1,\n" +
+                "    \"login\": \"login\",\n" +
+                "    \"gravatar_id\": \"gravatar_id\",\n" +
+                "    \"url\": \"url\",\n" +
+                "    \"avatar_url\": \"avatar_url\"\n" +
+                "  },\n" +
+                "  \"repo\": {\n" +
+                "    \"id\": 1,\n" +
+                "    \"name\": \"name\",\n" +
+                "    \"url\": \"url\"\n" +
+                "  },\n" +
+                "  \"payload\": {\n" +
+                "    \"push_id\": 1,\n" +
+                "    \"size\": 1,\n" +
+                "    \"distinct_size\": 1,\n" +
+                "    \"ref\": \"ref\",\n" +
+                "    \"head\": \"head\",\n" +
+                "    \"before\": \"before\",\n" +
+                "    \"commits\": [\n" +
+                "      {\n" +
+                "        \"sha\": \"sha\",\n" +
+                "        \"author\": {\n" +
+                "          \"email\": \"email\",\n" +
+                "          \"name\": \"name\"\n" +
+                "        },\n" +
+                "        \"message\": \"message\",\n" +
+                "        \"distinct\": true,\n" +
+                "        \"url\": \"url\"\n" +
+                "      }\n" +
+                "    ]\n" +
+                "  },\n" +
+                "  \"public\": true,\n" +
+                "  \"created_at\": \"created_at\",\n" +
+                "  \"org\": {\n" +
+                "    \"id\": 1,\n" +
+                "    \"login\": \"login\",\n" +
+                "    \"gravatar_id\": \"gravatar_id\",\n" +
+                "    \"url\": \"url\",\n" +
+                "    \"avatar_url\": \"avatar_url\"\n" +
+                "  }\n" +
+                "}";
+
+        public static final String PAYLOAD_PUSH_EVENT =
+                "{\n" +
+                "  \"push_id\": 1,\n" +
+                "  \"size\": 1,\n" +
+                "  \"distinct_size\": 1,\n" +
+                "  \"ref\": \"ref\",\n" +
+                "  \"head\": \"head\",\n" +
+                "  \"before\": \"before\",\n" +
+                "  \"commits\": [\n" +
+                "    {\n" +
+                "      \"sha\": \"sha\",\n" +
+                "      \"author\": {\n" +
+                "        \"email\": \"email\",\n" +
+                "        \"name\": \"name\"\n" +
+                "      },\n" +
+                "      \"message\": \"message\",\n" +
+                "      \"distinct\": true,\n" +
+                "      \"url\": \"url\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"sha\": \"sha2\",\n" +
+                "      \"author\": {\n" +
+                "        \"email\": \"email2\",\n" +
+                "        \"name\": \"name2\"\n" +
+                "      },\n" +
+                "      \"message\": \"message2\",\n" +
+                "      \"distinct\": true,\n" +
+                "      \"url\": \"url2\"\n" +
+                "    }\n" +
+                "  ]\n" +
                 "}";
     }
 }

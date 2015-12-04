@@ -13,8 +13,8 @@ import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
 import com.github.toastedsnackbar.arbor.net.ApiService;
 import com.github.toastedsnackbar.arbor.net.ApiService.ResultCodes;
+import com.github.toastedsnackbar.arbor.net.gson.GsonHelper;
 import com.github.toastedsnackbar.arbor.net.responses.RepositoryListResponse;
-import com.google.gson.Gson;
 
 import org.junit.After;
 import org.junit.Before;
@@ -69,7 +69,7 @@ public class RepositoryListFragmentTest {
     @SuppressWarnings("ConstantConditions")
     @Test
     public void onRequestSuccess_shouldShowRecyclerViewAndHideProgressBar() {
-        RepositoryListResponse response = new Gson().fromJson(MockResponses.REPOSITORY_LIST,
+        RepositoryListResponse response = GsonHelper.fromJson(MockResponses.REPOSITORY_LIST,
                 RepositoryListResponse.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ApiService.EXTRA_RESPONSE, response);

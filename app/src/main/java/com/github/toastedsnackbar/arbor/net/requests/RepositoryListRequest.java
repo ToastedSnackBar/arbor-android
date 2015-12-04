@@ -4,6 +4,7 @@ import android.os.Parcel;
 
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
 import com.github.toastedsnackbar.arbor.net.responses.RepositoryListResponse;
+import com.google.gson.TypeAdapterFactory;
 
 import java.util.Map;
 import java.util.Set;

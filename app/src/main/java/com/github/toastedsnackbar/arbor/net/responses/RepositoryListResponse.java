@@ -9,8 +9,11 @@ import java.util.List;
 
 public class RepositoryListResponse extends ApiResponse {
 
-    @SerializedName("data")
     private List<RepositoryResponse> mItems;
+
+    public RepositoryListResponse(List<RepositoryResponse> items) {
+        mItems = items;
+    }
 
     public RepositoryListResponse(Parcel source) {
         super(source);

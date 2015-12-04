@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName;
 
 public class OwnerResponse extends ApiResponse {
 
-    @SerializedName("login")
-    private String mLogin;
-
     @SerializedName("id")
     private String mUserId;
+
+    @SerializedName("login")
+    private String mLogin;
 
     @SerializedName("avatar_url")
     private String mAvatarUrl;
@@ -55,13 +55,13 @@ public class OwnerResponse extends ApiResponse {
     private String mType;
 
     @SerializedName("site_admin")
-    private boolean mSiteAdmin;
+    private boolean mIsSiteAdmin;
 
     public OwnerResponse(Parcel source) {
         super(source);
 
-        mLogin = source.readString();
         mUserId = source.readString();
+        mLogin = source.readString();
         mAvatarUrl = source.readString();
         mGravatarId = source.readString();
         mUrl = source.readString();
@@ -76,7 +76,7 @@ public class OwnerResponse extends ApiResponse {
         mEventsUrl = source.readString();
         mReceivedEventsUrl = source.readString();
         mType = source.readString();
-        mSiteAdmin = source.readByte() != 0;
+        mIsSiteAdmin = source.readByte() != 0;
     }
 
     public String getLogin() {
@@ -104,8 +104,8 @@ public class OwnerResponse extends ApiResponse {
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
 
-        dest.writeString(mLogin);
         dest.writeString(mUserId);
+        dest.writeString(mLogin);
         dest.writeString(mAvatarUrl);
         dest.writeString(mGravatarId);
         dest.writeString(mUrl);
@@ -120,6 +120,6 @@ public class OwnerResponse extends ApiResponse {
         dest.writeString(mEventsUrl);
         dest.writeString(mReceivedEventsUrl);
         dest.writeString(mType);
-        dest.writeByte((byte) (mSiteAdmin ? 1 : 0));
+        dest.writeByte((byte) (mIsSiteAdmin ? 1 : 0));
     }
 }

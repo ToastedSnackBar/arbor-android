@@ -6,6 +6,7 @@ import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
 import com.github.toastedsnackbar.arbor.net.requests.entities.AccessTokenEntity;
 import com.github.toastedsnackbar.arbor.net.responses.AccessTokenResponse;
 import com.google.gson.Gson;
+import com.google.gson.TypeAdapterFactory;
 
 import java.util.Map;
 import java.util.Set;

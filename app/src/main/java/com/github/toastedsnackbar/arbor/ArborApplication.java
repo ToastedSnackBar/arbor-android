@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
+import com.github.toastedsnackbar.arbor.net.gson.GsonHelper;
 
 public class ArborApplication extends Application {
 
@@ -13,5 +14,6 @@ public class ArborApplication extends Application {
 
         ArborPreferences.init(getApplicationContext());
         ApiEndpoints.init(getApplicationContext());
+        GsonHelper.init();
     }
 }
