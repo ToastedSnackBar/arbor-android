@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PushEventPayloadResponse extends ApiResponse {
+public class PushEventPayloadResponse extends EventPayloadResponse {
 
     @SerializedName("push_id")
     private int mPushId;

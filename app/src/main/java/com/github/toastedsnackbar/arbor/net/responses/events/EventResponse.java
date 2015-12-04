@@ -34,16 +34,29 @@ public class EventResponse extends ApiResponse {
     @SerializedName("created_at")
     private String mCreatedAt;
 
+    public EventResponse(String id, EventType type, boolean isPublic,
+                         EventPayloadResponse payload, RepoResponse repo, ActorResponse actor,
+                         OrganizationResponse org, String createdAt) {
+        mId = id;
+        mType = type;
+        mIsPublic = isPublic;
+        mPayload = payload;
+        mRepo = repo;
+        mActor = actor;
+        mOrganization = org;
+        mCreatedAt = createdAt;
+    }
+
     public EventResponse(Parcel source) {
         super(source);
 
         mId = source.readString();
         mType = (EventType) source.readSerializable();
         mIsPublic = source.readByte() != 0;
-        mPayload = (EventPayloadResponse) source.readSerializable();
-        mRepo = (RepoResponse) source.readSerializable();
-        mActor = (ActorResponse) source.readSerializable();
-        mOrganization = (OrganizationResponse) source.readSerializable();
+        mPayload = source.readParcelable(getClass().getClassLoader());
+        mRepo = source.readParcelable(getClass().getClassLoader());
+        mActor = source.readParcelable(getClass().getClassLoader());
+        mOrganization = source.readParcelable(getClass().getClassLoader());
         mCreatedAt = source.readString();
     }
 
