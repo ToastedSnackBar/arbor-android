@@ -29,6 +29,13 @@
                 android:textColor="@color/accent"
                 android:textSize="24sp"/>
 
+            <ImageView
+                android:id="@+id/privacy_status_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"/>
+
             <TextView
                 android:id="@+id/last_updated_date"
                 android:layout_width="wrap_content"

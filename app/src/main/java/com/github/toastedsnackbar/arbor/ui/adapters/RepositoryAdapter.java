@@ -7,6 +7,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.toastedsnackbar.arbor.R;
@@ -52,6 +53,7 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryViewHolder
         TextView createdDateTime;
         TextView repoStars;
         TextView repoFollowing;
+        ImageView privacyStatus;
 
         public RepositoryViewHolder(View itemView) {
             super(itemView);
@@ -62,6 +64,7 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryViewHolder
             createdDateTime = (TextView) itemView.findViewById(R.id.creation_date);
             repoStars = (TextView) itemView.findViewById(R.id.stars);
             repoFollowing = (TextView) itemView.findViewById(R.id.following);
+            privacyStatus = (ImageView) itemView.findViewById(R.id.privacy_status_icon);
         }
     }
 
@@ -103,6 +106,9 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryViewHolder
 
         String repoFollowing = String.valueOf(item.getWatchersCount());
         repositoryViewHolder.repoFollowing.setText(repoFollowing);
+
+        int privacyIconId = item.isPrivate() ? R.drawable.ic_lock_white : R.drawable.ic_public_white;
+        repositoryViewHolder.privacyStatus.setImageResource(privacyIconId);
     }
 
     @Override
