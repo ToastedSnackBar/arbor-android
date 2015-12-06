@@ -299,6 +299,14 @@ public class RepositoryResponse extends ApiResponse {
         return mWatchersCount;
     }
 
+    public boolean isPrivate() {
+        return mIsPrivate;
+    }
+
+    public String getRepoLanguage() {
+        return mRepoLanguage;
+    }
+
     public static final Creator<RepositoryResponse> CREATOR = new Creator<RepositoryResponse>() {
 
         @Override

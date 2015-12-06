@@ -4,11 +4,11 @@ import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.toastedsnackbar.arbor.R;
@@ -27,13 +27,15 @@ import java.util.Locale;
 
 public class RepositoryAdapter extends Adapter<RepositoryViewHolder> {
 
-    public static class RepositoryViewHolder extends ViewHolder {
+    public static class RepositoryViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         TextView repositoryName;
         TextView lastUpdatedDateTime;
         TextView createdDateTime;
         TextView repoStars;
         TextView repoFollowing;
+        ImageView privacyStatus;
+        TextView repoLanguage;
 
         public RepositoryViewHolder(View itemView) {
             super(itemView);
@@ -44,6 +46,8 @@ public class RepositoryAdapter extends Adapter<RepositoryViewHolder> {
             createdDateTime = (TextView) itemView.findViewById(R.id.creation_date);
             repoStars = (TextView) itemView.findViewById(R.id.stars);
             repoFollowing = (TextView) itemView.findViewById(R.id.following);
+            privacyStatus = (ImageView) itemView.findViewById(R.id.privacy_status_icon);
+            repoLanguage = (TextView) itemView.findViewById(R.id.language);
         }
     }
 
@@ -106,6 +110,12 @@ public class RepositoryAdapter extends Adapter<RepositoryViewHolder> {
 
         String repoFollowing = String.valueOf(item.getWatchersCount());
         repositoryViewHolder.repoFollowing.setText(repoFollowing);
+
+        int privacyIconId = item.isPrivate() ? R.drawable.ic_lock_white : R.drawable.ic_public_white;
+        repositoryViewHolder.privacyStatus.setImageResource(privacyIconId);
+
+        String repoLanguageText = item.getRepoLanguage();
+        repositoryViewHolder.repoLanguage.setText(repoLanguageText);
     }
 
     @Override
