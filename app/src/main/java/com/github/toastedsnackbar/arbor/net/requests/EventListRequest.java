@@ -2,36 +2,37 @@ package com.github.toastedsnackbar.arbor.net.requests;
 
 import android.os.Parcel;
 
+import com.github.toastedsnackbar.arbor.content.ArborPreferences;
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
-import com.github.toastedsnackbar.arbor.net.responses.AuthUserResponse;
+import com.github.toastedsnackbar.arbor.net.responses.events.EventListResponse;
 
 import java.util.Map;
 import java.util.Set;
 
-public class AuthUserRequest extends ApiRequest<AuthUserResponse> {
+public class EventListRequest extends ApiRequest<EventListResponse> {
 
     String mUrl;
     String mRequestId;
 
-    public AuthUserRequest() {
-        mUrl = ApiEndpoints.getAuthUserUrl();
+    public EventListRequest() {
+        mUrl = ApiEndpoints.getUserReceivedEvents(ArborPreferences.getUsername());
         mRequestId = mUrl;
     }
 
-    public AuthUserRequest(Parcel source) {
+    public EventListRequest(Parcel source) {
         mUrl = source.readString();
         mRequestId = source.readString();
     }
 
-    public static final Creator<AuthUserRequest> CREATOR = new Creator<AuthUserRequest>() {
+    public static final Creator<EventListRequest> CREATOR = new Creator<EventListRequest>() {
         @Override
-        public AuthUserRequest createFromParcel(Parcel source) {
-            return new AuthUserRequest(source);
+        public EventListRequest createFromParcel(Parcel source) {
+            return new EventListRequest(source);
         }
 
         @Override
-        public AuthUserRequest[] newArray(int size) {
-            return new AuthUserRequest[size];
+        public EventListRequest[] newArray(int size) {
+            return new EventListRequest[0];
         }
     };
 
@@ -77,7 +78,7 @@ public class AuthUserRequest extends ApiRequest<AuthUserResponse> {
     }
 
     @Override
-    protected Class getResponseClass() {
-        return AuthUserResponse.class;
+    protected Class<EventListResponse> getResponseClass() {
+        return EventListResponse.class;
     }
 }

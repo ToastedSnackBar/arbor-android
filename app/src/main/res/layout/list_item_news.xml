@@ -24,8 +24,8 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/avatar"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginRight="15dp"
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="5dp"
                 android:layout_toRightOf="@+id/avatar"
                 android:textColor="@color/text_secondary"
                 tools:text="36 minutes ago"/>

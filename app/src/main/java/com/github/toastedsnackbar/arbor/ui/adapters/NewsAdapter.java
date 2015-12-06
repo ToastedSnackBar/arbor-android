@@ -10,9 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.toastedsnackbar.arbor.R;
-import com.github.toastedsnackbar.arbor.net.responses.events.EventPayloadResponse;
 import com.github.toastedsnackbar.arbor.net.responses.events.EventResponse;
-import com.github.toastedsnackbar.arbor.net.responses.events.EventType;
 import com.github.toastedsnackbar.arbor.net.responses.events.PushEventPayloadResponse;
 import com.github.toastedsnackbar.arbor.ui.adapters.NewsAdapter.NewsViewHolder;
 import com.github.toastedsnackbar.arbor.util.DateTimeUtil;
@@ -52,6 +50,11 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         mPicasso = Picasso.with(mContext);
     }
 
+    @Override
+    public int getItemCount() {
+        return mItems.size();
+    }
+
     public void addAll(Collection<? extends EventResponse> items) {
         mItems.addAll(items);
     }
@@ -64,17 +67,51 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
 
     @Override
     public void onBindViewHolder(NewsViewHolder newsViewHolder, int position) {
-        EventResponse item = mItems.get(position);
-        EventType type = item.getType();
-        String createdAt = item.getCreatedAt();
-        PushEventPayloadResponse payload = (PushEventPayloadResponse) item.getPayload();
+        EventResponse event = mItems.get(position);
+        if (event == null) {
+            return;
+        }
 
-        String timestamp = DateTimeUtil.getEventTimeStamp(createdAt, item.getObtainedAt(),
+        String createdAt = event.getCreatedAt();
+
+        String payloadString = getPayloadString(event);
+        String timestamp = DateTimeUtil.getEventTimeStamp(createdAt, event.getObtainedAt(),
                 mContext);
+        String avatarUrl = event.getActor().getAvatarUrl();
+
+        newsViewHolder.payload.setText(payloadString);
+        newsViewHolder.timestamp.setText(timestamp);
+        mPicasso.load(avatarUrl).into(newsViewHolder.avatarView);
     }
 
-    @Override
-    public int getItemCount() {
-        return mItems.size();
+    private String getPayloadString(EventResponse event) {
+        String payloadString;
+
+        switch (event.getType()) {
+            case PUSH:
+                payloadString = getPushPayloadString(event);
+                break;
+
+            default:
+                payloadString = "";
+                break;
+        }
+
+        return payloadString;
+    }
+
+    private String getPushPayloadString(EventResponse event) {
+        PushEventPayloadResponse payload = (PushEventPayloadResponse) event.getPayload();
+
+        String actorName = event.getActor().getLogin();
+        String repoName = event.getRepo().getName();
+        String branchName = getBranchNameFromRef(payload.getRef());
+
+        return mContext.getString(R.string.payload_push, actorName, branchName, repoName);
+    }
+
+    private String getBranchNameFromRef(String ref) {
+        String[] refPaths = ref.split("/");
+        return refPaths[refPaths.length - 1];
     }
 }

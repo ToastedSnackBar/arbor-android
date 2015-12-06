@@ -36,7 +36,7 @@ public class ApiEndpoints {
     }
 
     private static class Urls {
-        public static final String CLIENT_REDIRECT_URL = "https://www.google.com/";
+        public static final String CLIENT_REDIRECT_URL = "https://www.getpostman.com/oauth2/callback";
         public static final String CLIENT_OAUTH_URL = "https://github.com/login/oauth/authorize";
         public static final String CLIENT_TOKEN_URL = "https://github.com/login/oauth/access_token";
         public static final String CLIENT_REGISTER_URL = "https://github.com/join";
@@ -50,6 +50,8 @@ public class ApiEndpoints {
         public static final String USER_REPOS = USER + "/repos";
 
         public static final String AUTH_USER_REPOS = AUTH_USER + "/repos";
+
+        public static final String USER_RECEIVED_EVENTS = USER + "/received_events";
     }
 
     private static class Headers {
@@ -131,6 +133,10 @@ public class ApiEndpoints {
 
     public static String getAuthUserReposUrl() {
         return buildUrl(Urls.AUTH_USER_REPOS);
+    }
+
+    public static String getUserReceivedEvents(String username) {
+        return buildUrl(String.format(Urls.USER_RECEIVED_EVENTS, username));
     }
 
     private static Map<String, String> getDefaultHeaders() {

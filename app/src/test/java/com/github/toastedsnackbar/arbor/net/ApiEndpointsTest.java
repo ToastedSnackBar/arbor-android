@@ -78,6 +78,15 @@ public class ApiEndpointsTest {
         assertThat(actualUrl).isEqualTo(correctUrl);
     }
 
+    @Test
+    public void getUserReceivedEventsUrl_shouldReturnCorrectUrl() {
+        String username = "username";
+        String correctUrl = String.format("https://api.github.com/users/%s/events", username);
+        String actualUrl = ApiEndpoints.getUserReceivedEvents(username);
+
+        assertThat(actualUrl).isEqualTo(correctUrl);
+    }
+
     private String getCorrectOAuthUrl(Context context) {
         ApiConfig apiConfig = getApiConfig(context);
 

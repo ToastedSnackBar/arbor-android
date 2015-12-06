@@ -24,4 +24,6 @@
     <string name="minutes">minutes</string>
     <string name="seconds">seconds</string>
     <string name="ago">ago</string>
+
+    <string name="payload_push">%1$s pushed to %2$s at %3$s</string>
 </resources>

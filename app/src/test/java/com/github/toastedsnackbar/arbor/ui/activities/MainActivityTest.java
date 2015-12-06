@@ -9,14 +9,17 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.github.toastedsnackbar.arbor.ArborTestConstants;
 import com.github.toastedsnackbar.arbor.ArborTestRunner;
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
 import com.github.toastedsnackbar.arbor.net.ApiReceiver;
 import com.github.toastedsnackbar.arbor.net.ApiService;
+import com.github.toastedsnackbar.arbor.net.gson.GsonHelper;
 import com.github.toastedsnackbar.arbor.net.requests.AccessTokenRequest;
 import com.github.toastedsnackbar.arbor.net.responses.AccessTokenResponse;
+import com.github.toastedsnackbar.arbor.net.responses.AuthUserResponse;
 
 import org.junit.After;
 import org.junit.Before;
@@ -290,6 +293,36 @@ public class MainActivityTest {
         mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, resultData);
 
         assertThat(ArborPreferences.getAccessToken()).isEqualTo("access_token");
+    }
+
+    @Test
+    public void authUser_onReceiveSuccess_shouldStoreUsernameInSharedPrefs() {
+        WebView loginWebView = (WebView) mActivity.findViewById(R.id.web_view);
+        ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(loginWebView);
+
+        WebViewClient webViewClient = shadowLoginWebView.getWebViewClient();
+        webViewClient.shouldOverrideUrlLoading(loginWebView, TEST_REDIRECT_URL);
+
+        AccessTokenResponse accessTokenResponse = buildAccessTokenResponse();
+        assertThat(accessTokenResponse).isNotNull();
+
+        Bundle accessTokenResultData = new Bundle();
+        accessTokenResultData.putString(ApiService.EXTRA_REQUEST_ID,
+                ApiEndpoints.getAccessTokenUrl());
+        accessTokenResultData.putParcelable(ApiService.EXTRA_RESPONSE, accessTokenResponse);
+        mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, accessTokenResultData);
+
+        AuthUserResponse authUserResponse = GsonHelper.fromJson(
+                ArborTestConstants.MockResponses.AUTH_USER, AuthUserResponse.class);
+        authUserResponse.setStatusCode(200);
+        authUserResponse.setObtainedAt(1000L);
+
+        Bundle authUserResultData = new Bundle();
+        authUserResultData.putString(ApiService.EXTRA_REQUEST_ID, ApiEndpoints.getAuthUserUrl());
+        authUserResultData.putParcelable(ApiService.EXTRA_RESPONSE, authUserResponse);
+        mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, authUserResultData);
+
+        assertThat(ArborPreferences.getUsername()).isEqualTo("login");
     }
 
     @Test
