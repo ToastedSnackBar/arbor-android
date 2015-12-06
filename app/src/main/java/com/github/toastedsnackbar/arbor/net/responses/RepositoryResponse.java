@@ -303,6 +303,10 @@ public class RepositoryResponse extends ApiResponse {
         return mIsPrivate;
     }
 
+    public String getRepoLanguage() {
+        return mRepoLanguage;
+    }
+
     public static final Creator<RepositoryResponse> CREATOR = new Creator<RepositoryResponse>() {
 
         @Override
