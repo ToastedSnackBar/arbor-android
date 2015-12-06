@@ -36,7 +36,7 @@ public class ApiEndpoints {
     }
 
     private static class Urls {
-        public static final String CLIENT_REDIRECT_URL = "https://www.getpostman.com/oauth2/callback";
+        public static final String CLIENT_REDIRECT_URL = "https://www.google.com/";
         public static final String CLIENT_OAUTH_URL = "https://github.com/login/oauth/authorize";
         public static final String CLIENT_TOKEN_URL = "https://github.com/login/oauth/access_token";
         public static final String CLIENT_REGISTER_URL = "https://github.com/join";
