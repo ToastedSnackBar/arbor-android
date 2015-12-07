@@ -28,11 +28,20 @@ import org.robolectric.internal.ShadowExtractor;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.util.ActivityController;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 import static org.assertj.android.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(ArborTestRunner.class)
 public class HomeScreenActivityTest {
+
+    @Bind(R.id.home_screen_view_pager)
+    ViewPager mViewPager;
+
+    @Bind(R.id.tab_layout)
+    TabLayout mTabLayout;
 
     private HomeScreenActivity mActivity;
     private ActivityController<HomeScreenActivity> mActivityController;
@@ -41,6 +50,7 @@ public class HomeScreenActivityTest {
     public void setup() {
         mActivityController = Robolectric.buildActivity(HomeScreenActivity.class);
         mActivity = mActivityController.create().start().resume().visible().get();
+        ButterKnife.bind(this, mActivity);
     }
 
     @After
@@ -65,27 +75,24 @@ public class HomeScreenActivityTest {
     @SuppressWarnings("ConstantConditions")
     @Test
     public void onCreate_shouldShowTabLayout() {
-        TabLayout tabLayout = (TabLayout) mActivity.findViewById(R.id.tab_layout);
+        assertThat(mTabLayout).isNotNull();
+        assertThat(mTabLayout.getVisibility()).isEqualTo(View.VISIBLE);
+        assertThat(mTabLayout.getTabCount()).isEqualTo(3);
 
-        assertThat(tabLayout).isNotNull();
-        assertThat(tabLayout.getVisibility()).isEqualTo(View.VISIBLE);
-        assertThat(tabLayout.getTabCount()).isEqualTo(3);
-
-        assertThat(tabLayout.getTabAt(0).getText()).isEqualTo(RuntimeEnvironment.application
+        assertThat(mTabLayout.getTabAt(0).getText()).isEqualTo(RuntimeEnvironment.application
                 .getString(R.string.repos));
-        assertThat(tabLayout.getTabAt(1).getText()).isEqualTo(RuntimeEnvironment.application
+        assertThat(mTabLayout.getTabAt(1).getText()).isEqualTo(RuntimeEnvironment.application
                 .getString(R.string.news));
-        assertThat(tabLayout.getTabAt(2).getText()).isEqualTo(RuntimeEnvironment.application
+        assertThat(mTabLayout.getTabAt(2).getText()).isEqualTo(RuntimeEnvironment.application
                 .getString(R.string.follows));
     }
 
     @Test
     public void onCreate_shouldShowFragmentViewPager() {
-        ViewPager viewPager = (ViewPager) mActivity.findViewById(R.id.home_screen_view_pager);
-        assertThat(viewPager).isNotNull();
-        assertThat(viewPager.getVisibility()).isEqualTo(View.VISIBLE);
+        assertThat(mViewPager).isNotNull();
+        assertThat(mViewPager.getVisibility()).isEqualTo(View.VISIBLE);
 
-        FragmentStatePagerAdapter adapter = (FragmentStatePagerAdapter) viewPager.getAdapter();
+        FragmentStatePagerAdapter adapter = (FragmentStatePagerAdapter) mViewPager.getAdapter();
         assertThat(adapter.getCount()).isEqualTo(3);
 
         assertThat(adapter.getItem(0)).isInstanceOf(RepositoryListFragment.class);
@@ -94,56 +101,48 @@ public class HomeScreenActivityTest {
     }
 
     @Test
-    public void tabLayout_selectFirstTab_shouldShowRepositoryListFragment() {
-        TabLayout tabLayout = (TabLayout) mActivity.findViewById(R.id.tab_layout);
-        mActivity.onTabSelected(tabLayout.getTabAt(0));
+    public void mTabLayout_selectFirstTab_shouldShowRepositoryListFragment() {
+        mActivity.onTabSelected(mTabLayout.getTabAt(0));
 
-        ViewPager viewPager = (ViewPager) mActivity.findViewById(R.id.home_screen_view_pager);
-        FragmentStatePagerAdapter adapter = (FragmentStatePagerAdapter) viewPager.getAdapter();
+        FragmentStatePagerAdapter adapter = (FragmentStatePagerAdapter) mViewPager.getAdapter();
         assertThat(adapter.getCount()).isEqualTo(3);
 
-        int currentItemPosition = viewPager.getCurrentItem();
+        int currentItemPosition = mViewPager.getCurrentItem();
         assertThat(adapter.getItem(currentItemPosition)).isInstanceOf(RepositoryListFragment.class);
     }
 
     @Test
-    public void tabLayout_selectSecondTab_shouldShowNewsListFragment() {
-        TabLayout tabLayout = (TabLayout) mActivity.findViewById(R.id.tab_layout);
-        mActivity.onTabSelected(tabLayout.getTabAt(1));
+    public void mTabLayout_selectSecondTab_shouldShowNewsListFragment() {
+        mActivity.onTabSelected(mTabLayout.getTabAt(1));
 
-        ViewPager viewPager = (ViewPager) mActivity.findViewById(R.id.home_screen_view_pager);
-        FragmentStatePagerAdapter adapter = (FragmentStatePagerAdapter) viewPager.getAdapter();
+        FragmentStatePagerAdapter adapter = (FragmentStatePagerAdapter) mViewPager.getAdapter();
         assertThat(adapter.getCount()).isEqualTo(3);
 
-        int currentItemPosition = viewPager.getCurrentItem();
+        int currentItemPosition = mViewPager.getCurrentItem();
         assertThat(adapter.getItem(currentItemPosition)).isInstanceOf(NewsListFragment.class);
     }
 
     @Test
-    public void tabLayout_selectThirdTab_shouldShowNewsListFragment() {
-        TabLayout tabLayout = (TabLayout) mActivity.findViewById(R.id.tab_layout);
-        mActivity.onTabSelected(tabLayout.getTabAt(2));
+    public void mTabLayout_selectThirdTab_shouldShowNewsListFragment() {
+        mActivity.onTabSelected(mTabLayout.getTabAt(2));
 
-        ViewPager viewPager = (ViewPager) mActivity.findViewById(R.id.home_screen_view_pager);
-        FragmentStatePagerAdapter adapter = (FragmentStatePagerAdapter) viewPager.getAdapter();
+        FragmentStatePagerAdapter adapter = (FragmentStatePagerAdapter) mViewPager.getAdapter();
         assertThat(adapter.getCount()).isEqualTo(3);
 
-        int currentItemPosition = viewPager.getCurrentItem();
+        int currentItemPosition = mViewPager.getCurrentItem();
         assertThat(adapter.getItem(currentItemPosition)).isInstanceOf(FollowerListFragment.class);
     }
 
     @Test
-    public void tabLayout_reselectTab_shouldNotRecreateFragment() {
-        TabLayout tabLayout = (TabLayout) mActivity.findViewById(R.id.tab_layout);
-        ViewPager viewPager = (ViewPager) mActivity.findViewById(R.id.home_screen_view_pager);
-        FragmentStatePagerAdapter adapter = (FragmentStatePagerAdapter) viewPager.getAdapter();
+    public void mTabLayout_reselectTab_shouldNotRecreateFragment() {
+        FragmentStatePagerAdapter adapter = (FragmentStatePagerAdapter) mViewPager.getAdapter();
 
-        mActivity.onTabSelected(tabLayout.getTabAt(0));
-        int currentItemPosition1 = viewPager.getCurrentItem();
+        mActivity.onTabSelected(mTabLayout.getTabAt(0));
+        int currentItemPosition1 = mViewPager.getCurrentItem();
         Fragment item = adapter.getItem(currentItemPosition1);
 
-        mActivity.onTabSelected(tabLayout.getTabAt(0));
-        int currentItemPosition2 = viewPager.getCurrentItem();
+        mActivity.onTabSelected(mTabLayout.getTabAt(0));
+        int currentItemPosition2 = mViewPager.getCurrentItem();
         Fragment item2 = adapter.getItem(currentItemPosition1);
 
         assertThat(currentItemPosition2).isEqualTo(currentItemPosition1);
