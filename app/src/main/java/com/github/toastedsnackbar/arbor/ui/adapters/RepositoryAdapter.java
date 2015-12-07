@@ -1,7 +1,6 @@
 package com.github.toastedsnackbar.arbor.ui.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -23,8 +22,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryViewHolder> {
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
+public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryViewHolder> {
     public static final String DATE_FORMAT = "MMMM d, yyyy";
 
     private Context mContext;
@@ -47,26 +48,31 @@ public class RepositoryAdapter extends RecyclerView.Adapter<RepositoryViewHolder
     }
 
     public static class RepositoryViewHolder extends RecyclerView.ViewHolder {
-        CardView cardView;
+
+        @Bind(R.id.repo_name)
         TextView repositoryName;
+
+        @Bind(R.id.last_updated_date)
         TextView lastUpdatedDateTime;
+
+        @Bind(R.id.creation_date)
         TextView createdDateTime;
+
+        @Bind(R.id.stars)
         TextView repoStars;
+
+        @Bind(R.id.following)
         TextView repoFollowing;
+
+        @Bind(R.id.privacy_status_icon)
         ImageView privacyStatus;
+
+        @Bind(R.id.language)
         TextView repoLanguage;
 
         public RepositoryViewHolder(View itemView) {
             super(itemView);
-
-            cardView = (CardView) itemView.findViewById(R.id.card_view);
-            repositoryName = (TextView) itemView.findViewById(R.id.repo_name);
-            lastUpdatedDateTime = (TextView) itemView.findViewById(R.id.last_updated_date);
-            createdDateTime = (TextView) itemView.findViewById(R.id.creation_date);
-            repoStars = (TextView) itemView.findViewById(R.id.stars);
-            repoFollowing = (TextView) itemView.findViewById(R.id.following);
-            privacyStatus = (ImageView) itemView.findViewById(R.id.privacy_status_icon);
-            repoLanguage = (TextView) itemView.findViewById(R.id.language);
+            ButterKnife.bind(this, itemView);
         }
     }
 

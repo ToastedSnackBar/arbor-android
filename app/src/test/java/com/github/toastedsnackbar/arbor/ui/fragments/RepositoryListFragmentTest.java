@@ -23,11 +23,20 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowApplication;
 import org.robolectric.shadows.support.v4.SupportFragmentTestUtil;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 import static org.assertj.android.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(ArborTestRunner.class)
 public class RepositoryListFragmentTest {
+
+    @Bind(R.id.progress_bar)
+    ProgressBar mProgressBar;
+
+    @Bind(R.id.recycler_view)
+    RecyclerView mRepositoriesList;
 
     private RepositoryListFragment mFragment;
 
@@ -37,6 +46,7 @@ public class RepositoryListFragmentTest {
         ArborPreferences.setAccessToken("access_token");
         mFragment = new RepositoryListFragment();
         SupportFragmentTestUtil.startFragment(mFragment, FragmentActivity.class);
+        ButterKnife.bind(this, mFragment.getView());
     }
 
     @After
@@ -60,9 +70,8 @@ public class RepositoryListFragmentTest {
     public void onRequestStart_shouldShowProgressBar() {
         mFragment.onReceiveResult(ResultCodes.RUNNING, Bundle.EMPTY);
 
-        ProgressBar progressBar = (ProgressBar) mFragment.getView().findViewById(R.id.progress_bar);
-        assertThat(progressBar).isNotNull();
-        assertThat(progressBar).isVisible();
+        assertThat(mProgressBar).isNotNull();
+        assertThat(mProgressBar).isVisible();
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -74,14 +83,12 @@ public class RepositoryListFragmentTest {
         bundle.putParcelable(ApiService.EXTRA_RESPONSE, response);
         mFragment.onReceiveResult(ResultCodes.SUCCESS, bundle);
 
-        ProgressBar progressBar = (ProgressBar) mFragment.getView().findViewById(R.id.progress_bar);
-        assertThat(progressBar).isNotNull();
-        assertThat(progressBar).isNotVisible();
+        assertThat(mProgressBar).isNotNull();
+        assertThat(mProgressBar).isNotVisible();
 
-        RecyclerView list = (RecyclerView) mFragment.getView().findViewById(R.id.recycler_view);
-        assertThat(list).isNotNull();
-        assertThat(list).isVisible();
-        assertThat(list.getAdapter().getItemCount()).isEqualTo(2);
+        assertThat(mRepositoriesList).isNotNull();
+        assertThat(mRepositoriesList).isVisible();
+        assertThat(mRepositoriesList.getAdapter().getItemCount()).isEqualTo(2);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -89,9 +96,8 @@ public class RepositoryListFragmentTest {
     public void onRequestError_shouldHideProgressBar() {
         mFragment.onReceiveResult(ResultCodes.ERROR, Bundle.EMPTY);
 
-        ProgressBar progressBar = (ProgressBar) mFragment.getView().findViewById(R.id.progress_bar);
-        assertThat(progressBar).isNotNull();
-        assertThat(progressBar).isNotVisible();
+        assertThat(mProgressBar).isNotNull();
+        assertThat(mProgressBar).isNotVisible();
     }
 
     private static final String MOCK_RESPONSE_BODY =
