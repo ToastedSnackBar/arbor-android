@@ -4,7 +4,7 @@ import android.os.Parcel;
 
 import com.google.gson.annotations.SerializedName;
 
-public class AuthUserResponse extends ApiResponse {
+public class UserResponse extends ApiResponse {
 
     @SerializedName("login")
     private String mLogin;
@@ -114,7 +114,7 @@ public class AuthUserResponse extends ApiResponse {
     @SerializedName("plan")
     private PlanResponse mPlan;
 
-    public AuthUserResponse(Parcel source) {
+    public UserResponse(Parcel source) {
         super(source);
 
         mLogin = source.readString();
@@ -299,16 +299,16 @@ public class AuthUserResponse extends ApiResponse {
         return mPlan;
     }
 
-    public static final Creator<AuthUserResponse> CREATOR = new Creator<AuthUserResponse>() {
+    public static final Creator<UserResponse> CREATOR = new Creator<UserResponse>() {
 
         @Override
-        public AuthUserResponse createFromParcel(Parcel source) {
-            return new AuthUserResponse(source);
+        public UserResponse createFromParcel(Parcel source) {
+            return new UserResponse(source);
         }
 
         @Override
-        public AuthUserResponse[] newArray(int size) {
-            return new AuthUserResponse[size];
+        public UserResponse[] newArray(int size) {
+            return new UserResponse[size];
         }
     };
 

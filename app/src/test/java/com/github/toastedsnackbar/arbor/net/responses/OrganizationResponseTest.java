@@ -32,6 +32,7 @@ public class OrganizationResponseTest {
     public void parcelable_shouldCreateFromParcel() {
         OrganizationResponse response = GsonHelper.fromJson(MockResponses.ORGANIZATION,
                 OrganizationResponse.class);
+        response.setStatusCode(200);
         Parcel parcel = Parcel.obtain();
         response.writeToParcel(parcel, 0);
 

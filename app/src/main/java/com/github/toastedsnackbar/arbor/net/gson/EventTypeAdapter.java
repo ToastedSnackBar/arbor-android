@@ -6,6 +6,7 @@ import com.github.toastedsnackbar.arbor.net.responses.RepoResponse;
 import com.github.toastedsnackbar.arbor.net.responses.events.EventPayloadResponse;
 import com.github.toastedsnackbar.arbor.net.responses.events.EventResponse;
 import com.github.toastedsnackbar.arbor.net.responses.events.EventType;
+import com.github.toastedsnackbar.arbor.net.responses.events.PullRequestEventPayloadResponse;
 import com.github.toastedsnackbar.arbor.net.responses.events.PushEventPayloadResponse;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -40,8 +41,13 @@ public class EventTypeAdapter implements JsonDeserializer<EventResponse> {
                 payloadClass = PushEventPayloadResponse.class;
                 break;
 
+            case PULL_REQUEST:
+                payloadClass = PullRequestEventPayloadResponse.class;
+                break;
+
             default:
-                return null;
+                payloadClass = EventPayloadResponse.class;
+                break;
         }
 
         EventPayloadResponse payload = context.deserialize(payloadJsonElement, payloadClass);

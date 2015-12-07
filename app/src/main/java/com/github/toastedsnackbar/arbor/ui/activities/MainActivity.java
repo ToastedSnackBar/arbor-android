@@ -23,7 +23,7 @@ import com.github.toastedsnackbar.arbor.net.ApiService;
 import com.github.toastedsnackbar.arbor.net.requests.AccessTokenRequest;
 import com.github.toastedsnackbar.arbor.net.requests.AuthUserRequest;
 import com.github.toastedsnackbar.arbor.net.responses.AccessTokenResponse;
-import com.github.toastedsnackbar.arbor.net.responses.AuthUserResponse;
+import com.github.toastedsnackbar.arbor.net.responses.UserResponse;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         ApiReceiver.ReceiveResultListener {
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     ArborPreferences.setAccessToken(accessToken);
                     executeAuthUserRequest();
                 } else if (requestId.equals(mAuthUserRequestId)) {
-                    AuthUserResponse response = resultData.getParcelable(ApiService.EXTRA_RESPONSE);
+                    UserResponse response = resultData.getParcelable(ApiService.EXTRA_RESPONSE);
                     if (response == null) {
                         return;
                     }

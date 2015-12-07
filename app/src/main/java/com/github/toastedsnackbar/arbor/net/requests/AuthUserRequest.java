@@ -3,12 +3,12 @@ package com.github.toastedsnackbar.arbor.net.requests;
 import android.os.Parcel;
 
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
-import com.github.toastedsnackbar.arbor.net.responses.AuthUserResponse;
+import com.github.toastedsnackbar.arbor.net.responses.UserResponse;
 
 import java.util.Map;
 import java.util.Set;
 
-public class AuthUserRequest extends ApiRequest<AuthUserResponse> {
+public class AuthUserRequest extends ApiRequest<UserResponse> {
 
     String mUrl;
     String mRequestId;
@@ -78,6 +78,6 @@ public class AuthUserRequest extends ApiRequest<AuthUserResponse> {
 
     @Override
     protected Class getResponseClass() {
-        return AuthUserResponse.class;
+        return UserResponse.class;
     }
 }

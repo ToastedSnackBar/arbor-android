@@ -19,7 +19,7 @@ import com.github.toastedsnackbar.arbor.net.ApiService;
 import com.github.toastedsnackbar.arbor.net.gson.GsonHelper;
 import com.github.toastedsnackbar.arbor.net.requests.AccessTokenRequest;
 import com.github.toastedsnackbar.arbor.net.responses.AccessTokenResponse;
-import com.github.toastedsnackbar.arbor.net.responses.AuthUserResponse;
+import com.github.toastedsnackbar.arbor.net.responses.UserResponse;
 
 import org.junit.After;
 import org.junit.Before;
@@ -312,14 +312,14 @@ public class MainActivityTest {
         accessTokenResultData.putParcelable(ApiService.EXTRA_RESPONSE, accessTokenResponse);
         mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, accessTokenResultData);
 
-        AuthUserResponse authUserResponse = GsonHelper.fromJson(
-                ArborTestConstants.MockResponses.AUTH_USER, AuthUserResponse.class);
-        authUserResponse.setStatusCode(200);
-        authUserResponse.setObtainedAt(1000L);
+        UserResponse userResponse = GsonHelper.fromJson(
+                ArborTestConstants.MockResponses.AUTH_USER, UserResponse.class);
+        userResponse.setStatusCode(200);
+        userResponse.setObtainedAt(1000L);
 
         Bundle authUserResultData = new Bundle();
         authUserResultData.putString(ApiService.EXTRA_REQUEST_ID, ApiEndpoints.getAuthUserUrl());
-        authUserResultData.putParcelable(ApiService.EXTRA_RESPONSE, authUserResponse);
+        authUserResultData.putParcelable(ApiService.EXTRA_RESPONSE, userResponse);
         mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, authUserResultData);
 
         assertThat(ArborPreferences.getUsername()).isEqualTo("login");

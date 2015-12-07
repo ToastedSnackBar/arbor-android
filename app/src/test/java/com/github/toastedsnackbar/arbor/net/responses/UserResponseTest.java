@@ -12,12 +12,12 @@ import org.junit.runner.RunWith;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(ArborTestRunner.class)
-public class AuthUserResponseTest {
+public class UserResponseTest {
 
     @Test
     public void gson_shouldParseCorrectly() {
-        AuthUserResponse response = GsonHelper.fromJson(MockResponses.AUTH_USER,
-                AuthUserResponse.class);
+        UserResponse response = GsonHelper.fromJson(MockResponses.AUTH_USER,
+                UserResponse.class);
 
         assertThat(response).isNotNull();
         assertThat(response.getLogin()).isEqualTo("login");
@@ -60,14 +60,14 @@ public class AuthUserResponseTest {
     
     @Test
     public void parcelable_shouldCreateFromParcel() {
-        AuthUserResponse response = GsonHelper.fromJson(MockResponses.AUTH_USER,
-                AuthUserResponse.class);
+        UserResponse response = GsonHelper.fromJson(MockResponses.AUTH_USER,
+                UserResponse.class);
         response.setStatusCode(200);
         Parcel parcel = Parcel.obtain();
         response.writeToParcel(parcel, 0);
         
         parcel.setDataPosition(0);
-        AuthUserResponse parcelled = AuthUserResponse.CREATOR.createFromParcel(parcel);
+        UserResponse parcelled = UserResponse.CREATOR.createFromParcel(parcel);
 
         assertThat(parcelled).isNotNull();
         assertThat(parcelled.getStatusCode()).isEqualTo(response.getStatusCode());
@@ -113,10 +113,10 @@ public class AuthUserResponseTest {
     public void parcelable_shouldCreateArrayFromParcel() {
         final int SIZE = 10;
 
-        AuthUserResponse[] responses = AuthUserResponse.CREATOR.newArray(SIZE);
+        UserResponse[] responses = UserResponse.CREATOR.newArray(SIZE);
         assertThat(responses.length).isEqualTo(SIZE);
 
-        for (AuthUserResponse response : responses) {
+        for (UserResponse response : responses) {
             assertThat(response).isNull();
         }
     }

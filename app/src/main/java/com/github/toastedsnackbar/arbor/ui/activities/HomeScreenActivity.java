@@ -47,6 +47,8 @@ public class HomeScreenActivity extends AppCompatActivity implements OnTabSelect
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(HomeScreenActivity.this);
+
+        mViewPager.setCurrentItem(1);
     }
 
     private void setupSupportActionBar() {

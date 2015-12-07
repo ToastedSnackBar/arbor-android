@@ -26,4 +26,5 @@
     <string name="ago">ago</string>
 
     <string name="payload_push">%1$s pushed to %2$s at %3$s</string>
+    <string name="payload_pull_request">%1$s %2$s pull request %3$s#%4$s</string>
 </resources>
