@@ -23,18 +23,27 @@ import com.github.toastedsnackbar.arbor.net.ApiService;
 import com.github.toastedsnackbar.arbor.net.requests.AccessTokenRequest;
 import com.github.toastedsnackbar.arbor.net.responses.AccessTokenResponse;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         ApiReceiver.ReceiveResultListener {
+
+    @Bind(R.id.web_view)
+    WebView mLoginWebView;
+
+    @Bind(R.id.pb_web_view)
+    ProgressBar mProgressBar;
+
+    @Bind(R.id.btn_login)
+    Button mLoginButton;
+
+    @Bind(R.id.btn_register)
+    Button mRegisterButton;
 
     private enum WebViewMode {
         LOGIN, REGISTER
     }
-
-    private WebView mLoginWebView;
-    private ProgressBar mProgressBar;
-
-    private Button mLoginButton;
-    private Button mRegisterButton;
 
     private ApiReceiver mApiReceiver;
 
@@ -49,19 +58,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         mApiReceiver = new ApiReceiver(new Handler());
 
-        mLoginWebView = (WebView) findViewById(R.id.web_view);
         mLoginWebView.setWebViewClient(new LoginWebViewClient());
         mLoginWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
-        mProgressBar = (ProgressBar) findViewById(R.id.pb_web_view);
-
-        mLoginButton = (Button) findViewById(R.id.btn_login);
         mLoginButton.setOnClickListener(MainActivity.this);
 
-        mRegisterButton = (Button) findViewById(R.id.btn_register);
         mRegisterButton.setOnClickListener(MainActivity.this);
 
         String accessToken = ArborPreferences.getAccessToken();
