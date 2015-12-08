@@ -46,8 +46,7 @@ public class EventTypeAdapter implements JsonDeserializer<EventResponse> {
                 break;
 
             default:
-                payloadClass = EventPayloadResponse.class;
-                break;
+                return null;
         }
 
         EventPayloadResponse payload = context.deserialize(payloadJsonElement, payloadClass);

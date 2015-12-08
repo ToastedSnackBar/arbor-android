@@ -3,57 +3,64 @@ package com.github.toastedsnackbar.arbor.net.responses.events;
 import com.google.gson.annotations.SerializedName;
 
 public enum EventType {
+
     @SerializedName("CommitCommentEvent")
-    COMMIT_COMMENT,
+    COMMIT_COMMENT("CommitCommentEvent"),
 
     @SerializedName("CreateEvent")
-    CREATE,
+    CREATE("CreateEvent"),
 
     @SerializedName("DeleteEvent")
-    DELETE,
+    DELETE("DeleteEvent"),
 
     @SerializedName("DownloadEvent")
-    DOWNLOAD,
+    DOWNLOAD("DownloadEvent"),
 
     @SerializedName("FollowEvent")
-    FOLLOW,
+    FOLLOW("FollowEvent"),
 
     @SerializedName("ForkEvent")
-    FORK,
+    FORK("ForkEvent"),
 
     @SerializedName("ForkApplyEvent")
-    FORK_APPLY,
+    FORK_APPLY("ForkApplyEvent"),
 
     @SerializedName("GistEvent")
-    GIST,
+    GIST("GistEvent"),
 
     @SerializedName("GollumEvent")
-    GOLLUM,
+    GOLLUM("GollumEvent"),
 
     @SerializedName("IssueCommentEvent")
-    ISSUE_COMMENT,
+    ISSUE_COMMENT("IssueCommentEvent"),
 
     @SerializedName("IssuesEvent")
-    ISSUES,
+    ISSUES("IssuesEvent"),
 
     @SerializedName("MemberEvent")
-    MEMBER,
+    MEMBER("MemberEvent"),
 
     @SerializedName("PublicEvent")
-    PUBLIC,
+    PUBLIC("PublicEvent"),
 
     @SerializedName("PullRequestEvent")
-    PULL_REQUEST,
+    PULL_REQUEST("PullRequestEvent"),
 
     @SerializedName("PullRequestReviewCommentEvent")
-    PULL_REQUEST_REVIEW_COMMENT,
+    PULL_REQUEST_REVIEW_COMMENT("PullRequestReviewCommentEvent"),
 
     @SerializedName("PushEvent")
-    PUSH,
+    PUSH("PushEvent"),
 
     @SerializedName("TeamAddEvent")
-    TEAM_ADD,
+    TEAM_ADD("TeamAddEvent"),
 
     @SerializedName("WatchEvent")
-    WATCH
+    WATCH("WatchEvent");
+
+    public String name;
+
+    EventType(String name) {
+        this.name = name;
+    }
 }
