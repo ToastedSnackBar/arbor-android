@@ -7,6 +7,11 @@
     <string name="splash_register_prompt">Don\'t have a GitHub account? Sign up for one for free!</string>
     <string name="splash_login">Log in</string>
     <string name="splash_register">Register</string>
+    <string name="splash_username">Username or email</string>
+    <string name="splash_password">Password</string>
+
+    <string name="splash_error_empty">Username or password cannot be empty</string>
+    <string name="splash_error_incorrect">Username or password is incorrect</string>
 
     <string name="action_log_out">Log out</string>
 

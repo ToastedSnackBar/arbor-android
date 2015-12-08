@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -32,44 +33,65 @@
         android:textSize="16sp"
         android:textStyle="bold"/>
 
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btn_register"
+    <LinearLayout
+        android:id="@+id/login_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="5dp"
-        android:padding="15dp"
-        android:text="@string/splash_register"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"/>
-
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btn_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/btn_register"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_below="@id/subtitle"
         android:layout_marginTop="10dp"
-        android:padding="15dp"
-        android:text="@string/splash_login"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/btn_login"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:gravity="center"
-        android:text="@string/splash_register_prompt"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"/>
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <EditText
+            android:id="@+id/edittext_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:hint="@string/splash_username"
+            android:inputType="textEmailAddress"
+            android:textColorHint="@color/text_secondary"/>
+
+        <EditText
+            android:id="@+id/edittext_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:hint="@string/splash_password"
+            android:inputType="textPassword"
+            android:textColorHint="@color/text_secondary"/>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/splash_login"
+            android:theme="@style/ArborButtonPurple"/>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="@string/splash_register"
+            android:theme="@style/ArborButtonTeal"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/splash_register_prompt"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"/>
+    </LinearLayout>
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/snackbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true">
+    </android.support.design.widget.CoordinatorLayout>
 
     <WebView
         android:id="@+id/web_view"
@@ -79,7 +101,7 @@
         android:visibility="gone"/>
 
     <ProgressBar
-        android:id="@+id/pb_web_view"
+        android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

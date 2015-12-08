@@ -1,6 +1,7 @@
 package com.github.toastedsnackbar.arbor.net.requests;
 
 import android.os.Parcelable;
+import android.util.Base64;
 import android.util.Log;
 
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
@@ -96,8 +97,8 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
 
     private void addRequestProperties(HttpURLConnection connection) {
         if (isAuthorizedRequest()) {
-            String accessToken = ArborPreferences.getAccessToken();
-            connection.addRequestProperty("Authorization", "token " + accessToken);
+            String tokenString = ArborPreferences.getAccessToken();
+            connection.addRequestProperty("Authorization", "basic " + tokenString);
         }
 
         for (String key : ApiEndpoints.DEFAULT_HEADERS.keySet()) {

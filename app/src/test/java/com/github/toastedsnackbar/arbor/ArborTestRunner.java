@@ -1,8 +1,12 @@
 package com.github.toastedsnackbar.arbor;
 
+import android.support.design.widget.Snackbar;
+
 import org.junit.runners.model.InitializationError;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.internal.bytecode.InstrumentationConfiguration;
+import org.robolectric.internal.bytecode.ShadowMap;
 import org.robolectric.manifest.AndroidManifest;
 import org.robolectric.res.Fs;
 
@@ -25,6 +29,14 @@ public class ArborTestRunner extends RobolectricGradleTestRunner {
     @Override
     protected AndroidManifest getAppManifest(Config config) {
         return getAppManifest();
+    }
+
+    @Override
+    public InstrumentationConfiguration createClassLoaderConfig() {
+        InstrumentationConfiguration.Builder builder = InstrumentationConfiguration.newBuilder();
+        builder.addInstrumentedClass(Snackbar.class.getName());
+
+        return builder.build();
     }
 
     private static String getProjectDirectory() {

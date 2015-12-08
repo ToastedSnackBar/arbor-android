@@ -27,7 +27,7 @@ public class ArborPreferences {
     }
 
     public static void clear() {
-        getInstance().mPreferences.edit().clear().apply();
+        getInstance().mPreferences.edit().clear().commit();
     }
 
     public static String getUsername() {
@@ -51,6 +51,6 @@ public class ArborPreferences {
     }
 
     private static void putString(final String key, final String value) {
-        getInstance().mPreferences.edit().putString(key, value).apply();
+        getInstance().mPreferences.edit().putString(key, value).commit();
     }
 }
