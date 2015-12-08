@@ -38,6 +38,7 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
         URL url = new URL(getUrl());
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setUseCaches(false);
 
         if (getEntityMethods().contains(getRequestMethod())) {
             connection.setDoOutput(true);
