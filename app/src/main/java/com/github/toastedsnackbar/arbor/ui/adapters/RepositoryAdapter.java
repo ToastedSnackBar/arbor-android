@@ -5,6 +5,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,6 @@ public class RepositoryAdapter extends Adapter<RepositoryViewHolder> {
         CardView cardView;
         TextView repositoryName;
         TextView lastUpdatedDateTime;
-        TextView createdDateTime;
         TextView repoStars;
         TextView repoFollowing;
         ImageView privacyStatus;
@@ -43,11 +43,10 @@ public class RepositoryAdapter extends Adapter<RepositoryViewHolder> {
             cardView = (CardView) itemView.findViewById(R.id.card_view);
             repositoryName = (TextView) itemView.findViewById(R.id.repo_name);
             lastUpdatedDateTime = (TextView) itemView.findViewById(R.id.last_updated_date);
-            createdDateTime = (TextView) itemView.findViewById(R.id.creation_date);
+            repoLanguage = (TextView) itemView.findViewById(R.id.language);
             repoStars = (TextView) itemView.findViewById(R.id.stars);
             repoFollowing = (TextView) itemView.findViewById(R.id.following);
             privacyStatus = (ImageView) itemView.findViewById(R.id.privacy_status_icon);
-            repoLanguage = (TextView) itemView.findViewById(R.id.language);
         }
     }
 
@@ -84,26 +83,27 @@ public class RepositoryAdapter extends Adapter<RepositoryViewHolder> {
         RepositoryResponse item = mItems.get(position);
         repositoryViewHolder.repositoryName.setText(item.getName());
 
-        String createdFormattedDate = "";
         String updatedFormattedDate = "";
 
         try {
-            Date createdRawDate = mSourceDateFormat.parse(item.getCreatedAt());
-            createdFormattedDate = mDestinationDateFormat.format(createdRawDate);
-
             Date updatedRawDated = mSourceDateFormat.parse(item.getUpdatedAt());
             updatedFormattedDate = mDestinationDateFormat.format(updatedRawDated);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        String createdDateTime = mContext.getString(R.string.repository_created_date_time,
-                createdFormattedDate);
-        repositoryViewHolder.createdDateTime.setText(Html.fromHtml(createdDateTime));
-
         String lastUpdatedDateTime = mContext.getString(R.string.repository_last_updated_date,
                 updatedFormattedDate);
         repositoryViewHolder.lastUpdatedDateTime.setText(Html.fromHtml(lastUpdatedDateTime));
+
+        String repoLanguage = item.getRepoLanguage();
+        if (TextUtils.isEmpty(repoLanguage)) {
+            repoLanguage = "?";
+        }
+
+        String repoLanguageText = mContext.getString(R.string.repository_language,
+                repoLanguage);
+        repositoryViewHolder.repoLanguage.setText(Html.fromHtml(repoLanguageText));
 
         String repoStars = String.valueOf(item.getStargazersCount());
         repositoryViewHolder.repoStars.setText(repoStars);
@@ -113,9 +113,6 @@ public class RepositoryAdapter extends Adapter<RepositoryViewHolder> {
 
         int privacyIconId = item.isPrivate() ? R.drawable.ic_lock_white : R.drawable.ic_public_white;
         repositoryViewHolder.privacyStatus.setImageResource(privacyIconId);
-
-        String repoLanguageText = item.getRepoLanguage();
-        repositoryViewHolder.repoLanguage.setText(repoLanguageText);
     }
 
     @Override

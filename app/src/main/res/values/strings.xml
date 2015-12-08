@@ -19,8 +19,8 @@
     <string name="news">News</string>
     <string name="follows">Follows</string>
 
-    <string name="repository_created_date_time"><![CDATA[<b>Created on</b>: %1$s]]></string>
     <string name="repository_last_updated_date"><![CDATA[<b>Last Updated</b>: %1$s]]></string>
+    <string name="repository_language"><![CDATA[<b>Language</b>: %1$s]]></string>
     <string name="repository_repo_stars"><![CDATA[<b>Stars</b>: %1$s]]></string>
     <string name="repository_following_count"><![CDATA[<b>Following</b>: %1$s]]></string>
 
