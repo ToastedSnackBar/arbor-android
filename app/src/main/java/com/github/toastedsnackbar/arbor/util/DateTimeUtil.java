@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class DateTimeUtil {
 
@@ -17,28 +18,25 @@ public class DateTimeUtil {
         try {
             DateFormat formatCreatedAt = new SimpleDateFormat(ApiEndpoints.SERVER_TIME_FORMAT,
                     Locale.CANADA);
+            formatCreatedAt.setTimeZone(TimeZone.getTimeZone("UTC"));
             long createdAt = formatCreatedAt.parse(createdAtString).getTime();
 
             long diff = obtainedAt - createdAt;
             long diffDays = diff / (24 * 60 * 60 * 1000);
             long diffHours = diff / (60 * 60 * 1000) % 24;
             long diffMinutes = diff / (60 * 1000) % 60;
-            long diffSeconds = diff / 1000 % 60;
 
             long greatestDiff;
             int greatestDiffUnitResId;
             if (diffDays > 0) {
                 greatestDiff = diffDays;
-                greatestDiffUnitResId = R.string.days;
+                greatestDiffUnitResId = diffDays > 1 ? R.string.days : R.string.day;
             } else if (diffHours > 0) {
                 greatestDiff = diffHours;
-                greatestDiffUnitResId = R.string.hours;
-            } else if (diffMinutes > 0) {
-                greatestDiff = diffMinutes;
-                greatestDiffUnitResId = R.string.minutes;
+                greatestDiffUnitResId = diffHours > 1 ? R.string.hours : R.string.hour;
             } else {
-                greatestDiff = diffSeconds;
-                greatestDiffUnitResId = R.string.seconds;
+                greatestDiff = diffMinutes;
+                greatestDiffUnitResId = diffMinutes > 1 ? R.string.minutes : R.string.minute;
             }
 
             String greatestDiffString = String.valueOf(greatestDiff);

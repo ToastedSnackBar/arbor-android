@@ -24,10 +24,12 @@
     <string name="repository_repo_stars"><![CDATA[<b>Stars</b>: %1$s]]></string>
     <string name="repository_following_count"><![CDATA[<b>Following</b>: %1$s]]></string>
 
+    <string name="day">day</string>
     <string name="days">days</string>
+    <string name="hour">hour</string>
     <string name="hours">hours</string>
+    <string name="minute">minute</string>
     <string name="minutes">minutes</string>
-    <string name="seconds">seconds</string>
     <string name="ago">ago</string>
 
     <string name="payload_push">%1$s pushed to %2$s at %3$s</string>

@@ -32,7 +32,7 @@ public class EventListRequest extends ApiRequest<EventListResponse> {
 
         @Override
         public EventListRequest[] newArray(int size) {
-            return new EventListRequest[0];
+            return new EventListRequest[size];
         }
     };
 
