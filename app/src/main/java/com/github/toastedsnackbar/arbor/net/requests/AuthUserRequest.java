@@ -77,7 +77,7 @@ public class AuthUserRequest extends ApiRequest<UserResponse> {
     }
 
     @Override
-    protected Class getResponseClass() {
+    protected Class<UserResponse> getResponseClass() {
         return UserResponse.class;
     }
 }

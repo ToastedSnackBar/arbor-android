@@ -3,12 +3,14 @@ package com.github.toastedsnackbar.arbor.ui.activities;
 
 import android.content.ComponentName;
 import android.content.Intent;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.github.toastedsnackbar.arbor.ArborTestRunner;
@@ -37,17 +39,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(ArborTestRunner.class)
 public class HomeScreenActivityTest {
 
-    @Bind(R.id.home_screen_view_pager)
-    ViewPager mViewPager;
-
-    @Bind(R.id.tab_layout)
-    TabLayout mTabLayout;
-
     private HomeScreenActivity mActivity;
     private ActivityController<HomeScreenActivity> mActivityController;
 
     @Before
     public void setup() {
+        ArborPreferences.setUsername("username");
+        ArborPreferences.setEmail("email@host.com");
+        ArborPreferences.setAvatarUrl("http://api.host.com/avatar_url");
         mActivityController = Robolectric.buildActivity(HomeScreenActivity.class);
         mActivity = mActivityController.create().start().resume().visible().get();
         ButterKnife.bind(this, mActivity);
@@ -69,116 +68,23 @@ public class HomeScreenActivityTest {
         assertThat(actionBar).isNotNull();
         assertThat(actionBar.isShowing()).isTrue();
         assertThat(actionBar.getTitle()).isEqualTo(RuntimeEnvironment.application.getString(
-                R.string.activity_home_screen));
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    @Test
-    public void onCreate_shouldShowTabLayout() {
-        assertThat(mTabLayout).isNotNull();
-        assertThat(mTabLayout.getVisibility()).isEqualTo(View.VISIBLE);
-        assertThat(mTabLayout.getTabCount()).isEqualTo(3);
-
-        assertThat(mTabLayout.getTabAt(0).getText()).isEqualTo(RuntimeEnvironment.application
-                .getString(R.string.repos));
-        assertThat(mTabLayout.getTabAt(1).getText()).isEqualTo(RuntimeEnvironment.application
-                .getString(R.string.news));
-        assertThat(mTabLayout.getTabAt(2).getText()).isEqualTo(RuntimeEnvironment.application
-                .getString(R.string.follows));
-    }
-
-    @Test
-    public void onCreate_shouldShowFragmentViewPager() {
-        assertThat(mViewPager).isNotNull();
-        assertThat(mViewPager.getVisibility()).isEqualTo(View.VISIBLE);
-
-        FragmentStatePagerAdapter adapter = (FragmentStatePagerAdapter) mViewPager.getAdapter();
-        assertThat(adapter.getCount()).isEqualTo(3);
-
-        assertThat(adapter.getItem(0)).isInstanceOf(RepositoryListFragment.class);
-        assertThat(adapter.getItem(1)).isInstanceOf(NewsListFragment.class);
-        assertThat(adapter.getItem(2)).isInstanceOf(FollowerListFragment.class);
-    }
-
-    @Test
-    public void mTabLayout_selectFirstTab_shouldShowRepositoryListFragment() {
-        mActivity.onTabSelected(mTabLayout.getTabAt(0));
-
-        FragmentStatePagerAdapter adapter = (FragmentStatePagerAdapter) mViewPager.getAdapter();
-        assertThat(adapter.getCount()).isEqualTo(3);
-
-        int currentItemPosition = mViewPager.getCurrentItem();
-        assertThat(adapter.getItem(currentItemPosition)).isInstanceOf(RepositoryListFragment.class);
-    }
-
-    @Test
-    public void mTabLayout_selectSecondTab_shouldShowNewsListFragment() {
-        mActivity.onTabSelected(mTabLayout.getTabAt(1));
-
-        FragmentStatePagerAdapter adapter = (FragmentStatePagerAdapter) mViewPager.getAdapter();
-        assertThat(adapter.getCount()).isEqualTo(3);
-
-        int currentItemPosition = mViewPager.getCurrentItem();
-        assertThat(adapter.getItem(currentItemPosition)).isInstanceOf(NewsListFragment.class);
-    }
-
-    @Test
-    public void mTabLayout_selectThirdTab_shouldShowNewsListFragment() {
-        mActivity.onTabSelected(mTabLayout.getTabAt(2));
-
-        FragmentStatePagerAdapter adapter = (FragmentStatePagerAdapter) mViewPager.getAdapter();
-        assertThat(adapter.getCount()).isEqualTo(3);
-
-        int currentItemPosition = mViewPager.getCurrentItem();
-        assertThat(adapter.getItem(currentItemPosition)).isInstanceOf(FollowerListFragment.class);
-    }
-
-    @Test
-    public void mTabLayout_reselectTab_shouldNotRecreateFragment() {
-        FragmentStatePagerAdapter adapter = (FragmentStatePagerAdapter) mViewPager.getAdapter();
-
-        mActivity.onTabSelected(mTabLayout.getTabAt(0));
-        int currentItemPosition1 = mViewPager.getCurrentItem();
-        Fragment item = adapter.getItem(currentItemPosition1);
-
-        mActivity.onTabSelected(mTabLayout.getTabAt(0));
-        int currentItemPosition2 = mViewPager.getCurrentItem();
-        Fragment item2 = adapter.getItem(currentItemPosition1);
-
-        assertThat(currentItemPosition2).isEqualTo(currentItemPosition1);
-        assertThat(item2).isEqualTo(item);
-    }
-
-    @Test
-    public void optionsMenu_shouldShowActionItems() {
-        ShadowActivity shadowActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
-        Menu optionsMenu = shadowActivity.getOptionsMenu();
-
-        assertThat(optionsMenu.size()).isEqualTo(1);
-        assertThat(optionsMenu.getItem(0).getTitle()).isEqualTo(
-                RuntimeEnvironment.application.getString(R.string.action_log_out));
+                R.string.activity));
     }
 
     @Test
     public void optionsMenu_actionLogOut_shouldClearPreferencesLaunchMainActivityAndFinish() {
-        ShadowActivity shadowActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
-        shadowActivity.clickMenuItem(R.id.action_log_out);
+        NavigationView navigation = (NavigationView) mActivity.findViewById(R.id.navigation_view);
+        MenuItem logoutItem = navigation.getMenu().findItem(R.id.action_log_out);
+        mActivity.onNavigationItemSelected(logoutItem);
 
         assertThat(ArborPreferences.getAccessToken()).isEmpty();
         assertThat(ArborPreferences.getUsername()).isEmpty();
 
+        ShadowActivity shadowActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
         Intent startedIntent = shadowActivity.getNextStartedActivity();
         assertThat(startedIntent).isNotNull();
         assertThat(startedIntent).hasComponent(new ComponentName(mActivity, MainActivity.class));
 
         assertThat(mActivity).isFinishing();
-    }
-
-    @Test
-    public void optionsMenu_invalidActionSelected_shouldNotConsumeSelection() {
-        ShadowActivity shadowActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
-        boolean consumed = shadowActivity.clickMenuItem(-1);
-
-        assertThat(consumed).isFalse();
     }
 }
