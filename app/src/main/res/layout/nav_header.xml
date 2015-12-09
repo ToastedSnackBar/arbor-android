@@ -3,7 +3,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="196dp"
-              android:background="@color/primary_dark"
+              android:background="@color/primary"
               android:padding="16dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/email"
         android:layout_marginTop="20dp"
-        android:textColor="@color/text_primary"
+        android:textColor="@android:color/white"
         android:textStyle="bold"
         tools:text="Gregory House"/>
 

@@ -10,10 +10,12 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="drawerArrowStyle">@style/ArborDrawerToggle</item>
+        <item name="android:listDivider">@color/divider</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColor">@color/text_primary</item>
     </style>
 
     <!-- Fullscreen no-ActionBar activity style -->
@@ -25,7 +27,9 @@
     <!-- Overflow menu style -->
     <style name="ArborOverlay" parent="Arbor">
         <item name="android:colorBackground">@color/background_darker_grey</item>
-        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColor">@android:color/primary_text_dark</item>
+        <item name="android:textColorPrimary">@android:color/primary_text_dark</item>
+        <item name="android:textColorSecondary">@android:color/primary_text_dark</item>
     </style>
 
     <!-- Primary button theme -->
@@ -48,7 +52,7 @@
     </style>
 
     <style name="ArborDrawerToggle" parent="Widget.AppCompat.DrawerArrowToggle">
-        <item name="color">@color/text_primary</item>
+        <item name="color">@android:color/primary_text_dark</item>
     </style>
 
 </resources>
