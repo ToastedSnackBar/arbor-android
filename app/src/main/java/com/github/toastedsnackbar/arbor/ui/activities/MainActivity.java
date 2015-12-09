@@ -137,8 +137,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         return;
                     }
 
-                    String username = response.getLogin();
-                    ArborPreferences.setUsername(username);
+                    ArborPreferences.setUsername(response.getLogin());
+                    ArborPreferences.setEmail(response.getEmail());
+                    ArborPreferences.setAvatarUrl(response.getAvatarUrl());
 
                     HomeScreenActivity.start(MainActivity.this);
                     finish();

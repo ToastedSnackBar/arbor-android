@@ -9,7 +9,9 @@
         <item name="colorButtonNormal">@color/accent</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="drawerArrowStyle">@style/ArborDrawerToggle</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColorSecondary">@color/text_secondary</item>
     </style>
@@ -43,6 +45,10 @@
     <style name="ArborButtonPurple" parent="ArborButton">
         <item name="colorButtonNormal">@color/primary</item>
         <item name="colorControlHighlight">@color/primary_dark</item>
+    </style>
+
+    <style name="ArborDrawerToggle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">@color/text_primary</item>
     </style>
 
 </resources>
