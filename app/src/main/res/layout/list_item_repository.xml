@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:id="@+id/recycler_view_element"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/recycler_view_element"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -29,15 +30,7 @@
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/accent"
                 android:textSize="24sp"
-                tools:text="My Repository" />
-
-            <ImageView
-                android:id="@+id/privacy_status_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                tools:background="@drawable/ic_lock_white" />
+                tools:text="My Repository"/>
 
             <TextView
                 android:id="@+id/last_updated_date"
@@ -45,35 +38,35 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/repo_name"
                 android:textColor="@android:color/white"
-                tools:text="Created on: November 21st, 2015" />
+                tools:text="Created on: November 21st, 2015"/>
 
             <TextView
-                android:id="@+id/creation_date"
+                android:id="@+id/language"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/last_updated_date"
                 android:layout_marginBottom="5dp"
                 android:textColor="@android:color/white"
-                tools:text="Last Updated: November 21st, 2015" />
+                tools:text="Language: Java"/>
 
             <TextView
                 android:id="@+id/stars"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/creation_date"
+                android:layout_below="@id/language"
                 android:layout_marginEnd="5dp"
                 android:drawableLeft="@drawable/ic_star_white"
                 android:drawablePadding="3dp"
                 android:gravity="center_vertical"
                 android:paddingEnd="5dp"
                 android:textColor="@android:color/white"
-                tools:text="3" />
+                tools:text="3"/>
 
             <TextView
                 android:id="@+id/following"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/creation_date"
+                android:layout_below="@id/language"
                 android:layout_toRightOf="@id/stars"
                 android:drawableLeft="@drawable/ic_group_white"
                 android:drawablePadding="3dp"
@@ -81,19 +74,15 @@
                 android:paddingEnd="5dp"
                 android:paddingStart="5dp"
                 android:textColor="@android:color/white"
-                tools:text="3" />
+                tools:text="3"/>
 
-            <TextView
-                android:id="@+id/language"
+            <ImageView
+                android:id="@+id/privacy_status_icon"
                 android:layout_width="wrap_content"
-                android:layout_height="24dp"
-                android:layout_below="@id/creation_date"
-                android:layout_toRightOf="@id/following"
-                android:gravity="center_vertical"
-                android:paddingEnd="5dp"
-                android:paddingStart="5dp"
-                android:textColor="@android:color/white"
-                tools:text="Java" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                tools:src="@drawable/ic_public_white"/>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 

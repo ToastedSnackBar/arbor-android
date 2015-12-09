@@ -18,6 +18,10 @@ public class ApiReceiver extends ResultReceiver {
         mListener = listener;
     }
 
+    public ReceiveResultListener getResultListener() {
+        return mListener;
+    }
+
     @Override
     protected void onReceiveResult(int resultCode, Bundle resultData) {
         if (mListener != null) {

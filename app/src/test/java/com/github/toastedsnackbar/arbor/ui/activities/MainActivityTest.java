@@ -3,20 +3,24 @@ package com.github.toastedsnackbar.arbor.ui.activities;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcel;
+import android.os.Parcelable;
+import android.view.inputmethod.EditorInfo;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.ProgressBar;
+import android.widget.EditText;
 
+import com.github.toastedsnackbar.arbor.ArborTestConstants.MockResponses;
 import com.github.toastedsnackbar.arbor.ArborTestRunner;
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
 import com.github.toastedsnackbar.arbor.net.ApiReceiver;
 import com.github.toastedsnackbar.arbor.net.ApiService;
-import com.github.toastedsnackbar.arbor.net.requests.AccessTokenRequest;
-import com.github.toastedsnackbar.arbor.net.responses.AccessTokenResponse;
+import com.github.toastedsnackbar.arbor.net.ApiService.ResultCodes;
+import com.github.toastedsnackbar.arbor.net.gson.GsonHelper;
+import com.github.toastedsnackbar.arbor.net.requests.AuthUserRequest;
+import com.github.toastedsnackbar.arbor.net.responses.UserResponse;
 
 import org.junit.After;
 import org.junit.Before;
@@ -28,30 +32,13 @@ import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowWebView;
 import org.robolectric.util.ActivityController;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
+import java.io.IOException;
 
 import static org.assertj.android.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(ArborTestRunner.class)
 public class MainActivityTest {
-
-    @Bind(R.id.web_view)
-    WebView mLoginWebView;
-
-    @Bind(R.id.pb_web_view)
-    ProgressBar mProgressBar;
-
-    @Bind(R.id.btn_login)
-    Button mLoginButton;
-
-    @Bind(R.id.btn_register)
-    Button mRegisterButton;
-
-    private static final String TEST_OAUTH_URL = ApiEndpoints.getOAuthUrl();
-    private static final String TEST_REGISTER_URL = ApiEndpoints.getRegisterUrl();
-    private static final String TEST_REDIRECT_URL = "https://www.google.com/?code=code&state=state";
 
     private MainActivity mActivity;
     private ActivityController<MainActivity> mActivityController;
@@ -60,7 +47,6 @@ public class MainActivityTest {
     public void setup() {
         mActivityController = Robolectric.buildActivity(MainActivity.class);
         mActivity = mActivityController.create().start().resume().visible().get();
-        ButterKnife.bind(this, mActivity);
     }
 
     @After
@@ -72,9 +58,9 @@ public class MainActivityTest {
     }
 
     @Test
-    public void onCreate_accessTokenPrefNotEmpty_shouldLaunchHomeScreenActivityAndFinish() {
+    public void onCreate_usernamePrefNotEmpty_shouldLaunchHomeScreenActivityAndFinish() {
         teardown();
-        ArborPreferences.setAccessToken("access_token");
+        ArborPreferences.setUsername("username");
         setup();
 
         ShadowActivity shadowMainActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
@@ -96,239 +82,328 @@ public class MainActivityTest {
     }
 
     @Test
-    public void onCreate_loginBtnShouldBeVisibleClickable() {
+    public void register_registerBtnClick_shouldHideButtons() {
+        Button registerButton = (Button) mActivity.findViewById(R.id.btn_register);
+        Button loginButton = (Button) mActivity.findViewById(R.id.btn_login);
+        registerButton.performClick();
 
-        assertThat(mLoginButton).isNotNull();
-        assertThat(mLoginButton).isVisible();
-        assertThat(mLoginButton).isClickable();
-        assertThat(mLoginButton).hasText(R.string.splash_login);
+        assertThat(registerButton).isNotVisible();
+        assertThat(loginButton).isNotVisible();
     }
 
     @Test
-    public void onCreate_loginWebViewShouldBeGone() {
+    public void register_registerBtnClick_shouldShowRegisterWebView() {
+        Button registerButton = (Button) mActivity.findViewById(R.id.btn_register);
+        registerButton.performClick();
 
-        assertThat(mLoginWebView).isNotNull();
-        assertThat(mLoginWebView).isGone();
+        WebView registerWebView = (WebView) mActivity.findViewById(R.id.web_view);
+        assertThat(registerWebView).isVisible();
     }
 
     @Test
-    public void loginBtnClick_loginBtnShouldBeGone() {
-        mLoginButton.performClick();
+    public void register_registerBtnClick_registerWebViewShouldLoadGitHubJoinUrl() {
+        Button registerButton = (Button) mActivity.findViewById(R.id.btn_register);
+        registerButton.performClick();
 
-        assertThat(mLoginButton).isGone();
+        WebView registerWebView = (WebView) mActivity.findViewById(R.id.web_view);
+        ShadowWebView shadowRegisterWebView = (ShadowWebView) ShadowExtractor.extract(
+                registerWebView);
+
+        String actualUrl = shadowRegisterWebView.getLastLoadedUrl();
+        assertThat(actualUrl).isEqualTo(ApiEndpoints.getRegisterUrl());
     }
 
     @Test
-    public void loginBtnClick_loginWebViewShouldBeVisible() {
-        mLoginButton.performClick();
+    public void register_onBackPressed_shouldNotFinishIfRegisterWebViewIsVisible() {
+        WebView registerWebView = (WebView) mActivity.findViewById(R.id.web_view);
+        Button registerButton = (Button) mActivity.findViewById(R.id.btn_register);
+        registerButton.performClick();
 
-        assertThat(mLoginWebView).isVisible();
+        mActivity.onBackPressed();
+
+        assertThat(mActivity).isNotFinishing();
+        assertThat(registerWebView).isNotVisible();
     }
 
     @Test
-    public void loginBtnClick_loginWebViewShouldLoadOAuthUrl() {
-        mLoginButton.performClick();
+    public void register_onBackPressed_shouldFinishIfRegisterWebViewIsNotVisible() {
+        WebView registerWebView = (WebView) mActivity.findViewById(R.id.web_view);
+        mActivity.onBackPressed();
 
-        ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(mLoginWebView);
-
-        String actualUrl = shadowLoginWebView.getLastLoadedUrl();
-        assertThat(actualUrl).isEqualTo(TEST_OAUTH_URL);
+        assertThat(registerWebView).isNotVisible();
+        assertThat(mActivity).isFinishing();
     }
 
     @Test
-    public void registerBtnClick_registerBtnShouldBeGone() {
-        mRegisterButton.performClick();
+    public void register_urlOverride_shouldNotHappen() {
+        Button registerButton = (Button) mActivity.findViewById(R.id.btn_register);
+        registerButton.performClick();
 
-        assertThat(mRegisterButton).isGone();
+        WebView registerWebView = (WebView) mActivity.findViewById(R.id.web_view);
+        ShadowWebView shadowRegisterWebView = (ShadowWebView) ShadowExtractor.extract(
+                registerWebView);
+        WebViewClient registerWebViewClient = shadowRegisterWebView.getWebViewClient();
+
+        boolean override = registerWebViewClient.shouldOverrideUrlLoading(registerWebView,
+                ApiEndpoints.getRegisterUrl());
+
+        assertThat(override).isFalse();
     }
 
     @Test
-    public void registerBtnClick_registerWebViewShouldBeVisible() {
-        mRegisterButton.performClick();
+    public void register_onPageLoadStart_shouldShowProgressBar() {
+        Button registerButton = (Button) mActivity.findViewById(R.id.btn_register);
+        registerButton.performClick();
 
-        assertThat(mLoginWebView).isVisible();
+        WebView registerWebView = (WebView) mActivity.findViewById(R.id.web_view);
+        ShadowWebView shadowRegisterWebView = (ShadowWebView) ShadowExtractor.extract(
+                registerWebView);
+        WebViewClient registerWebViewClient = shadowRegisterWebView.getWebViewClient();
+
+        registerWebViewClient.onPageStarted(registerWebView, ApiEndpoints.getRegisterUrl(), null);
+
+        assertThat(mActivity.findViewById(R.id.progress_bar)).isVisible();
     }
 
     @Test
-    public void registerBtnClick_registerWebViewShouldLoadOAuthUrl() {
-        mRegisterButton.performClick();
+    public void register_onPageLoadFinished_shouldHideProgressBar() {
+        Button registerButton = (Button) mActivity.findViewById(R.id.btn_register);
+        registerButton.performClick();
 
-        ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(mLoginWebView);
+        WebView registerWebView = (WebView) mActivity.findViewById(R.id.web_view);
+        ShadowWebView shadowRegisterWebView = (ShadowWebView) ShadowExtractor.extract(
+                registerWebView);
+        WebViewClient registerWebViewClient = shadowRegisterWebView.getWebViewClient();
 
-        String actualUrl = shadowLoginWebView.getLastLoadedUrl();
-        assertThat(actualUrl).isEqualTo(TEST_REGISTER_URL);
+        registerWebViewClient.onPageFinished(registerWebView, ApiEndpoints.getRegisterUrl());
+
+        assertThat(mActivity.findViewById(R.id.progress_bar)).isNotVisible();
     }
 
     @Test
-    public void loginWebView_shouldLoadUrl() {
-        mLoginButton.performClick();
+    public void login_emptyUsername_shouldNotExecuteRequest() throws IOException {
+        EditText usernameEditText = (EditText) mActivity.findViewById(R.id.edittext_username);
+        EditText passwordEditText = (EditText) mActivity.findViewById(R.id.edittext_password);
 
-        ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(mLoginWebView);
+        usernameEditText.setText("");
+        passwordEditText.setText("password");
 
-        WebViewClient webViewClient = shadowLoginWebView.getWebViewClient();
-        webViewClient.shouldOverrideUrlLoading(mLoginWebView, TEST_OAUTH_URL);
-
-        String actualUrl = shadowLoginWebView.getLastLoadedUrl();
-        assertThat(actualUrl).isEqualTo(TEST_OAUTH_URL);
-    }
-
-    @Test
-    public void loginWebView_progressBarShouldBeVisibleOnPageLoadStart() {
-        mLoginButton.performClick();
-
-        ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(mLoginWebView);
-
-        WebViewClient webViewClient = shadowLoginWebView.getWebViewClient();
-        webViewClient.onPageStarted(mLoginWebView, TEST_OAUTH_URL, null);
-
-        assertThat(mProgressBar).isNotNull();
-        assertThat(mProgressBar).isVisible();
-    }
-
-    @Test
-    public void loginWebView_progressBarShouldBeGoneOnPageLoadFinish() {
-        mLoginButton.performClick();
-
-        ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(mLoginWebView);
-
-        WebViewClient webViewClient = shadowLoginWebView.getWebViewClient();
-        webViewClient.onPageFinished(mLoginWebView, TEST_OAUTH_URL);
-
-        assertThat(mProgressBar).isNotNull();
-        assertThat(mProgressBar).isGone();
-    }
-
-    @Test
-    public void oauth_onRedirect_loginWebViewShouldBeGone() {
-        mLoginButton.performClick();
-
-        ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(mLoginWebView);
-
-        WebViewClient webViewClient = shadowLoginWebView.getWebViewClient();
-        webViewClient.shouldOverrideUrlLoading(mLoginWebView, TEST_REDIRECT_URL);
-
-        assertThat(mLoginWebView).isGone();
-    }
-
-    @Test
-    public void oauth_onRedirect_loginButtonShouldBeGone() {
-        mLoginButton.performClick();
-
-        mLoginWebView.loadUrl(TEST_REDIRECT_URL);
-
-        assertThat(mLoginButton).isGone();
-    }
-
-    @Test
-    public void oauth_onRedirect_shouldExecuteApiRequest() {
-        mLoginButton.performClick();
-
-        ShadowWebView shadowLoginWebView = (ShadowWebView) ShadowExtractor.extract(mLoginWebView);
-
-        WebViewClient webViewClient = shadowLoginWebView.getWebViewClient();
-        webViewClient.shouldOverrideUrlLoading(mLoginWebView, TEST_REDIRECT_URL);
-
-        ShadowActivity shadowMainActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
-        Intent startedIntent = shadowMainActivity.getNextStartedService();
-        assertThat(startedIntent).isNotNull();
-        assertThat(startedIntent).hasComponent(new ComponentName(mActivity, ApiService.class));
-
-        assertThat(startedIntent).hasExtra(ApiService.EXTRA_REQUEST);
-        assertThat(startedIntent.getParcelableExtra(ApiService.EXTRA_REQUEST)).isInstanceOf(
-                AccessTokenRequest.class);
-
-        assertThat(startedIntent).hasExtra(ApiService.EXTRA_RESULT_RECEIVER);
-        assertThat(startedIntent.getParcelableExtra(ApiService.EXTRA_RESULT_RECEIVER)).isInstanceOf(
-                ApiReceiver.class);
-    }
-
-    @Test
-    public void oauth_onReceiveRunning_progressBarShouldBeVisible() {
-        mActivity.onReceiveResult(ApiService.ResultCodes.RUNNING, Bundle.EMPTY);
-
-        assertThat(mProgressBar).isNotNull();
-        assertThat(mProgressBar).isVisible();
-    }
-
-    @Test
-    public void oauth_onReceiveSuccess_progressBarShouldBeGone() {
-        AccessTokenResponse response = buildAccessTokenResponse();
-        assertThat(response).isNotNull();
-
-        Bundle resultData = new Bundle();
-        resultData.putParcelable(ApiService.EXTRA_RESPONSE, response);
-        mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, resultData);
-
-        assertThat(mProgressBar).isNotNull();
-        assertThat(mProgressBar).isGone();
-    }
-
-    @Test
-    public void oauth_onReceiveSuccess_shouldStoreAccessTokenInSharedPrefs() {
-        AccessTokenResponse response = buildAccessTokenResponse();
-        assertThat(response).isNotNull();
-
-        Bundle resultData = new Bundle();
-        resultData.putParcelable(ApiService.EXTRA_RESPONSE, response);
-        mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, resultData);
-
-        assertThat(ArborPreferences.getAccessToken()).isEqualTo("access_token");
-    }
-
-    @Test
-    public void oauth_onReceiveSuccess_shouldLaunchHomeScreenActivity() {
-        AccessTokenResponse response = buildAccessTokenResponse();
-        assertThat(response).isNotNull();
-
-        Bundle resultData = new Bundle();
-        resultData.putParcelable(ApiService.EXTRA_RESPONSE, response);
-        mActivity.onReceiveResult(ApiService.ResultCodes.SUCCESS, resultData);
+        Button loginButton = (Button) mActivity.findViewById(R.id.btn_login);
+        loginButton.performClick();
 
         ShadowActivity shadowMainActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
         Intent startedIntent = shadowMainActivity.getNextStartedActivity();
+
+        assertThat(startedIntent).isNull();
+    }
+
+    @Test
+    public void login_emptyPassword_shouldNotExecuteRequest() throws IOException {
+        EditText usernameEditText = (EditText) mActivity.findViewById(R.id.edittext_username);
+        EditText passwordEditText = (EditText) mActivity.findViewById(R.id.edittext_password);
+
+        usernameEditText.setText("username");
+        passwordEditText.setText("");
+
+        Button loginButton = (Button) mActivity.findViewById(R.id.btn_login);
+        loginButton.performClick();
+
+        ShadowActivity shadowMainActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
+        Intent startedIntent = shadowMainActivity.getNextStartedActivity();
+
+        assertThat(startedIntent).isNull();
+    }
+
+    @Test
+    public void login_nonEmptyPasswordAndUsername_shouldExecuteRequest() {
+        EditText usernameEditText = (EditText) mActivity.findViewById(R.id.edittext_username);
+        EditText passwordEditText = (EditText) mActivity.findViewById(R.id.edittext_password);
+
+        usernameEditText.setText("username");
+        passwordEditText.setText("password");
+
+        Button loginButton = (Button) mActivity.findViewById(R.id.btn_login);
+        loginButton.performClick();
+
+        ShadowActivity shadowMainActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
+        Intent startedIntent = shadowMainActivity.getNextStartedService();
+
         assertThat(startedIntent).isNotNull();
-        assertThat(startedIntent).hasComponent(new ComponentName(mActivity,
-                HomeScreenActivity.class));
+        assertThat(startedIntent).hasComponent(new ComponentName(mActivity, ApiService.class));
+        assertThat(startedIntent).hasExtra(ApiService.EXTRA_REQUEST);
+        assertThat(startedIntent).hasExtra(ApiService.EXTRA_RESULT_RECEIVER);
 
-        assertThat(mActivity).isFinishing();
+        Parcelable request = startedIntent.getParcelableExtra(ApiService.EXTRA_REQUEST);
+        assertThat(request).isInstanceOf(AuthUserRequest.class);
+
+        Parcelable receiver = startedIntent.getParcelableExtra(ApiService.EXTRA_RESULT_RECEIVER);
+        assertThat(receiver).isInstanceOf(ApiReceiver.class);
+        assertThat(((ApiReceiver) receiver).getResultListener()).isInstanceOf(MainActivity.class);
     }
 
     @Test
-    public void onBackPressed_shouldFinishIfLoginWebViewNotVisible() {
-        mActivity.onBackPressed();
-        assertThat(mActivity).isFinishing();
+    public void login_imeActionDone_emptyUsername_shouldNotExecuteRequest() {
+        EditText usernameEditText = (EditText) mActivity.findViewById(R.id.edittext_username);
+        EditText passwordEditText = (EditText) mActivity.findViewById(R.id.edittext_password);
+
+        usernameEditText.setText("");
+        passwordEditText.setText("password");
+
+        passwordEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
+
+        ShadowActivity shadowMainActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
+        Intent startedIntent = shadowMainActivity.getNextStartedService();
+
+        assertThat(startedIntent).isNull();
     }
 
     @Test
-    public void onBackPressed_loginWebViewShouldCloseIfVisible() {
-        mLoginButton.performClick();
+    public void login_imeActionDone_emptyPassword_shouldNotExecuteRequest() {
+        EditText usernameEditText = (EditText) mActivity.findViewById(R.id.edittext_username);
+        EditText passwordEditText = (EditText) mActivity.findViewById(R.id.edittext_password);
 
-        mActivity.onBackPressed();
+        usernameEditText.setText("username");
+        passwordEditText.setText("");
 
-        assertThat(mLoginWebView).isNotNull();
-        assertThat(mLoginWebView).isGone();
+        passwordEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
+
+        ShadowActivity shadowMainActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
+        Intent startedIntent = shadowMainActivity.getNextStartedService();
+
+        assertThat(startedIntent).isNull();
     }
 
-    private static AccessTokenResponse buildAccessTokenResponse() {
-        AccessTokenResponse response;
-        Parcel in = Parcel.obtain();
-        Parcel out = Parcel.obtain();
+    @Test
+    public void login_imeActionDone_nonEmptyPasswordAndUsername_shouldExecuteRequest() {
+        EditText usernameEditText = (EditText) mActivity.findViewById(R.id.edittext_username);
+        EditText passwordEditText = (EditText) mActivity.findViewById(R.id.edittext_password);
 
-        try {
-            in.writeInt(200);
-            in.writeString("access_token");
-            in.writeString("code");
-            in.writeString("token_type");
-            byte[] data = in.marshall();
+        usernameEditText.setText("username");
+        passwordEditText.setText("password");
 
-            out.unmarshall(data, 0, data.length);
-            out.setDataPosition(0);
-            response = new AccessTokenResponse(out);
-        } finally {
-            in.recycle();
-            out.recycle();
-        }
+        passwordEditText.onEditorAction(EditorInfo.IME_ACTION_DONE);
 
-        return response;
+        ShadowActivity shadowMainActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
+        Intent startedIntent = shadowMainActivity.getNextStartedService();
+
+        assertThat(startedIntent).isNotNull();
+        assertThat(startedIntent).hasComponent(new ComponentName(mActivity, ApiService.class));
+        assertThat(startedIntent).hasExtra(ApiService.EXTRA_REQUEST);
+        assertThat(startedIntent).hasExtra(ApiService.EXTRA_RESULT_RECEIVER);
+
+        Parcelable request = startedIntent.getParcelableExtra(ApiService.EXTRA_REQUEST);
+        assertThat(request).isInstanceOf(AuthUserRequest.class);
+
+        Parcelable receiver = startedIntent.getParcelableExtra(ApiService.EXTRA_RESULT_RECEIVER);
+        assertThat(receiver).isInstanceOf(ApiReceiver.class);
+        assertThat(((ApiReceiver) receiver).getResultListener()).isInstanceOf(MainActivity.class);
+    }
+
+    @Test
+    public void login_imeActionOther_nonEmptyPasswordAndUsername_shouldNotExecuteRequest() {
+        EditText usernameEditText = (EditText) mActivity.findViewById(R.id.edittext_username);
+        EditText passwordEditText = (EditText) mActivity.findViewById(R.id.edittext_password);
+
+        usernameEditText.setText("username");
+        passwordEditText.setText("password");
+
+        passwordEditText.onEditorAction(EditorInfo.IME_ACTION_GO);
+
+        ShadowActivity shadowMainActivity = (ShadowActivity) ShadowExtractor.extract(mActivity);
+        Intent startedIntent = shadowMainActivity.getNextStartedService();
+
+        assertThat(startedIntent).isNull();
+    }
+
+    @Test
+    public void login_onRequestStart_shouldShowProgressBar() {
+        EditText usernameEditText = (EditText) mActivity.findViewById(R.id.edittext_username);
+        EditText passwordEditText = (EditText) mActivity.findViewById(R.id.edittext_password);
+
+        usernameEditText.setText("username");
+        passwordEditText.setText("password");
+
+        Button loginButton = (Button) mActivity.findViewById(R.id.btn_login);
+        loginButton.performClick();
+
+        UserResponse response = GsonHelper.fromJson(MockResponses.AUTH_USER, UserResponse.class);
+        String requestId = ApiEndpoints.getAuthUserUrl();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(ApiService.EXTRA_REQUEST_ID, requestId);
+        bundle.putParcelable(ApiService.EXTRA_RESPONSE, response);
+
+        mActivity.onReceiveResult(ResultCodes.RUNNING, bundle);
+
+        assertThat(mActivity.findViewById(R.id.progress_bar)).isVisible();
+    }
+
+    @Test
+    public void login_onRequestSuccess_shouldHideProgressBar() {
+        EditText usernameEditText = (EditText) mActivity.findViewById(R.id.edittext_username);
+        EditText passwordEditText = (EditText) mActivity.findViewById(R.id.edittext_password);
+
+        usernameEditText.setText("username");
+        passwordEditText.setText("password");
+
+        Button loginButton = (Button) mActivity.findViewById(R.id.btn_login);
+        loginButton.performClick();
+
+        UserResponse response = GsonHelper.fromJson(MockResponses.AUTH_USER, UserResponse.class);
+        String requestId = ApiEndpoints.getAuthUserUrl();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(ApiService.EXTRA_REQUEST_ID, requestId);
+        bundle.putParcelable(ApiService.EXTRA_RESPONSE, response);
+
+        mActivity.onReceiveResult(ResultCodes.SUCCESS, bundle);
+
+        assertThat(mActivity.findViewById(R.id.progress_bar)).isNotVisible();
+    }
+
+    @Test
+    public void login_onRequestError_shouldHideProgressBar() {
+        EditText usernameEditText = (EditText) mActivity.findViewById(R.id.edittext_username);
+        EditText passwordEditText = (EditText) mActivity.findViewById(R.id.edittext_password);
+
+        usernameEditText.setText("username");
+        passwordEditText.setText("password");
+
+        Button loginButton = (Button) mActivity.findViewById(R.id.btn_login);
+        loginButton.performClick();
+
+        UserResponse response = GsonHelper.fromJson(MockResponses.AUTH_USER, UserResponse.class);
+        String requestId = ApiEndpoints.getAuthUserUrl();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(ApiService.EXTRA_REQUEST_ID, requestId);
+        bundle.putParcelable(ApiService.EXTRA_RESPONSE, response);
+
+        mActivity.onReceiveResult(ResultCodes.ERROR, bundle);
+
+        assertThat(mActivity.findViewById(R.id.progress_bar)).isNotVisible();
+    }
+
+    @Test
+    public void login_onRequestSuccess_shouldStoreUsernameInSharedPrefs() {
+        EditText usernameEditText = (EditText) mActivity.findViewById(R.id.edittext_username);
+        EditText passwordEditText = (EditText) mActivity.findViewById(R.id.edittext_password);
+
+        usernameEditText.setText("username");
+        passwordEditText.setText("password");
+
+        Button loginButton = (Button) mActivity.findViewById(R.id.btn_login);
+        loginButton.performClick();
+
+        UserResponse response = GsonHelper.fromJson(MockResponses.AUTH_USER, UserResponse.class);
+        String requestId = ApiEndpoints.getAuthUserUrl();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(ApiService.EXTRA_REQUEST_ID, requestId);
+        bundle.putParcelable(ApiService.EXTRA_RESPONSE, response);
+
+        mActivity.onReceiveResult(ResultCodes.SUCCESS, bundle);
+
+        assertThat(ArborPreferences.getUsername()).isEqualTo("login");
     }
 }

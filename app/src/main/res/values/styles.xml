@@ -1,6 +1,7 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!-- Primary theme -->
+    <style name="Arbor" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
@@ -9,13 +10,39 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:textColorPrimary">@android:color/primary_text_dark</item>
-        <item name="android:textColorSecondary">@android:color/secondary_text_dark</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
     </style>
 
-    <style name="AppFullscreenTheme" parent="@style/AppTheme">
+    <!-- Fullscreen no-ActionBar activity style -->
+    <style name="ArborFullscreen" parent="@style/Arbor">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <!-- Overflow menu style -->
+    <style name="ArborOverlay" parent="Arbor">
+        <item name="android:colorBackground">@color/background_darker_grey</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <!-- Primary button theme -->
+    <style name="ArborButton" parent="Widget.AppCompat.Button">
+        <item name="android:padding">15dp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- Teal button style -->
+    <style name="ArborButtonTeal" parent="ArborButton">
+        <item name="colorButtonNormal">@color/accent</item>
+        <item name="colorControlHighlight">@color/accentDark</item>
+    </style>
+
+    <!-- Teal button style -->
+    <style name="ArborButtonPurple" parent="ArborButton">
+        <item name="colorButtonNormal">@color/primary</item>
+        <item name="colorControlHighlight">@color/primary_dark</item>
     </style>
 
 </resources>

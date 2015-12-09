@@ -11,13 +11,16 @@ import java.util.Set;
 public class RepositoryListRequest extends ApiRequest<RepositoryListResponse> {
 
     private String mUrl;
+    private String mRequestId;
 
     public RepositoryListRequest() {
         mUrl = ApiEndpoints.getAuthUserReposUrl();
+        mRequestId = mUrl;
     }
 
     public RepositoryListRequest(Parcel source) {
         mUrl = source.readString();
+        mRequestId = source.readString();
     }
 
     public static final Creator<RepositoryListRequest> CREATOR =
@@ -36,6 +39,12 @@ public class RepositoryListRequest extends ApiRequest<RepositoryListResponse> {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mUrl);
+        dest.writeString(mRequestId);
+    }
+
+    @Override
+    public String getRequestId() {
+        return mRequestId;
     }
 
     @Override

@@ -50,6 +50,8 @@ public class ApiEndpoints {
         public static final String USER_REPOS = USER + "/repos";
 
         public static final String AUTH_USER_REPOS = AUTH_USER + "/repos";
+
+        public static final String USER_RECEIVED_EVENTS = USER + "/received_events";
     }
 
     private static class Headers {
@@ -131,6 +133,10 @@ public class ApiEndpoints {
 
     public static String getAuthUserReposUrl() {
         return buildUrl(Urls.AUTH_USER_REPOS);
+    }
+
+    public static String getUserReceivedEvents(String username) {
+        return buildUrl(String.format(Urls.USER_RECEIVED_EVENTS, username));
     }
 
     private static Map<String, String> getDefaultHeaders() {

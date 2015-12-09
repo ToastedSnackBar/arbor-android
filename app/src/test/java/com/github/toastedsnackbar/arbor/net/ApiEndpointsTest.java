@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.github.toastedsnackbar.arbor.ArborTestRunner;
 import com.github.toastedsnackbar.arbor.R;
-import com.google.gson.Gson;
+import com.github.toastedsnackbar.arbor.net.gson.GsonHelper;
 import com.google.gson.annotations.SerializedName;
 
 import org.junit.Test;
@@ -78,6 +78,16 @@ public class ApiEndpointsTest {
         assertThat(actualUrl).isEqualTo(correctUrl);
     }
 
+    @Test
+    public void getUserReceivedEventsUrl_shouldReturnCorrectUrl() {
+        String username = "username";
+        String correctUrl = String.format("https://api.github.com/users/%s/received_events",
+                username);
+        String actualUrl = ApiEndpoints.getUserReceivedEvents(username);
+
+        assertThat(actualUrl).isEqualTo(correctUrl);
+    }
+
     private String getCorrectOAuthUrl(Context context) {
         ApiConfig apiConfig = getApiConfig(context);
 
@@ -89,7 +99,7 @@ public class ApiEndpointsTest {
 
     private ApiConfig getApiConfig(Context context) {
         String apiConfigString = getApiConfigString(context);
-        return new Gson().fromJson(apiConfigString, ApiConfig.class);
+        return GsonHelper.fromJson(apiConfigString, ApiConfig.class);
     }
 
     private String getApiConfigString(Context context) {
