@@ -33,6 +33,9 @@ import com.github.toastedsnackbar.arbor.net.ApiService.ResultCodes;
 import com.github.toastedsnackbar.arbor.net.requests.AuthUserRequest;
 import com.github.toastedsnackbar.arbor.net.responses.UserResponse;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         OnEditorActionListener, ApiReceiver.ReceiveResultListener {
 
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button mRegisterButton;
 
     private CoordinatorLayout mSnackbarLayout;
+
 
     private ApiReceiver mApiReceiver;
     private String mAuthUserRequestId;
@@ -60,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         String username = ArborPreferences.getUsername();
         if (!TextUtils.isEmpty(username)) {

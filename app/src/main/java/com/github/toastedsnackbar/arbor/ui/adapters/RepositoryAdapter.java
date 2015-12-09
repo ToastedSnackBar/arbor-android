@@ -1,7 +1,6 @@
 package com.github.toastedsnackbar.arbor.ui.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.text.Html;
@@ -29,7 +28,6 @@ import java.util.Locale;
 public class RepositoryAdapter extends Adapter<RepositoryViewHolder> {
 
     public static class RepositoryViewHolder extends RecyclerView.ViewHolder {
-        CardView cardView;
         TextView repositoryName;
         TextView lastUpdatedDateTime;
         TextView repoStars;
@@ -40,7 +38,6 @@ public class RepositoryAdapter extends Adapter<RepositoryViewHolder> {
         public RepositoryViewHolder(View itemView) {
             super(itemView);
 
-            cardView = (CardView) itemView.findViewById(R.id.card_view);
             repositoryName = (TextView) itemView.findViewById(R.id.repo_name);
             lastUpdatedDateTime = (TextView) itemView.findViewById(R.id.last_updated_date);
             repoLanguage = (TextView) itemView.findViewById(R.id.language);

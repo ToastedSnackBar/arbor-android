@@ -18,10 +18,18 @@ import com.github.toastedsnackbar.arbor.net.requests.RepositoryListRequest;
 import com.github.toastedsnackbar.arbor.net.responses.RepositoryListResponse;
 import com.github.toastedsnackbar.arbor.ui.adapters.RepositoryAdapter;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class RepositoryListFragment extends Fragment implements ApiReceiver.ReceiveResultListener {
 
+    @Bind(R.id.progress_bar)
+    ProgressBar mProgressBar;
+
+    @Bind(R.id.recycler_view)
+    RecyclerView mRepositoriesList;
+
     private RepositoryAdapter mAdapter;
-    private ProgressBar mProgressBar;
 
     private ApiReceiver mApiReceiver;
 
@@ -33,7 +41,9 @@ public class RepositoryListFragment extends Fragment implements ApiReceiver.Rece
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_repositories, container, false);
+        View view = inflater.inflate(R.layout.fragment_repositories, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
@@ -41,11 +51,8 @@ public class RepositoryListFragment extends Fragment implements ApiReceiver.Rece
         mAdapter = new RepositoryAdapter(getActivity());
         mApiReceiver = new ApiReceiver(new Handler());
 
-        mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-
-        RecyclerView repositoriesList = (RecyclerView) view.findViewById(R.id.recycler_view);
-        repositoriesList.setAdapter(mAdapter);
-        repositoriesList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRepositoriesList.setAdapter(mAdapter);
+        mRepositoriesList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         RepositoryListRequest request = new RepositoryListRequest();
         ApiService.executeRequest(getActivity(), request, mApiReceiver);
@@ -61,6 +68,12 @@ public class RepositoryListFragment extends Fragment implements ApiReceiver.Rece
     public void onStop() {
         super.onStop();
         mApiReceiver.setResultListener(null);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
     }
 
     @Override

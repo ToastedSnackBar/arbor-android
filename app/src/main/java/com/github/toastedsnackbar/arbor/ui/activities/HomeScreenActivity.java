@@ -17,9 +17,19 @@ import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
 import com.github.toastedsnackbar.arbor.ui.adapters.HomeScreenFragmentPagerAdapter;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class HomeScreenActivity extends AppCompatActivity implements OnTabSelectedListener {
 
-    private ViewPager mViewPager;
+    @Bind(R.id.home_screen_view_pager)
+    ViewPager mViewPager;
+
+    @Bind(R.id.tab_layout)
+    TabLayout mTabLayout;
+
+    @Bind(R.id.toolbar_home)
+    Toolbar mToolbar;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, HomeScreenActivity.class);
@@ -32,28 +42,26 @@ public class HomeScreenActivity extends AppCompatActivity implements OnTabSelect
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+        ButterKnife.bind(this);
+
         setupSupportActionBar();
 
         FragmentManager fm = getSupportFragmentManager();
         HomeScreenFragmentPagerAdapter pagerAdapter = new HomeScreenFragmentPagerAdapter(fm);
-        mViewPager = (ViewPager) findViewById(R.id.home_screen_view_pager);
         mViewPager.setOffscreenPageLimit(3);
         mViewPager.setAdapter(pagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.repos));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.news));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.follows));
+        mTabLayout.addTab(mTabLayout.newTab().setText(R.string.repos));
+        mTabLayout.addTab(mTabLayout.newTab().setText(R.string.news));
+        mTabLayout.addTab(mTabLayout.newTab().setText(R.string.follows));
 
-        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(HomeScreenActivity.this);
-
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+        mTabLayout.setOnTabSelectedListener(HomeScreenActivity.this);
         mViewPager.setCurrentItem(1);
     }
 
     private void setupSupportActionBar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_home);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
     }
 
     @Override
@@ -87,8 +95,10 @@ public class HomeScreenActivity extends AppCompatActivity implements OnTabSelect
     }
 
     @Override
-    public void onTabUnselected(TabLayout.Tab tab) { }
+    public void onTabUnselected(TabLayout.Tab tab) {
+    }
 
     @Override
-    public void onTabReselected(TabLayout.Tab tab) { }
+    public void onTabReselected(TabLayout.Tab tab) {
+    }
 }
