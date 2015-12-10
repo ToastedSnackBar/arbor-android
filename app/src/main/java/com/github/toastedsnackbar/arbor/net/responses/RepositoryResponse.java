@@ -16,7 +16,7 @@ public class RepositoryResponse extends ApiResponse {
     private String mFullName;
 
     @SerializedName("owner")
-    private OwnerResponse mOwner;
+    private UserResponse mOwner;
 
     @SerializedName("private")
     private boolean mIsPrivate;

@@ -5,7 +5,6 @@ import android.os.Parcel;
 import com.github.toastedsnackbar.arbor.ArborTestConstants.MockResponses;
 import com.github.toastedsnackbar.arbor.ArborTestRunner;
 import com.github.toastedsnackbar.arbor.net.gson.GsonHelper;
-import com.github.toastedsnackbar.arbor.net.responses.OwnerResponse;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
