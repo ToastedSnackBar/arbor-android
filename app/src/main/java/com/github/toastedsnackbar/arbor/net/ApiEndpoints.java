@@ -43,14 +43,16 @@ public class ApiEndpoints {
 
         public static final String BASE = "https://api.github.com";
 
-        public static final String USERS = BASE + "/users";
-        public static final String USER = USERS + "/%s";
-
         public static final String AUTH_USER = BASE + "/user";
-        public static final String USER_REPOS = USER + "/repos";
-
         public static final String AUTH_USER_REPOS = AUTH_USER + "/repos";
+        public static final String AUTH_USER_FOLLOWING = AUTH_USER + "/following";
+        public static final String AUTH_USER_FOLLOWERS = AUTH_USER + "/followers";
+        public static final String AUTH_USER_IS_FOLLOWING = AUTH_USER_FOLLOWING + "/%s";
 
+        public static final String USERS = BASE + "/users";
+
+        public static final String USER = USERS + "/%s";
+        public static final String USER_REPOS = USER + "/repos";
         public static final String USER_RECEIVED_EVENTS = USER + "/received_events";
     }
 
@@ -133,6 +135,18 @@ public class ApiEndpoints {
 
     public static String getAuthUserReposUrl() {
         return buildUrl(Urls.AUTH_USER_REPOS);
+    }
+
+    public static String getAuthUserFollowingUrl() {
+        return buildUrl(Urls.AUTH_USER_FOLLOWING);
+    }
+
+    public static String getAuthUserFollowersUrl() {
+        return buildUrl(Urls.AUTH_USER_FOLLOWERS);
+    }
+
+    public static String getAuthUserIsFollowingUrl(String username) {
+        return buildUrl(String.format(Urls.AUTH_USER_IS_FOLLOWING, username));
     }
 
     public static String getUserReceivedEvents(String username) {

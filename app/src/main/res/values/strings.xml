@@ -28,6 +28,10 @@
     <string name="repository_repo_stars"><![CDATA[<b>Stars</b>: %1$s]]></string>
     <string name="repository_following_count"><![CDATA[<b>Following</b>: %1$s]]></string>
 
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
+    <string name="follow">Follow</string>
+
     <string name="day">day</string>
     <string name="days">days</string>
     <string name="hour">hour</string>

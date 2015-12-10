@@ -3,6 +3,9 @@ package com.github.toastedsnackbar.arbor.net.responses;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class ApiResponse implements Parcelable {
 
     private int mStatusCode = -1;

@@ -122,11 +122,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (resultCode) {
             case ResultCodes.RUNNING:
                 mProgressBar.setVisibility(View.VISIBLE);
+                enableButtons(false);
                 break;
 
             case ResultCodes.SUCCESS:
-                mProgressBar.setVisibility(View.GONE);
-
                 String requestId = resultData.getString(ApiService.EXTRA_REQUEST_ID);
                 if (TextUtils.isEmpty(requestId)) {
                     return;
@@ -146,6 +145,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     HomeScreenActivity.start(MainActivity.this);
                     finish();
                 }
+                break;
+
+            case ResultCodes.ERROR:
+                mProgressBar.setVisibility(View.GONE);
+                enableButtons(true);
                 break;
         }
     }
@@ -185,6 +189,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.YELLOW);
         snackbar.show();
+    }
+
+    private void enableButtons(boolean enable) {
+        mLoginButton.setEnabled(enable);
+        mRegisterButton.setEnabled(enable);
+
+        mUsernameEditText.setEnabled(enable);
+        mPasswordEditText.setEnabled(enable);
     }
 
     @Override

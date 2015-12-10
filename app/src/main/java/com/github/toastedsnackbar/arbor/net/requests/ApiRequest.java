@@ -1,6 +1,7 @@
 package com.github.toastedsnackbar.arbor.net.requests;
 
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
@@ -17,7 +18,9 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -56,9 +59,12 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
 
             if (shouldAcceptStatusCode(statusCode)) {
                 response = parseResponse(connection);
-                response.setStatusCode(statusCode);
-                response.setObtainedAt(System.currentTimeMillis());
+                if (response != null) {
+                    response.setStatusCode(statusCode);
+                    response.setObtainedAt(System.currentTimeMillis());
+                }
             }
+
         } finally {
             connection.disconnect();
         }
@@ -78,10 +84,27 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
         reader.close();
 
         String response = stringBuilder.toString();
-        Log.d("ApiRequest", "[" + getRequestMethod() + "] " + getUrl() + " : "
-                + response);
+        Log.d("ApiRequest", "[" + getRequestMethod() + "] " + getUrl()
+                + " (" + connection.getResponseCode() + ")"
+                + " : " + response);
+
+        if (TextUtils.isEmpty(response)) {
+            response = "{}";
+        }
 
         return GsonHelper.fromJson(response, getResponseClass());
+    }
+
+    private Map<String, String> getHeaders(HttpURLConnection connection) {
+        Map<String, String> headers = new HashMap<>();
+
+        for (Map.Entry<String, List<String>> key : connection.getHeaderFields().entrySet()) {
+            for (String value : key.getValue()) {
+                headers.put(key.getKey(), value);
+            }
+        }
+
+        return headers;
     }
 
     private void setRequestMethod(HttpURLConnection connection)
@@ -110,6 +133,8 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
         for (String key : properties.keySet()) {
             connection.addRequestProperty(key, properties.get(key));
         }
+
+        connection.setRequestProperty("User-agent", System.getProperty("http.agent"));
     }
 
     private void setRequestEntity(HttpURLConnection connection) throws IOException {

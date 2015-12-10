@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
-import com.github.toastedsnackbar.arbor.ui.fragments.FollowerListFragment;
+import com.github.toastedsnackbar.arbor.ui.fragments.FolloweeFragment;
 import com.github.toastedsnackbar.arbor.ui.fragments.NewsListFragment;
 import com.github.toastedsnackbar.arbor.ui.fragments.RepositoryListFragment;
 import com.squareup.picasso.Picasso;
@@ -38,6 +38,7 @@ public class HomeScreenActivity extends AppCompatActivity implements
     private ActionBarDrawerToggle mDrawerToggle;
 
     private int mInitialNav;
+    private MenuItem mCurrentNav;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, HomeScreenActivity.class);
@@ -107,6 +108,12 @@ public class HomeScreenActivity extends AppCompatActivity implements
         Class<? extends Fragment> fragmentClass = null;
         Fragment fragment = null;
 
+        if (mCurrentNav != null && menuItem.getItemId() == mCurrentNav.getItemId()) {
+            mDrawerLayout.closeDrawers();
+            return true;
+        }
+        mCurrentNav = menuItem;
+
         switch (menuItem.getItemId()) {
             case R.id.nav_activity:
                 fragmentClass = NewsListFragment.class;
@@ -117,7 +124,7 @@ public class HomeScreenActivity extends AppCompatActivity implements
                 break;
 
             case R.id.nav_my_followings:
-                fragmentClass = FollowerListFragment.class;
+                fragmentClass = FolloweeFragment.class;
                 break;
 
             case R.id.action_log_out:

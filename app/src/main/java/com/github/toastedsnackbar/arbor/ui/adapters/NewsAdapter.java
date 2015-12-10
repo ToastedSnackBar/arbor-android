@@ -35,6 +35,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class NewsAdapter extends Adapter<NewsViewHolder> {
 
     public static class NewsViewHolder extends ViewHolder {
+
         CardView cardView;
         CircleImageView avatarView;
         TextView timestamp;
