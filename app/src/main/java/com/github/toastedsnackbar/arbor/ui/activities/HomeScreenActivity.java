@@ -29,10 +29,15 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class HomeScreenActivity extends AppCompatActivity implements
         OnNavigationItemSelectedListener {
 
-    private Toolbar mToolbar;
+    private static final String KEY_INITIAL_FRAGMENT = "key_initial_fragment";
 
+    private static final int DEFAULT_INITIAL_NAV = R.id.nav_activity;
+
+    private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
+
+    private int mInitialNav;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, HomeScreenActivity.class);
@@ -57,7 +62,13 @@ public class HomeScreenActivity extends AppCompatActivity implements
         navigation.setNavigationItemSelectedListener(HomeScreenActivity.this);
         setupNavigationHeader(navigation);
 
-        onNavigationItemSelected(navigation.getMenu().findItem(R.id.nav_activity));
+        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_INITIAL_FRAGMENT)) {
+            mInitialNav = savedInstanceState.getInt(KEY_INITIAL_FRAGMENT);
+        } else {
+            mInitialNav = DEFAULT_INITIAL_NAV;
+        }
+
+        onNavigationItemSelected(navigation.getMenu().findItem(mInitialNav));
     }
 
     @Override
@@ -126,9 +137,9 @@ public class HomeScreenActivity extends AppCompatActivity implements
             showFragment(fragment);
             menuItem.setChecked(true);
             setTitle(menuItem.getTitle());
-
-            mDrawerLayout.closeDrawers();
         }
+
+        mDrawerLayout.closeDrawers();
 
         return true;
     }
@@ -157,5 +168,11 @@ public class HomeScreenActivity extends AppCompatActivity implements
         TextView emailView = (TextView) headerView.findViewById(R.id.email);
         String email = ArborPreferences.getEmail();
         emailView.setText(email);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_INITIAL_FRAGMENT, mInitialNav);
     }
 }
