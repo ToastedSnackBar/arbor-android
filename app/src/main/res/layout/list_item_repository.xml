@@ -37,7 +37,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/repo_name"
-                android:textColor="@android:color/white"
                 tools:text="Created on: November 21st, 2015"/>
 
             <TextView
@@ -46,7 +45,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/last_updated_date"
                 android:layout_marginBottom="5dp"
-                android:textColor="@android:color/white"
                 tools:text="Language: Java"/>
 
             <TextView
@@ -59,7 +57,6 @@
                 android:drawablePadding="3dp"
                 android:gravity="center_vertical"
                 android:paddingEnd="5dp"
-                android:textColor="@android:color/white"
                 tools:text="3"/>
 
             <TextView
@@ -73,7 +70,6 @@
                 android:gravity="center_vertical"
                 android:paddingEnd="5dp"
                 android:paddingStart="5dp"
-                android:textColor="@android:color/white"
                 tools:text="3"/>
 
             <ImageView

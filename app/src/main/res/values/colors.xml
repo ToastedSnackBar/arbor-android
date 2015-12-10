@@ -6,9 +6,9 @@
     <color name="accent">#ff009688</color>
     <color name="accentDark">#9b006e64</color>
     <color name="accentLight">#5ac7bd</color>
-    <color name="divider">#ffb6b6b6</color>
+    <color name="divider">#ff323232</color>
     <color name="icons">#ffffffff</color>
-    <color name="text_primary">#ffffffff</color>
+    <color name="text_primary">#a9a9a9</color>
     <color name="text_secondary">@android:color/secondary_text_dark</color>
 
     <color name="background_darker_grey">#ff282828</color>

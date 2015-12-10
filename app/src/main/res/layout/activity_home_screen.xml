@@ -33,6 +33,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@color/background_dark_grey"
-        app:menu="@menu/menu_drawer"/>
+        app:itemTextColor="@color/selector_drawer_text"
+        app:menu="@menu/menu_drawer"
+        app:theme="@style/ArborOverlay"/>
 
 </android.support.v4.widget.DrawerLayout>

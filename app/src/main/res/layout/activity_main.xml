@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_dark_grey"
-    tools:context=".MainActivity">
+    android:background="@color/background_dark_grey">
 
     <TextView
         android:id="@+id/title"
@@ -75,14 +74,6 @@
             android:layout_marginBottom="5dp"
             android:text="@string/splash_register"
             android:theme="@style/ArborButtonTeal"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@string/splash_register_prompt"
-            android:textColor="@android:color/white"
-            android:textSize="12sp"/>
     </LinearLayout>
 
     <android.support.design.widget.CoordinatorLayout
@@ -104,7 +95,9 @@
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/login_input"
+        android:layout_marginTop="20dp"
         android:indeterminate="true"
         android:indeterminateTint="@color/accent"
         android:indeterminateTintMode="src_atop"

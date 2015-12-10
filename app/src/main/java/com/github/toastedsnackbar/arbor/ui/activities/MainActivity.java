@@ -39,6 +39,9 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         OnEditorActionListener, ApiReceiver.ReceiveResultListener {
 
+    private static final int MIN_USERNAME_CHARS = 7;
+    private static final int MIN_PASSWORD_CHARS = 7;
+
     private WebView mRegisterWebView;
     private ProgressBar mProgressBar;
 
@@ -48,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button mRegisterButton;
 
     private CoordinatorLayout mSnackbarLayout;
-
 
     private ApiReceiver mApiReceiver;
     private String mAuthUserRequestId;
@@ -204,8 +206,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void login() {
         String username = mUsernameEditText.getText().toString();
         String password = mPasswordEditText.getText().toString();
+
         if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
             showErrorSnackbar(R.string.splash_error_empty);
+        } else if (username.length() < MIN_USERNAME_CHARS
+                || password.length() < MIN_PASSWORD_CHARS) {
+            showErrorSnackbar(R.string.splash_error_chars);
         } else {
             executeAuthUserRequest();
         }
