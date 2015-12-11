@@ -126,6 +126,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case ResultCodes.SUCCESS:
+                mProgressBar.setVisibility(View.GONE);
+                enableButtons(true);
+
                 String requestId = resultData.getString(ApiService.EXTRA_REQUEST_ID);
                 if (TextUtils.isEmpty(requestId)) {
                     return;

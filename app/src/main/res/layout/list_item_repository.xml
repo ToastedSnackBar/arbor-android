@@ -6,9 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp">
+    android:orientation="vertical">
 
     <android.support.v7.widget.CardView
         android:id="@+id/card_view"
@@ -30,28 +28,13 @@
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/accent"
                 android:textSize="24sp"
-                tools:text="My Repository"/>
-
-            <TextView
-                android:id="@+id/last_updated_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/repo_name"
-                tools:text="Created on: November 21st, 2015"/>
-
-            <TextView
-                android:id="@+id/language"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/last_updated_date"
-                android:layout_marginBottom="5dp"
-                tools:text="Language: Java"/>
+                tools:text="arbor-android"/>
 
             <TextView
                 android:id="@+id/stars"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/language"
+                android:layout_below="@id/repo_name"
                 android:layout_marginEnd="5dp"
                 android:drawableLeft="@drawable/ic_star_white"
                 android:drawablePadding="3dp"
@@ -63,7 +46,7 @@
                 android:id="@+id/following"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/language"
+                android:layout_below="@id/repo_name"
                 android:layout_toRightOf="@id/stars"
                 android:drawableLeft="@drawable/ic_group_white"
                 android:drawablePadding="3dp"
@@ -72,11 +55,37 @@
                 android:paddingStart="5dp"
                 tools:text="3"/>
 
+            <TextView
+                android:id="@+id/repo_language"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@id/following"
+                android:layout_below="@id/repo_name"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/following"
+                android:background="@color/accent"
+                android:paddingBottom="1dp"
+                android:paddingLeft="3dp"
+                android:paddingRight="3dp"
+                android:paddingTop="1dp"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="Java"/>
+
+            <TextView
+                android:id="@+id/last_updated_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/stars"
+                android:layout_marginTop="7dp"
+                tools:text="Updated 2 days ago"/>
+
             <ImageView
                 android:id="@+id/privacy_status_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
+                android:layout_alignBottom="@id/following"
                 android:layout_alignParentRight="true"
                 tools:src="@drawable/ic_public_white"/>
         </RelativeLayout>

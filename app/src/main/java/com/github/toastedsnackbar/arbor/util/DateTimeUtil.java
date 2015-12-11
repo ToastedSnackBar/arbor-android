@@ -22,13 +22,22 @@ public class DateTimeUtil {
             long createdAt = formatCreatedAt.parse(createdAtString).getTime();
 
             long diff = obtainedAt - createdAt;
-            long diffDays = diff / (24 * 60 * 60 * 1000);
-            long diffHours = diff / (60 * 60 * 1000) % 24;
-            long diffMinutes = diff / (60 * 1000) % 60;
+            long diffMonths = diff / (4L * 7L * 24L * 60L * 60L * 1000L);
+            long diffWeeks = diff / (7L * 24L * 60L * 60L * 1000L) % 4;
+            long diffDays = diff / (24L * 60L * 60L * 1000L) % 7;
+            long diffHours = diff / (60L * 60L * 1000L) % 24;
+            long diffMinutes = diff / (60L * 1000L) % 60;
 
             long greatestDiff;
             int greatestDiffUnitResId;
-            if (diffDays > 0) {
+
+            if (diffMonths > 0) {
+                greatestDiff = diffMonths;
+                greatestDiffUnitResId = diffMonths > 1 ? R.string.months : R.string.month;
+            } else if (diffWeeks > 0) {
+                greatestDiff = diffWeeks;
+                greatestDiffUnitResId = diffWeeks > 1 ? R.string.weeks : R.string.week;
+            } else if (diffDays > 0) {
                 greatestDiff = diffDays;
                 greatestDiffUnitResId = diffDays > 1 ? R.string.days : R.string.day;
             } else if (diffHours > 0) {

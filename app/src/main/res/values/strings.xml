@@ -11,7 +11,7 @@
 
     <string name="splash_error_empty">Username or password cannot be empty</string>
     <string name="splash_error_incorrect">Username or password is incorrect</string>
-    <string name="splash_error_chars">Username and password cannot be less than 7 characters</string>
+    <string name="splash_error_chars">Username or password is too short</string>
 
     <string name="activity">News Feed</string>
     <string name="my_repositories">Repositories</string>
@@ -23,15 +23,19 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 
-    <string name="repository_last_updated_date"><![CDATA[<b>Last Updated</b>: %1$s]]></string>
-    <string name="repository_language"><![CDATA[<b>Language</b>: %1$s]]></string>
     <string name="repository_repo_stars"><![CDATA[<b>Stars</b>: %1$s]]></string>
     <string name="repository_following_count"><![CDATA[<b>Following</b>: %1$s]]></string>
 
     <string name="followers">Followers</string>
+    <string name="followers_count">Followers (%1$d)</string>
     <string name="following">Following</string>
+    <string name="following_count">Following (%1$d)</string>
     <string name="follow">Follow</string>
 
+    <string name="months">months</string>
+    <string name="month">month</string>
+    <string name="week">week</string>
+    <string name="weeks">weeks</string>
     <string name="day">day</string>
     <string name="days">days</string>
     <string name="hour">hour</string>

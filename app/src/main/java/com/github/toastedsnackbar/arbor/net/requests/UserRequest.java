@@ -1,9 +1,8 @@
-package com.github.toastedsnackbar.arbor.net.requests.entities;
+package com.github.toastedsnackbar.arbor.net.requests;
 
 import android.os.Parcel;
 
 import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
-import com.github.toastedsnackbar.arbor.net.requests.ApiRequest;
 import com.github.toastedsnackbar.arbor.net.responses.UserResponse;
 
 import java.util.Map;
@@ -60,7 +59,7 @@ public class UserRequest extends ApiRequest<UserResponse> {
 
     @Override
     protected boolean isAuthorizedRequest() {
-        return false;
+        return true;
     }
 
     @Override

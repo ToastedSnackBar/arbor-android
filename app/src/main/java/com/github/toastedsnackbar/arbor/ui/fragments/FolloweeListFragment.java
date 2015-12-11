@@ -19,7 +19,7 @@ import com.github.toastedsnackbar.arbor.net.ApiService;
 import com.github.toastedsnackbar.arbor.net.ApiService.ResultCodes;
 import com.github.toastedsnackbar.arbor.net.requests.AuthUserIsFollowingRequest;
 import com.github.toastedsnackbar.arbor.net.requests.UserListRequest;
-import com.github.toastedsnackbar.arbor.net.requests.entities.UserRequest;
+import com.github.toastedsnackbar.arbor.net.requests.UserRequest;
 import com.github.toastedsnackbar.arbor.net.responses.IsFollowingResponse;
 import com.github.toastedsnackbar.arbor.net.responses.UserListResponse;
 import com.github.toastedsnackbar.arbor.net.responses.UserResponse;

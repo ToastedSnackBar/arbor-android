@@ -105,7 +105,6 @@ public class HomeScreenActivity extends AppCompatActivity implements
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
-        Class<? extends Fragment> fragmentClass = null;
         Fragment fragment = null;
 
         if (mCurrentNav != null && menuItem.getItemId() == mCurrentNav.getItemId()) {
@@ -116,15 +115,15 @@ public class HomeScreenActivity extends AppCompatActivity implements
 
         switch (menuItem.getItemId()) {
             case R.id.nav_activity:
-                fragmentClass = NewsListFragment.class;
+                fragment = NewsListFragment.newInstance();
                 break;
 
             case R.id.nav_my_repositories:
-                fragmentClass = RepositoryListFragment.class;
+                fragment = RepositoryListFragment.newInstance();
                 break;
 
             case R.id.nav_my_followings:
-                fragmentClass = FolloweeFragment.class;
+                fragment = FolloweeFragment.newInstance();
                 break;
 
             case R.id.action_log_out:
@@ -134,13 +133,7 @@ public class HomeScreenActivity extends AppCompatActivity implements
                 break;
         }
 
-        if (fragmentClass != null) {
-            try {
-                fragment = fragmentClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-
+        if (fragment != null) {
             showFragment(fragment);
             menuItem.setChecked(true);
             setTitle(menuItem.getTitle());

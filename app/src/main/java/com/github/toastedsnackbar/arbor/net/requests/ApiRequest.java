@@ -63,8 +63,11 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
                     response.setStatusCode(statusCode);
                     response.setObtainedAt(System.currentTimeMillis());
                 }
+            } else {
+                Log.e("ApiRequest", "[" + getRequestMethod() + "] " + getUrl()
+                        + " (" + connection.getResponseCode() + ")"
+                        + " : " + connection.getResponseMessage());
             }
-
         } finally {
             connection.disconnect();
         }
@@ -84,9 +87,10 @@ public abstract class ApiRequest<T extends ApiResponse> implements Parcelable {
         reader.close();
 
         String response = stringBuilder.toString();
-        Log.d("ApiRequest", "[" + getRequestMethod() + "] " + getUrl()
+        String msg = response.length() > 0 ? response : connection.getResponseMessage();
+        Log.i("ApiRequest", "[" + getRequestMethod() + "] " + getUrl()
                 + " (" + connection.getResponseCode() + ")"
-                + " : " + response);
+                + " : " + msg);
 
         if (TextUtils.isEmpty(response)) {
             response = "{}";
