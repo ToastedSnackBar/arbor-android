@@ -50,6 +50,7 @@ public class RepositoryListFragment extends Fragment implements ApiReceiver.Rece
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         mAdapter = new RepositoryAdapter(getActivity());
         mApiReceiver = new ApiReceiver(new Handler());
+        mApiReceiver.setResultListener(RepositoryListFragment.this);
 
         mRepositoriesList.setAdapter(mAdapter);
         mRepositoriesList.setLayoutManager(new LinearLayoutManager(getActivity()));

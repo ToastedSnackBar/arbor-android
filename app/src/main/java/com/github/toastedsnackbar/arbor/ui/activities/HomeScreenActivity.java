@@ -107,7 +107,9 @@ public class HomeScreenActivity extends AppCompatActivity implements
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         Fragment fragment = null;
 
-        if (mCurrentNav != null && menuItem.getItemId() == mCurrentNav.getItemId()) {
+        if (mCurrentNav != null
+                && menuItem.getItemId() == mCurrentNav.getItemId()
+                && menuItem.getGroupId() != R.id.action_items) {
             mDrawerLayout.closeDrawers();
             return true;
         }
@@ -137,9 +139,8 @@ public class HomeScreenActivity extends AppCompatActivity implements
             showFragment(fragment);
             menuItem.setChecked(true);
             setTitle(menuItem.getTitle());
+            mDrawerLayout.closeDrawers();
         }
-
-        mDrawerLayout.closeDrawers();
 
         return true;
     }

@@ -4,9 +4,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="1.25dp"
+    android:paddingBottom="1.25dp"
+    android:paddingRight="5dp"
+    android:paddingLeft="5dp">
 
     <android.support.v7.widget.CardView
         android:id="@+id/card_view"
@@ -18,17 +22,17 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="15dp">
+            android:padding="12dp">
 
             <TextView
                 android:id="@+id/repo_name"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginBottom="5dp"
                 android:textColor="@color/accent"
                 android:textSize="24sp"
-                tools:text="arbor-android"/>
+                tools:text="repository_with_a_very_very_long_name"/>
 
             <TextView
                 android:id="@+id/stars"
@@ -52,7 +56,6 @@
                 android:drawablePadding="3dp"
                 android:gravity="center_vertical"
                 android:paddingEnd="5dp"
-                android:paddingStart="5dp"
                 tools:text="3"/>
 
             <TextView
@@ -72,14 +75,6 @@
                 android:textStyle="bold"
                 tools:text="Java"/>
 
-            <TextView
-                android:id="@+id/last_updated_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/stars"
-                android:layout_marginTop="7dp"
-                tools:text="Updated 2 days ago"/>
-
             <ImageView
                 android:id="@+id/privacy_status_icon"
                 android:layout_width="wrap_content"
@@ -87,6 +82,43 @@
                 android:layout_alignBottom="@id/following"
                 android:layout_alignParentRight="true"
                 tools:src="@drawable/ic_public_white"/>
+
+            <LinearLayout
+                android:id="@+id/repo_description_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/following"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider"/>
+
+                <TextView
+                    android:id="@+id/repo_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    tools:text="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider"/>
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/last_updated_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/repo_description_container"
+                android:layout_marginTop="7dp"
+                android:textSize="12sp"
+                tools:text="Updated 2 days ago"/>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 

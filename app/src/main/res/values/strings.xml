@@ -12,6 +12,7 @@
     <string name="splash_error_empty">Username or password cannot be empty</string>
     <string name="splash_error_incorrect">Username or password is incorrect</string>
     <string name="splash_error_chars">Username or password is too short</string>
+    <string name="splash_error_unknown">Unable to log in. Reason unknown :(</string>
 
     <string name="activity">News Feed</string>
     <string name="my_repositories">Repositories</string>

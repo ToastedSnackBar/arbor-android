@@ -40,6 +40,7 @@ public class NewsListFragment extends Fragment implements ApiReceiver.ReceiveRes
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         mAdapter = new NewsAdapter(getActivity());
         mApiReceiver = new ApiReceiver(new Handler());
+        mApiReceiver.setResultListener(NewsListFragment.this);
 
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
 

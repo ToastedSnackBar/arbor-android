@@ -100,9 +100,7 @@ public class UserAdapter extends Adapter<UserViewHolder> {
         }
 
         boolean isFollowing = mFollowingMap.get(user);
-        holder.followButton.setWidth(holder.followingButton.getWidth());
-        holder.followButton.setVisibility(isFollowing ? View.GONE : View.VISIBLE);
-        holder.followingButton.setVisibility(isFollowing ? View.VISIBLE : View.GONE);
-
+        holder.followButton.setVisibility(isFollowing ? View.INVISIBLE : View.VISIBLE);
+        holder.followingButton.setVisibility(isFollowing ? View.VISIBLE : View.INVISIBLE);
     }
 }

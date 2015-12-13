@@ -307,6 +307,10 @@ public class RepositoryResponse extends ApiResponse {
         return mRepoLanguage;
     }
 
+    public String getDescription() {
+        return mDescription;
+    }
+
     public static final Creator<RepositoryResponse> CREATOR = new Creator<RepositoryResponse>() {
 
         @Override

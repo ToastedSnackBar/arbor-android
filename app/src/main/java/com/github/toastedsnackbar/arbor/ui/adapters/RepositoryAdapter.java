@@ -1,6 +1,7 @@
 package com.github.toastedsnackbar.arbor.ui.adapters;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.text.Html;
@@ -36,6 +37,8 @@ public class RepositoryAdapter extends Adapter<RepositoryViewHolder> {
         TextView repoFollowing;
         ImageView privacyStatus;
         TextView repoLanguage;
+        View repoDescriptionContainer;
+        TextView repoDescription;
 
         public RepositoryViewHolder(View itemView) {
             super(itemView);
@@ -46,26 +49,19 @@ public class RepositoryAdapter extends Adapter<RepositoryViewHolder> {
             repoStars = (TextView) itemView.findViewById(R.id.stars);
             repoFollowing = (TextView) itemView.findViewById(R.id.following);
             privacyStatus = (ImageView) itemView.findViewById(R.id.privacy_status_icon);
+            repoDescriptionContainer = itemView.findViewById(R.id.repo_description_container);
+            repoDescription = (TextView) itemView.findViewById(R.id.repo_description);
         }
     }
 
-    public static final String DATE_FORMAT = "MMMM d, yyyy";
-
     private Context mContext;
     private List<RepositoryResponse> mItems;
-
-    private DateFormat mSourceDateFormat;
-    private DateFormat mDestinationDateFormat;
 
     private long mObtainedAt;
 
     public RepositoryAdapter(Context context) {
         mContext = context;
         mItems = new ArrayList<>();
-
-        Locale currentLocale = context.getResources().getConfiguration().locale;
-        mSourceDateFormat = new SimpleDateFormat(ApiEndpoints.SERVER_TIME_FORMAT, currentLocale);
-        mDestinationDateFormat = new SimpleDateFormat(DATE_FORMAT, currentLocale);
 
         mObtainedAt = System.currentTimeMillis();
     }
@@ -87,7 +83,8 @@ public class RepositoryAdapter extends Adapter<RepositoryViewHolder> {
         RepositoryResponse item = mItems.get(position);
         repositoryViewHolder.repositoryName.setText(item.getName());
 
-        String updatedFormattedDate = "";
+        int privacyIcon = item.isPrivate() ? R.drawable.ic_lock_white : R.drawable.ic_public_white;
+        repositoryViewHolder.privacyStatus.setImageResource(privacyIcon);
 
         String updatedAt = item.getUpdatedAt();
         String updatedAtString = DateTimeUtil.getEventTimeStamp(updatedAt, mObtainedAt, mContext);
@@ -107,8 +104,13 @@ public class RepositoryAdapter extends Adapter<RepositoryViewHolder> {
         String repoFollowing = String.valueOf(item.getWatchersCount());
         repositoryViewHolder.repoFollowing.setText(repoFollowing);
 
-        int privacyIconId = item.isPrivate() ? R.drawable.ic_lock_white : R.drawable.ic_public_white;
-        repositoryViewHolder.privacyStatus.setImageResource(privacyIconId);
+        String description = item.getDescription();
+        if (!TextUtils.isEmpty(description)) {
+            repositoryViewHolder.repoDescription.setText(description);
+            repositoryViewHolder.repoDescriptionContainer.setVisibility(View.VISIBLE);
+        } else {
+            repositoryViewHolder.repoDescriptionContainer.setVisibility(View.GONE);
+        }
     }
 
     @Override

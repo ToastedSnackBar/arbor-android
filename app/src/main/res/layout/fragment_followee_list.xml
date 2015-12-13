@@ -18,6 +18,6 @@
         android:indeterminate="true"
         android:indeterminateTint="@color/accent"
         android:indeterminateTintMode="src_atop"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </RelativeLayout>

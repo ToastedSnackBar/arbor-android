@@ -67,6 +67,7 @@ public class FolloweeListFragment extends Fragment implements ReceiveResultListe
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         mAdapter = new UserAdapter(getActivity());
         mApiReceiver = new ApiReceiver(new Handler());
+        mApiReceiver.setResultListener(FolloweeListFragment.this);
 
         mFollowingMap = new HashMap<>();
         mFollowingRequestIdUserMap = new HashMap<>();
