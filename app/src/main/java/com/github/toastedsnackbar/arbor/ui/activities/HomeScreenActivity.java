@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,6 +18,7 @@ import android.widget.TextView;
 
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
+import com.github.toastedsnackbar.arbor.ui.fragments.ArborFragment;
 import com.github.toastedsnackbar.arbor.ui.fragments.FolloweeFragment;
 import com.github.toastedsnackbar.arbor.ui.fragments.NewsListFragment;
 import com.github.toastedsnackbar.arbor.ui.fragments.RepositoryListFragment;
@@ -105,7 +105,7 @@ public class HomeScreenActivity extends AppCompatActivity implements
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
-        Fragment fragment = null;
+        ArborFragment fragment = null;
 
         if (mCurrentNav != null
                 && menuItem.getItemId() == mCurrentNav.getItemId()
@@ -113,7 +113,10 @@ public class HomeScreenActivity extends AppCompatActivity implements
             mDrawerLayout.closeDrawers();
             return true;
         }
-        mCurrentNav = menuItem;
+
+        if (menuItem.getGroupId() != R.id.action_items) {
+            mCurrentNav = menuItem;
+        }
 
         switch (menuItem.getItemId()) {
             case R.id.nav_activity:
@@ -145,9 +148,10 @@ public class HomeScreenActivity extends AppCompatActivity implements
         return true;
     }
 
-    private void showFragment(Fragment fragment) {
+    private void showFragment(ArborFragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.content, fragment,
+                fragment.getFragmentTag()).commit();
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {

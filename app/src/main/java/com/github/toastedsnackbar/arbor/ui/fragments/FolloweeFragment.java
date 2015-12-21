@@ -1,13 +1,11 @@
 package com.github.toastedsnackbar.arbor.ui.fragments;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TabLayout.OnTabSelectedListener;
 import android.support.design.widget.TabLayout.Tab;
 import android.support.design.widget.TabLayout.TabLayoutOnPageChangeListener;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -15,21 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.toastedsnackbar.arbor.R;
-import com.github.toastedsnackbar.arbor.net.ApiReceiver;
-import com.github.toastedsnackbar.arbor.net.ApiReceiver.ReceiveResultListener;
-import com.github.toastedsnackbar.arbor.net.ApiService;
-import com.github.toastedsnackbar.arbor.net.ApiService.ResultCodes;
 import com.github.toastedsnackbar.arbor.net.requests.AuthUserRequest;
+import com.github.toastedsnackbar.arbor.net.responses.ApiResponse;
 import com.github.toastedsnackbar.arbor.net.responses.UserResponse;
 import com.github.toastedsnackbar.arbor.ui.adapters.FolloweeFragmentPagerAdapter;
 
-public class FolloweeFragment extends Fragment implements OnTabSelectedListener,
-        ReceiveResultListener {
+public class FolloweeFragment extends ArborFragment implements OnTabSelectedListener {
 
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
-
-    private ApiReceiver mApiReceiver;
 
     public static FolloweeFragment newInstance() {
         return new FolloweeFragment();
@@ -59,45 +51,30 @@ public class FolloweeFragment extends Fragment implements OnTabSelectedListener,
         mTabLayout.setOnTabSelectedListener(FolloweeFragment.this);
         mViewPager.setCurrentItem(0);
 
-        mApiReceiver = new ApiReceiver(new Handler());
-        mApiReceiver.setResultListener(FolloweeFragment.this);
-
         AuthUserRequest request = new AuthUserRequest();
-        ApiService.executeRequest(getActivity(), request, mApiReceiver);
+        executeRequest(request);
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        mApiReceiver.setResultListener(FolloweeFragment.this);
-    }
+    protected void onRequestStart(String requestId) {}
 
     @Override
-    public void onStop() {
-        super.onStop();
-        mApiReceiver.setResultListener(null);
-    }
+    protected void onRequestSuccess(String requestId, ApiResponse baseResponse) {
+        UserResponse response = (UserResponse) baseResponse;
 
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        switch (resultCode) {
-            case ResultCodes.RUNNING:
-                break;
+        if (response != null) {
+            Tab followingTab = mTabLayout.getTabAt(0);
+            int followingCount = response.getFollowingCount();
+            setTabFolloweeCount(followingTab, followingCount, R.string.following_count);
 
-            case ResultCodes.SUCCESS:
-                UserResponse response = resultData.getParcelable(ApiService.EXTRA_RESPONSE);
-                if (response != null) {
-                    Tab followingTab = mTabLayout.getTabAt(0);
-                    int followingCount = response.getFollowingCount();
-                    setTabFolloweeCount(followingTab, followingCount, R.string.following_count);
-
-                    Tab followerTab = mTabLayout.getTabAt(1);
-                    int followerCount = response.getFollowerCount();
-                    setTabFolloweeCount(followerTab, followerCount, R.string.followers_count);
-                }
-                break;
+            Tab followerTab = mTabLayout.getTabAt(1);
+            int followerCount = response.getFollowerCount();
+            setTabFolloweeCount(followerTab, followerCount, R.string.followers_count);
         }
     }
+
+    @Override
+    protected void onRequestError(String requestId) {}
 
     private void setTabFolloweeCount(Tab tab, int count, int stringResId) {
         if (tab != null && count >= 0) {
@@ -120,4 +97,9 @@ public class FolloweeFragment extends Fragment implements OnTabSelectedListener,
 
     @Override
     public void onTabReselected(Tab tab) { }
+
+    @Override
+    public String getFragmentTag() {
+        return "fragment_followee";
+    }
 }

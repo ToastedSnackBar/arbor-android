@@ -1,9 +1,7 @@
 package com.github.toastedsnackbar.arbor.ui.fragments;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,17 +11,15 @@ import android.widget.ProgressBar;
 
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.net.ApiReceiver;
-import com.github.toastedsnackbar.arbor.net.ApiService;
 import com.github.toastedsnackbar.arbor.net.requests.EventListRequest;
+import com.github.toastedsnackbar.arbor.net.responses.ApiResponse;
 import com.github.toastedsnackbar.arbor.net.responses.events.EventListResponse;
 import com.github.toastedsnackbar.arbor.ui.adapters.NewsAdapter;
 
-public class NewsListFragment extends Fragment implements ApiReceiver.ReceiveResultListener {
+public class NewsListFragment extends ArborFragment implements ApiReceiver.ReceiveResultListener {
 
     private NewsAdapter mAdapter;
     private ProgressBar mProgressBar;
-
-    private ApiReceiver mApiReceiver;
 
     public static NewsListFragment newInstance() {
         return new NewsListFragment();
@@ -39,8 +35,6 @@ public class NewsListFragment extends Fragment implements ApiReceiver.ReceiveRes
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         mAdapter = new NewsAdapter(getActivity());
-        mApiReceiver = new ApiReceiver(new Handler());
-        mApiReceiver.setResultListener(NewsListFragment.this);
 
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
 
@@ -49,42 +43,33 @@ public class NewsListFragment extends Fragment implements ApiReceiver.ReceiveRes
         newsList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         EventListRequest request = new EventListRequest();
-        ApiService.executeRequest(getActivity(), request, mApiReceiver);
+        executeRequest(request);
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        mApiReceiver.setResultListener(NewsListFragment.this);
+    protected void onRequestStart(String requestId) {
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        mApiReceiver.setResultListener(null);
-    }
-
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        switch (resultCode) {
-            case ApiService.ResultCodes.RUNNING:
-                mProgressBar.setVisibility(View.VISIBLE);
-                break;
-
-            case ApiService.ResultCodes.SUCCESS:
-                EventListResponse response = resultData.getParcelable(ApiService.EXTRA_RESPONSE);
-                if (response == null) {
-                    return;
-                }
-
-                mAdapter.addAll(response.getItems());
-                mAdapter.notifyDataSetChanged();
-                mProgressBar.setVisibility(View.GONE);
-                break;
-
-            case ApiService.ResultCodes.ERROR:
-                mProgressBar.setVisibility(View.GONE);
-                break;
+    protected void onRequestSuccess(String requestId, ApiResponse baseResponse) {
+        EventListResponse response = (EventListResponse) baseResponse;
+        if (response == null) {
+            return;
         }
+
+        mAdapter.addAll(response.getItems());
+        mAdapter.notifyDataSetChanged();
+        mProgressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onRequestError(String requestId) {
+        mProgressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public String getFragmentTag() {
+        return "fragment_news_list";
     }
 }

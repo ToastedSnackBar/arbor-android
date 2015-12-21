@@ -33,7 +33,6 @@ import com.github.toastedsnackbar.arbor.net.ApiService.ResultCodes;
 import com.github.toastedsnackbar.arbor.net.requests.AuthUserRequest;
 import com.github.toastedsnackbar.arbor.net.responses.UserResponse;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,

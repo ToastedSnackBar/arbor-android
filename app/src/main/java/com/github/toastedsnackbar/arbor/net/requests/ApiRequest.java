@@ -2,7 +2,6 @@ package com.github.toastedsnackbar.arbor.net.requests;
 
 import android.os.Parcelable;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
