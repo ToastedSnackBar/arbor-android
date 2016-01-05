@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class AuthUserIsFollowingRequest extends ApiRequest<IsFollowingResponse> {
 
-    private static final Set<Integer> ACCEPTED_STATUSES = new HashSet<>(Arrays.asList(204, 404));
+    private static final Set<Integer> ACCEPTED_STATUSES = new HashSet<>(Arrays.asList(204));
 
     String mUrl;
     String mRequestId;

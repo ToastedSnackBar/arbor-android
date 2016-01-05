@@ -7,8 +7,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:paddingBottom="1.25dp"
     android:paddingLeft="5dp"
-    android:paddingRight="5dp">
+    android:paddingRight="5dp"
+    android:paddingTop="1.25dp">
 
     <android.support.v7.widget.CardView
         android:id="@+id/card_view"
@@ -20,7 +22,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="15dp">
+            android:padding="12dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/avatar"
@@ -31,23 +33,32 @@
                 android:layout_marginRight="15dp"
                 tools:src="@drawable/house_md"/>
 
-            <TextView
-                android:id="@+id/payload_text"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/payload_container"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/avatar"
-                android:layout_marginBottom="3dp"
                 android:layout_toRightOf="@+id/avatar"
-                android:textColor="@color/text_primary"
-                tools:text="Dr. House pushed to master at ToastedSnackBar/arbor-android"/>
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/payload_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_primary"
+                    tools:text="Dr. House pushed to master at PPTH/diagnostics"/>
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/timestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/payload_text"
+                android:layout_below="@id/payload_container"
+                android:layout_marginTop="5dp"
                 android:layout_toRightOf="@+id/avatar"
                 android:textColor="@color/text_secondary"
+                android:textSize="12sp"
                 tools:text="36 minutes ago"/>
         </RelativeLayout>
     </android.support.v7.widget.CardView>

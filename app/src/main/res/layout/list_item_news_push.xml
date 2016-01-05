@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/recycler_view_element"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="1.25dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingTop="1.25dp">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/background_darker_grey"
+        app:cardUseCompatPadding="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/avatar"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="15dp"
+                tools:src="@drawable/house_md"/>
+
+            <LinearLayout
+                android:id="@+id/payload_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/avatar"
+                android:layout_toRightOf="@+id/avatar"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/payload_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_primary"
+                    tools:text="Dr. House pushed to master at PPTH/diagnostics"/>
+
+                <LinearLayout
+                    android:id="@+id/commit_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:id="@+id/commit_sum_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="3dp"
+                        android:textColor="@color/accent"
+                        android:textSize="12sp"
+                        android:maxLength="7"
+                        tools:text="6d4bd7f"/>
+
+                    <TextView
+                        android:id="@+id/commit_message_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        tools:text="Changed the way we handle patient records. Cuddy's orders, I didn't want to do it either."/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/commit_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="3dp">
+
+                    <TextView
+                        android:id="@+id/commit_sum_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="3dp"
+                        android:textColor="@color/accent"
+                        android:textSize="12sp"
+                        android:maxLength="7"
+                        tools:text="1bb75cb"/>
+
+                    <TextView
+                        android:id="@+id/commit_message_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        tools:text="Well this is pretty stupid. I just fixed all of the stupidity!"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/commit_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textSize="12sp"
+                    android:textColor="@color/accent"
+                    tools:text="2 more commits"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/timestamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/payload_container"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@+id/avatar"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                tools:text="36 minutes ago"/>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

@@ -17,7 +17,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.github.toastedsnackbar.arbor.R;
+import com.github.toastedsnackbar.arbor.net.responses.CommitResponse;
 import com.github.toastedsnackbar.arbor.net.responses.events.EventResponse;
+import com.github.toastedsnackbar.arbor.net.responses.events.EventType;
 import com.github.toastedsnackbar.arbor.net.responses.events.PullRequestEventPayloadResponse;
 import com.github.toastedsnackbar.arbor.net.responses.events.PushEventPayloadResponse;
 import com.github.toastedsnackbar.arbor.ui.adapters.NewsAdapter.NewsViewHolder;
@@ -51,6 +53,36 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         }
     }
 
+    public static class PushNewsViewHolder extends NewsViewHolder {
+
+        View commit1;
+        View commit2;
+        TextView commitSum1;
+        TextView commitSum2;
+        TextView commitMsg1;
+        TextView commitMsg2;
+        TextView commitCount;
+
+        public PushNewsViewHolder(View itemView) {
+            super(itemView);
+
+            commit1 = itemView.findViewById(R.id.commit_1);
+            commit2 = itemView.findViewById(R.id.commit_2);
+            commitSum1 = (TextView) itemView.findViewById(R.id.commit_sum_1);
+            commitSum2 = (TextView) itemView.findViewById(R.id.commit_sum_2);
+            commitMsg1 = (TextView) itemView.findViewById(R.id.commit_message_1);
+            commitMsg2 = (TextView) itemView.findViewById(R.id.commit_message_2);
+            commitCount = (TextView) itemView.findViewById(R.id.commit_count);
+        }
+    }
+
+    public static class PullRequestNewsViewHolder extends NewsViewHolder {
+
+        public PullRequestNewsViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
     private static final SpannableString EMPTY_SPANNABLE = new SpannableString("");
 
     private Context mContext;
@@ -74,14 +106,42 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         return mItems.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return mItems.get(position).getType().ordinal();
+    }
+
     public void addAll(Collection<? extends EventResponse> items) {
         mItems.addAll(items);
     }
 
     @Override
     public NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.list_item_news, parent, false);
-        return new NewsViewHolder(v);
+        NewsViewHolder viewHolder;
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+
+        final EventType[] types = EventType.values();
+        switch (types[viewType]) {
+            case PUSH: {
+                View view = inflater.inflate(R.layout.list_item_news_push, parent, false);
+                viewHolder = new PushNewsViewHolder(view);
+                break;
+            }
+
+            case PULL_REQUEST: {
+                View view = inflater.inflate(R.layout.list_item_news_pull_request, parent, false);
+                viewHolder = new PullRequestNewsViewHolder(view);
+                break;
+            }
+
+            default: {
+                View view = inflater.inflate(R.layout.list_item_news, parent, false);
+                viewHolder = new NewsViewHolder(view);
+                break;
+            }
+        }
+
+        return viewHolder;
     }
 
     @Override
@@ -92,14 +152,72 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         }
 
         String createdAt = event.getCreatedAt();
-        SpannableString payloadString = getPayloadSpannable(event, position);
         String timestamp = DateTimeUtil.getEventTimeStamp(createdAt, event.getObtainedAt(),
                 mContext);
+        SpannableString payloadString = getPayloadSpannable(event, position);
         String avatarUrl = event.getActor().getAvatarUrl();
+
+        switch (event.getType()) {
+            case PUSH:
+                setPushItemView((PushNewsViewHolder) newsViewHolder, event);
+                break;
+
+            case PULL_REQUEST:
+                setPullRequestItemView((PullRequestNewsViewHolder) newsViewHolder, event);
+                break;
+        }
 
         newsViewHolder.payload.setText(payloadString);
         newsViewHolder.timestamp.setText(timestamp);
         mPicasso.load(avatarUrl).into(newsViewHolder.avatarView);
+    }
+
+    private void setPushItemView(PushNewsViewHolder pushViewHolder, EventResponse event) {
+        PushEventPayloadResponse payload = (PushEventPayloadResponse) event.getPayload();
+        List<CommitResponse> commits = payload.getCommits();
+
+        if (commits.size() >= 2) { // at least 2 commits (show everything)
+            String commitSum1 = payload.getCommits().get(0).getSha().substring(0, 7);
+            pushViewHolder.commitSum1.setText(commitSum1);
+
+            String commitSum2 = payload.getCommits().get(1).getSha().substring(0, 7);
+            pushViewHolder.commitSum2.setText(commitSum2);
+
+            String commitMsg1 = payload.getCommits().get(0).getMessage();
+            pushViewHolder.commitMsg1.setText(commitMsg1);
+
+            String commitMsg2 = payload.getCommits().get(1).getMessage();
+            pushViewHolder.commitMsg2.setText(commitMsg2);
+
+            if (commits.size() > 2) {
+                int commitCount = commits.size() - 2;
+
+                int commitCountResId = commitCount > 1 ?
+                        R.string.commits_count : R.string.commit_count;
+                String commitCountString = mContext.getString(commitCountResId, commitCount);
+
+                pushViewHolder.commitCount.setText(commitCountString);
+                pushViewHolder.commitCount.setVisibility(View.VISIBLE);
+            } else {
+                pushViewHolder.commitCount.setVisibility(View.GONE);
+            }
+
+            pushViewHolder.commit2.setVisibility(View.VISIBLE);
+        } else { // 1 commit (hide second commit and commit count)
+            String commitSum1 = payload.getCommits().get(0).getSha().substring(0, 7);
+            pushViewHolder.commitSum1.setText(commitSum1);
+
+            String commitMsg1 = payload.getCommits().get(0).getMessage();
+            pushViewHolder.commitMsg1.setText(commitMsg1);
+
+            pushViewHolder.commit2.setVisibility(View.GONE);
+            pushViewHolder.commitCount.setVisibility(View.GONE);
+        }
+    }
+
+    private void setPullRequestItemView(PullRequestNewsViewHolder pullRequestViewHolder,
+                                        EventResponse event) {
+
     }
 
     private SpannableString getPayloadSpannable(EventResponse event, int position) {
