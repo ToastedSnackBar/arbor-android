@@ -47,9 +47,11 @@
 
     <string name="payload_push">%1$s pushed to %2$s at %3$s</string>
     <string name="payload_pull_request">%1$s %2$s pull request %3$s#%4$s</string>
+    <string name="payload_gollum">%1$s edited the %2$s wiki</string>
 
     <string name="commits_count">%1$d more commits...</string>
     <string name="commit_count">%1$d more commit...</string>
+    <string name="view_diff_gollum">View diff...</string>
 
     <string name="commits_count_pr">%1$d commits</string>
     <string name="commit_count_pr">%1$d commit</string>

@@ -19,12 +19,15 @@ import android.widget.TextView;
 
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.net.responses.CommitResponse;
+import com.github.toastedsnackbar.arbor.net.responses.PageResponse;
 import com.github.toastedsnackbar.arbor.net.responses.events.EventResponse;
 import com.github.toastedsnackbar.arbor.net.responses.events.EventType;
+import com.github.toastedsnackbar.arbor.net.responses.events.GollumEventPayloadResponse;
 import com.github.toastedsnackbar.arbor.net.responses.events.PullRequestEventPayloadResponse;
 import com.github.toastedsnackbar.arbor.net.responses.events.PushEventPayloadResponse;
 import com.github.toastedsnackbar.arbor.ui.adapters.NewsAdapter.NewsViewHolder;
 import com.github.toastedsnackbar.arbor.util.DateTimeUtil;
+import com.github.toastedsnackbar.arbor.util.StringUtil;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -94,6 +97,17 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         }
     }
 
+    public static class GollumNewsViewHolder extends NewsViewHolder {
+
+        TextView description;
+
+        public GollumNewsViewHolder(View itemView) {
+            super(itemView);
+
+            description = (TextView) itemView.findViewById(R.id.gollum_description);
+        }
+    }
+
     private static final SpannableString EMPTY_SPANNABLE = new SpannableString("");
 
     private Context mContext;
@@ -101,7 +115,8 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
     private Picasso mPicasso;
 
     private SpannableStringBuilder mSpannableBuilder;
-    private Map<Integer, SpannableString> mSpannableMap;
+    private Map<Integer, SpannableString> mPayloadSpannableMap;
+    private Map<Integer, SpannableString> mGollumSpannableMap;
 
     public NewsAdapter(Context context) {
         mContext = context;
@@ -109,7 +124,8 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         mPicasso = Picasso.with(mContext);
 
         mSpannableBuilder = new SpannableStringBuilder();
-        mSpannableMap = new HashMap<>();
+        mPayloadSpannableMap = new HashMap<>();
+        mGollumSpannableMap = new HashMap<>();
     }
 
     @Override
@@ -143,6 +159,11 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
                         R.layout.list_item_news_pull_request, parent, false));
                 break;
 
+            case GOLLUM:
+                viewHolder = new GollumNewsViewHolder(inflater.inflate(
+                        R.layout.list_item_news_gollum, parent, false));
+                break;
+
             default:
                 viewHolder = new NewsViewHolder(inflater.inflate(
                         R.layout.list_item_news, parent, false));
@@ -162,7 +183,7 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         String createdAt = event.getCreatedAt();
         String timestamp = DateTimeUtil.getEventTimeStamp(createdAt, event.getObtainedAt(),
                 mContext);
-        SpannableString payloadString = mSpannableMap.get(position);
+        SpannableString payloadString = mPayloadSpannableMap.get(position);
         String avatarUrl = event.getActor().getAvatarUrl();
 
         switch (event.getType()) {
@@ -170,16 +191,24 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
                 setPushItemView((PushNewsViewHolder) newsViewHolder, event);
                 if (payloadString == null) {
                     payloadString = getPushPayloadSpannable(event);
+                    mPayloadSpannableMap.put(position, payloadString);
                 }
-                mSpannableMap.put(position, payloadString);
                 break;
 
             case PULL_REQUEST:
                 setPullRequestItemView((PullRequestNewsViewHolder) newsViewHolder, event);
                 if (payloadString == null) {
                     payloadString = getPullRequestPayloadSpannable(event);
+                    mPayloadSpannableMap.put(position, payloadString);
                 }
-                mSpannableMap.put(position, payloadString);
+                break;
+
+            case GOLLUM:
+                setGollumItemView((GollumNewsViewHolder) newsViewHolder, event, position);
+                if (payloadString == null) {
+                    payloadString = getGollumPayloadSpannable(event);
+                    mPayloadSpannableMap.put(position, payloadString);
+                }
                 break;
 
             default:
@@ -265,6 +294,31 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         pullRequestViewHolder.deletionCount.setText(deletionCountString);
     }
 
+    private void setGollumItemView(GollumNewsViewHolder gollumNewsViewHolder, EventResponse event,
+                                   int position) {
+        SpannableString spannableString = mGollumSpannableMap.get(position);
+        if (spannableString != null) {
+            gollumNewsViewHolder.description.setText(spannableString);
+            return;
+        }
+
+        GollumEventPayloadResponse payload = (GollumEventPayloadResponse) event.getPayload();
+
+        PageResponse page = payload.getPages().get(0);
+        String pageName = page.getPageName();
+        String action = StringUtil.capitalizeFirst(page.getAction());
+
+        String gollumEventPayloadString = String.format("%s %s", action, pageName);
+        mSpannableBuilder.clear();
+        mSpannableBuilder.append(gollumEventPayloadString);
+
+        addSpans(gollumEventPayloadString, pageName);
+
+        SpannableString newSpannable = SpannableString.valueOf(mSpannableBuilder);
+        mGollumSpannableMap.put(position, newSpannable);
+        gollumNewsViewHolder.description.setText(newSpannable);
+    }
+
     private SpannableString getPushPayloadSpannable(EventResponse event) {
         PushEventPayloadResponse payload = (PushEventPayloadResponse) event.getPayload();
 
@@ -301,6 +355,20 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         addSpans(payloadString, actorName);
         addSpans(payloadString, repoName);
         addSpans(payloadString, String.format("#%s", number));
+
+        return SpannableString.valueOf(mSpannableBuilder);
+    }
+
+    private SpannableString getGollumPayloadSpannable(EventResponse event) {
+        String actorName = event.getActor().getLogin();
+        String repoName = event.getRepo().getName();
+
+        String payloadString = mContext.getString(R.string.payload_gollum, actorName, repoName);
+        mSpannableBuilder.clear();
+        mSpannableBuilder.append(payloadString);
+
+        addSpans(payloadString, actorName);
+        addSpans(payloadString, repoName);
 
         return SpannableString.valueOf(mSpannableBuilder);
     }

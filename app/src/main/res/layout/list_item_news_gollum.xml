@@ -46,7 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/text_primary"
-                    tools:text="Dr. House pushed to master at PPTH/diagnostics"/>
+                    tools:text="housemd edited the PPTH/diagnostics wiki"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -55,52 +55,23 @@
                     android:background="@color/divider"/>
 
                 <TextView
-                    android:id="@+id/pull_request_description"
+                    android:id="@+id/gollum_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:maxLines="3"
                     android:ellipsize="end"
-                    tools:text="Fix issue with diagnostics records not updating automatically. Pretty simple fixes, but we need someone to validate it regardless. Paging Dr. Foreman!"/>
+                    tools:text="Edited How to easily skip clinical hours."/>
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/view_diff"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/commit_count"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginRight="5dp"
-                        android:textColor="@color/accentDark"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        tools:text="1 commit"/>
-
-                    <TextView
-                        android:id="@+id/addition_count"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginRight="5dp"
-                        android:textColor="@color/material_green_dark"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        tools:text="+232 lines"/>
-
-                    <TextView
-                        android:id="@+id/deletion_count"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textColor="@color/material_red_dark"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        tools:text="-36 lines"/>
-                </LinearLayout>
+                    android:textColor="@color/accentDark"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:text="@string/view_diff_gollum"/>
 
                 <View
                     android:layout_width="match_parent"

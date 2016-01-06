@@ -25,6 +25,7 @@ public class EventListTypeAdapter implements JsonDeserializer<EventListResponse>
         Map<String, Boolean> supportedEventTypes = new HashMap<>();
         supportedEventTypes.put(EventType.PUSH.name, true);
         supportedEventTypes.put(EventType.PULL_REQUEST.name, true);
+        supportedEventTypes.put(EventType.GOLLUM.name, true);
         SUPPORTED_EVENT_TYPES = Collections.unmodifiableMap(supportedEventTypes);
     }
 
