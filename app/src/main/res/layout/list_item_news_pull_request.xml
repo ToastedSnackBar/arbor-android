@@ -59,7 +59,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:maxLines="3"
+                    android:maxLines="1"
                     android:ellipsize="end"
                     tools:text="Fix issue with diagnostics records not updating automatically. Pretty simple fixes, but we need someone to validate it regardless. Paging Dr. Foreman!"/>
 
@@ -71,9 +71,8 @@
 
                     <TextView
                         android:id="@+id/commit_count"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:layout_marginRight="5dp"
                         android:textColor="@color/accentDark"
                         android:textSize="12sp"
@@ -82,9 +81,8 @@
 
                     <TextView
                         android:id="@+id/addition_count"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:layout_marginRight="5dp"
                         android:textColor="@color/material_green_dark"
                         android:textSize="12sp"
@@ -93,9 +91,8 @@
 
                     <TextView
                         android:id="@+id/deletion_count"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:textColor="@color/material_red_dark"
                         android:textSize="12sp"
                         android:textStyle="bold"

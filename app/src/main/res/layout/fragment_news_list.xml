@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animationCache="false"
         android:background="@color/background_dark_grey"
-        android:padding="5dp"/>
+        android:fadeScrollbars="true"
+        android:padding="5dp"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical"
+        android:scrollingCache="false"/>
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -18,6 +23,6 @@
         android:indeterminate="true"
         android:indeterminateTint="@color/accent"
         android:indeterminateTintMode="src_atop"
-        android:visibility="gone" />
+        android:visibility="gone"/>
 
 </RelativeLayout>
