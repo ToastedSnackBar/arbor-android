@@ -15,7 +15,7 @@
     <color name="background_dark_grey">#ff202020</color>
 
     <color name="material_red">#fff44336</color>
-    <color name="material_red_dark">#ffd50000</color>
+    <color name="material_red_dark">#c62828</color>
     <color name="material_green">#ff4caf50</color>
     <color name="material_green_dark">#ff1b5e20</color>
 </resources>

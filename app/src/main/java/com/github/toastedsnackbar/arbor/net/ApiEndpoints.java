@@ -53,7 +53,7 @@ public class ApiEndpoints {
 
         public static final String USER = USERS + "/%s";
         public static final String USER_REPOS = USER + "/repos";
-        public static final String USER_RECEIVED_EVENTS = USER + "/received_events";
+        public static final String USER_RECEIVED_EVENTS = USER + "/received_events?per_page=100";
     }
 
     private static class Headers {

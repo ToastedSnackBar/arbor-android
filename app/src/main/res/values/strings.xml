@@ -50,4 +50,11 @@
 
     <string name="commits_count">%1$d more commits...</string>
     <string name="commit_count">%1$d more commit...</string>
+
+    <string name="commits_count_pr">%1$d commits</string>
+    <string name="commit_count_pr">%1$d commit</string>
+    <string name="additions_count_pr">+%1$d lines</string>
+    <string name="addition_count_pr">+%1$d line</string>
+    <string name="deletions_count_pr">-%1$d lines</string>
+    <string name="deletion_count_pr">-%1$d line</string>
 </resources>

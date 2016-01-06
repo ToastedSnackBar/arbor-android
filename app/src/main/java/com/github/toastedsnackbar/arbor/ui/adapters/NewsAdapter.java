@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
@@ -78,8 +79,18 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
 
     public static class PullRequestNewsViewHolder extends NewsViewHolder {
 
+        TextView description;
+        TextView commitCount;
+        TextView additionCount;
+        TextView deletionCount;
+
         public PullRequestNewsViewHolder(View itemView) {
             super(itemView);
+
+            description = (TextView) itemView.findViewById(R.id.pull_request_description);
+            commitCount = (TextView) itemView.findViewById(R.id.commit_count);
+            additionCount = (TextView) itemView.findViewById(R.id.addition_count);
+            deletionCount = (TextView) itemView.findViewById(R.id.deletion_count);
         }
     }
 
@@ -122,23 +133,20 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
 
         final EventType[] types = EventType.values();
         switch (types[viewType]) {
-            case PUSH: {
-                View view = inflater.inflate(R.layout.list_item_news_push, parent, false);
-                viewHolder = new PushNewsViewHolder(view);
+            case PUSH:
+                viewHolder = new PushNewsViewHolder(inflater.inflate(
+                        R.layout.list_item_news_push, parent, false));
                 break;
-            }
 
-            case PULL_REQUEST: {
-                View view = inflater.inflate(R.layout.list_item_news_pull_request, parent, false);
-                viewHolder = new PullRequestNewsViewHolder(view);
+            case PULL_REQUEST:
+                viewHolder = new PullRequestNewsViewHolder(inflater.inflate(
+                        R.layout.list_item_news_pull_request, parent, false));
                 break;
-            }
 
-            default: {
-                View view = inflater.inflate(R.layout.list_item_news, parent, false);
-                viewHolder = new NewsViewHolder(view);
+            default:
+                viewHolder = new NewsViewHolder(inflater.inflate(
+                        R.layout.list_item_news, parent, false));
                 break;
-            }
         }
 
         return viewHolder;
@@ -154,16 +162,28 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         String createdAt = event.getCreatedAt();
         String timestamp = DateTimeUtil.getEventTimeStamp(createdAt, event.getObtainedAt(),
                 mContext);
-        SpannableString payloadString = getPayloadSpannable(event, position);
+        SpannableString payloadString = mSpannableMap.get(position);
         String avatarUrl = event.getActor().getAvatarUrl();
 
         switch (event.getType()) {
             case PUSH:
                 setPushItemView((PushNewsViewHolder) newsViewHolder, event);
+                if (payloadString == null) {
+                    payloadString = getPushPayloadSpannable(event);
+                }
+                mSpannableMap.put(position, payloadString);
                 break;
 
             case PULL_REQUEST:
                 setPullRequestItemView((PullRequestNewsViewHolder) newsViewHolder, event);
+                if (payloadString == null) {
+                    payloadString = getPullRequestPayloadSpannable(event);
+                }
+                mSpannableMap.put(position, payloadString);
+                break;
+
+            default:
+                payloadString = EMPTY_SPANNABLE;
                 break;
         }
 
@@ -176,17 +196,21 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         PushEventPayloadResponse payload = (PushEventPayloadResponse) event.getPayload();
         List<CommitResponse> commits = payload.getCommits();
 
-        if (commits.size() >= 2) { // at least 2 commits (show everything)
-            String commitSum1 = payload.getCommits().get(0).getSha().substring(0, 7);
-            pushViewHolder.commitSum1.setText(commitSum1);
+        CommitResponse firstCommit = payload.getCommits().get(0);
 
-            String commitSum2 = payload.getCommits().get(1).getSha().substring(0, 7);
+        // 1st commit is always shown
+        String commitSum1 = firstCommit.getSha().substring(0, 7);
+        pushViewHolder.commitSum1.setText(commitSum1);
+
+        String commitMsg1 = firstCommit.getMessage();
+        pushViewHolder.commitMsg1.setText(commitMsg1);
+
+        if (commits.size() >= 2) { // at least 2 commits (show everything)
+            CommitResponse secondCommit = payload.getCommits().get(1);
+            String commitSum2 = secondCommit.getSha().substring(0, 7);
             pushViewHolder.commitSum2.setText(commitSum2);
 
-            String commitMsg1 = payload.getCommits().get(0).getMessage();
-            pushViewHolder.commitMsg1.setText(commitMsg1);
-
-            String commitMsg2 = payload.getCommits().get(1).getMessage();
+            String commitMsg2 = secondCommit.getMessage();
             pushViewHolder.commitMsg2.setText(commitMsg2);
 
             if (commits.size() > 2) {
@@ -204,12 +228,6 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
 
             pushViewHolder.commit2.setVisibility(View.VISIBLE);
         } else { // 1 commit (hide second commit and commit count)
-            String commitSum1 = payload.getCommits().get(0).getSha().substring(0, 7);
-            pushViewHolder.commitSum1.setText(commitSum1);
-
-            String commitMsg1 = payload.getCommits().get(0).getMessage();
-            pushViewHolder.commitMsg1.setText(commitMsg1);
-
             pushViewHolder.commit2.setVisibility(View.GONE);
             pushViewHolder.commitCount.setVisibility(View.GONE);
         }
@@ -217,32 +235,34 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
 
     private void setPullRequestItemView(PullRequestNewsViewHolder pullRequestViewHolder,
                                         EventResponse event) {
+        PullRequestEventPayloadResponse payload = (PullRequestEventPayloadResponse)
+                event.getPayload();
 
-    }
-
-    private SpannableString getPayloadSpannable(EventResponse event, int position) {
-        SpannableString payloadSpannable = mSpannableMap.get(position);
-        if (payloadSpannable != null) {
-            return payloadSpannable;
+        String description = payload.getPullRequest().getBody();
+        if (!TextUtils.isEmpty(description)) {
+            pullRequestViewHolder.description.setText(description);
+            pullRequestViewHolder.description.setVisibility(View.VISIBLE);
+        } else {
+            pullRequestViewHolder.description.setVisibility(View.GONE);
         }
 
-        switch (event.getType()) {
-            case PUSH:
-                payloadSpannable = getPushPayloadSpannable(event);
-                break;
+        int commitCount = payload.getPullRequest().getCommitCount();
+        int commitCountStringResId = commitCount > 1 ?
+                R.string.commits_count_pr : R.string.commit_count_pr;
+        String commitCountString = mContext.getString(commitCountStringResId, commitCount);
+        pullRequestViewHolder.commitCount.setText(commitCountString);
 
-            case PULL_REQUEST:
-                payloadSpannable = getPullRequestPayloadSpannable(event);
-                break;
+        int additionCount = payload.getPullRequest().getAdditionCount();
+        int additionCountStringResId = additionCount > 1 ?
+                R.string.additions_count_pr : R.string.addition_count_pr;
+        String additionCountString = mContext.getString(additionCountStringResId, additionCount);
+        pullRequestViewHolder.additionCount.setText(additionCountString);
 
-            default:
-                payloadSpannable = EMPTY_SPANNABLE;
-                break;
-        }
-
-        mSpannableMap.put(position, payloadSpannable);
-
-        return payloadSpannable;
+        int deletionCount = payload.getPullRequest().getDeletionCount();
+        int deletionCountStringResId = deletionCount > 1 ?
+                R.string.deletions_count_pr : R.string.deletion_count_pr;
+        String deletionCountString = mContext.getString(deletionCountStringResId, deletionCount);
+        pullRequestViewHolder.deletionCount.setText(deletionCountString);
     }
 
     private SpannableString getPushPayloadSpannable(EventResponse event) {
@@ -280,7 +300,7 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
 
         addSpans(payloadString, actorName);
         addSpans(payloadString, repoName);
-        addSpans(payloadString, "#" + number);
+        addSpans(payloadString, String.format("#%s", number));
 
         return SpannableString.valueOf(mSpannableBuilder);
     }

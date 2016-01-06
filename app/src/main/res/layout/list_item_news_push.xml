@@ -48,31 +48,38 @@
                     android:textColor="@color/text_primary"
                     tools:text="Dr. House pushed to master at PPTH/diagnostics"/>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/divider"/>
+
                 <LinearLayout
                     android:id="@+id/commit_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_marginTop="5dp"
                     android:gravity="center_vertical"
-                    android:layout_marginTop="5dp">
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/commit_sum_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="3dp"
+                        android:maxLength="7"
                         android:textColor="@color/accent"
                         android:textSize="12sp"
-                        android:maxLength="7"
+                        android:typeface="monospace"
                         tools:text="6d4bd7f"/>
 
                     <TextView
                         android:id="@+id/commit_message_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
-                        android:maxLines="1"
                         android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textSize="12sp"
                         tools:text="Changed the way we handle patient records. Cuddy's orders, I didn't want to do it either."/>
                 </LinearLayout>
 
@@ -80,27 +87,28 @@
                     android:id="@+id/commit_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_marginTop="3dp"
                     android:gravity="center_vertical"
-                    android:layout_marginTop="3dp">
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/commit_sum_2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="3dp"
+                        android:maxLength="7"
                         android:textColor="@color/accent"
                         android:textSize="12sp"
-                        android:maxLength="7"
+                        android:typeface="monospace"
                         tools:text="1bb75cb"/>
 
                     <TextView
                         android:id="@+id/commit_message_2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="12sp"
-                        android:maxLines="1"
                         android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textSize="12sp"
                         tools:text="Well this is pretty stupid. I just fixed all of the stupidity!"/>
                 </LinearLayout>
 
@@ -109,9 +117,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:textColor="@color/accentDark"
+                    android:textStyle="bold"
                     android:textSize="12sp"
-                    android:textColor="@color/accent"
                     tools:text="2 more commits"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/divider"/>
             </LinearLayout>
 
             <TextView
