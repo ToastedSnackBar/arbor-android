@@ -114,9 +114,13 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
     private List<EventResponse> mItems;
     private Picasso mPicasso;
 
+    private StringBuilder mStringBuilder;
     private SpannableStringBuilder mSpannableBuilder;
+
     private Map<Integer, SpannableString> mPayloadSpannableMap;
     private Map<Integer, SpannableString> mGollumSpannableMap;
+    private Map<Integer, ForegroundColorSpan> mColorSpanMap;
+    private Map<Integer, StyleSpan> mStyleSpanMap;
 
     public NewsAdapter(Context context) {
         mContext = context;
@@ -124,8 +128,12 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         mPicasso = Picasso.with(mContext);
 
         mSpannableBuilder = new SpannableStringBuilder();
+        mStringBuilder = new StringBuilder();
+
         mPayloadSpannableMap = new HashMap<>();
         mGollumSpannableMap = new HashMap<>();
+        mColorSpanMap = new HashMap<>();
+        mStyleSpanMap = new HashMap<>();
     }
 
     @Override
@@ -190,7 +198,7 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
             case PUSH:
                 setPushItemView((PushNewsViewHolder) newsViewHolder, event);
                 if (payloadString == null) {
-                    payloadString = getPushPayloadSpannable(event);
+                    payloadString = getPushPayloadSpannable(event, position);
                     mPayloadSpannableMap.put(position, payloadString);
                 }
                 break;
@@ -198,7 +206,7 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
             case PULL_REQUEST:
                 setPullRequestItemView((PullRequestNewsViewHolder) newsViewHolder, event);
                 if (payloadString == null) {
-                    payloadString = getPullRequestPayloadSpannable(event);
+                    payloadString = getPullRequestPayloadSpannable(event, position);
                     mPayloadSpannableMap.put(position, payloadString);
                 }
                 break;
@@ -206,7 +214,7 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
             case GOLLUM:
                 setGollumItemView((GollumNewsViewHolder) newsViewHolder, event, position);
                 if (payloadString == null) {
-                    payloadString = getGollumPayloadSpannable(event);
+                    payloadString = getGollumPayloadSpannable(event, position);
                     mPayloadSpannableMap.put(position, payloadString);
                 }
                 break;
@@ -244,12 +252,16 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
 
             if (commits.size() > 2) {
                 int commitCount = commits.size() - 2;
-
                 int commitCountResId = commitCount > 1 ?
                         R.string.commits_count : R.string.commit_count;
-                String commitCountString = mContext.getString(commitCountResId, commitCount);
+                String commitCountString = mContext.getString(commitCountResId);
 
-                pushViewHolder.commitCount.setText(commitCountString);
+                mStringBuilder.setLength(0);
+                mStringBuilder.append(commitCount);
+                mStringBuilder.append(" ");
+                mStringBuilder.append(commitCountString);
+
+                pushViewHolder.commitCount.setText(mStringBuilder);
                 pushViewHolder.commitCount.setVisibility(View.VISIBLE);
             } else {
                 pushViewHolder.commitCount.setVisibility(View.GONE);
@@ -278,20 +290,38 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         int commitCount = payload.getPullRequest().getCommitCount();
         int commitCountStringResId = commitCount > 1 ?
                 R.string.commits_count_pr : R.string.commit_count_pr;
-        String commitCountString = mContext.getString(commitCountStringResId, commitCount);
-        pullRequestViewHolder.commitCount.setText(commitCountString);
+        String commitCountString = mContext.getString(commitCountStringResId);
+
+        mStringBuilder.setLength(0);
+        mStringBuilder.append(commitCount);
+        mStringBuilder.append(" ");
+        mStringBuilder.append(commitCountString);
+        pullRequestViewHolder.commitCount.setText(mStringBuilder);
 
         int additionCount = payload.getPullRequest().getAdditionCount();
         int additionCountStringResId = additionCount > 1 ?
-                R.string.additions_count_pr : R.string.addition_count_pr;
-        String additionCountString = mContext.getString(additionCountStringResId, additionCount);
-        pullRequestViewHolder.additionCount.setText(additionCountString);
+                R.string.line_count_pr : R.string.lines_count_pr;
+        String additionCountString = mContext.getString(additionCountStringResId);
+
+        mStringBuilder.setLength(0);
+        mStringBuilder.append("+");
+        mStringBuilder.append(additionCount);
+        mStringBuilder.append(" ");
+        mStringBuilder.append(additionCountString);
+        pullRequestViewHolder.additionCount.setText(mStringBuilder);
 
         int deletionCount = payload.getPullRequest().getDeletionCount();
         int deletionCountStringResId = deletionCount > 1 ?
-                R.string.deletions_count_pr : R.string.deletion_count_pr;
-        String deletionCountString = mContext.getString(deletionCountStringResId, deletionCount);
-        pullRequestViewHolder.deletionCount.setText(deletionCountString);
+                R.string.line_count_pr : R.string.lines_count_pr;
+        String deletionCountString = mContext.getString(deletionCountStringResId);
+
+        // -{deletionCount} lines
+        mStringBuilder.setLength(0);
+        mStringBuilder.append("-");
+        mStringBuilder.append(deletionCount);
+        mStringBuilder.append(" ");
+        mStringBuilder.append(deletionCountString);
+        pullRequestViewHolder.deletionCount.setText(mStringBuilder);
     }
 
     private void setGollumItemView(GollumNewsViewHolder gollumNewsViewHolder, EventResponse event,
@@ -308,67 +338,107 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         String pageName = page.getPageName();
         String action = StringUtil.capitalizeFirst(page.getAction());
 
-        String gollumEventPayloadString = String.format("%s %s", action, pageName);
+        // {action} {pageName}
+        mStringBuilder.setLength(0);
+        mStringBuilder.append(StringUtil.capitalizeFirst(action));
+        mStringBuilder.append(" ");
+        mStringBuilder.append(pageName);
+
+        String gollumEventPayloadString = mStringBuilder.toString();
         mSpannableBuilder.clear();
         mSpannableBuilder.append(gollumEventPayloadString);
 
-        addSpans(gollumEventPayloadString, pageName);
+        addSpans(gollumEventPayloadString, pageName, position);
 
         SpannableString newSpannable = SpannableString.valueOf(mSpannableBuilder);
         mGollumSpannableMap.put(position, newSpannable);
         gollumNewsViewHolder.description.setText(newSpannable);
     }
 
-    private SpannableString getPushPayloadSpannable(EventResponse event) {
+    private SpannableString getPushPayloadSpannable(EventResponse event, int position) {
         PushEventPayloadResponse payload = (PushEventPayloadResponse) event.getPayload();
 
         String actorName = event.getActor().getLogin();
         String repoName = event.getRepo().getName();
         String branchName = getBranchNameFromRef(payload.getRef());
 
-        String payloadString = mContext.getString(R.string.payload_push, actorName, branchName,
-                repoName);
+        // {actorName} pushed to {branchName} at {repoName}
+        mStringBuilder.setLength(0);
+        mStringBuilder.append(actorName);
+        mStringBuilder.append(" ");
+        mStringBuilder.append(mContext.getString(R.string.pushed));
+        mStringBuilder.append(" ");
+        mStringBuilder.append(mContext.getString(R.string.to));
+        mStringBuilder.append(" ");
+        mStringBuilder.append(branchName);
+        mStringBuilder.append(" ");
+        mStringBuilder.append(mContext.getString(R.string.at));
+        mStringBuilder.append(" ");
+        mStringBuilder.append(repoName);
+        String payloadString = mStringBuilder.toString();
+
         mSpannableBuilder.clear();
         mSpannableBuilder.append(payloadString);
 
-        addSpans(payloadString, actorName);
-        addSpans(payloadString, branchName);
-        addSpans(payloadString, repoName);
+        addSpans(payloadString, actorName, position);
+        addSpans(payloadString, branchName, position);
+        addSpans(payloadString, repoName, position);
 
         return SpannableString.valueOf(mSpannableBuilder);
     }
 
-    private SpannableString getPullRequestPayloadSpannable(EventResponse event) {
+    private SpannableString getPullRequestPayloadSpannable(EventResponse event, int position) {
         PullRequestEventPayloadResponse payload = (PullRequestEventPayloadResponse)
                 event.getPayload();
 
         String actorName = event.getActor().getLogin();
-        String action = payload.getAction();
+        String action = payload.getPullRequest().isMerged() ?
+                mContext.getString(R.string.merged) : payload.getAction();
         String repoName = event.getRepo().getName();
         String number = String.valueOf(payload.getNumber());
 
-        String payloadString = mContext.getString(R.string.payload_pull_request, actorName, action,
-                repoName, number);
+        // {actorName} {action} pull request {repoName}#{number}
+        mStringBuilder.setLength(0);
+        mStringBuilder.append(actorName);
+        mStringBuilder.append(" ");
+        mStringBuilder.append(action);
+        mStringBuilder.append(" ");
+        mStringBuilder.append(mContext.getString(R.string.pull_request));
+        mStringBuilder.append(" ");
+        mStringBuilder.append(repoName);
+        mStringBuilder.append("#");
+        mStringBuilder.append(number);
+        String payloadString = mStringBuilder.toString();
+
         mSpannableBuilder.clear();
         mSpannableBuilder.append(payloadString);
 
-        addSpans(payloadString, actorName);
-        addSpans(payloadString, repoName);
-        addSpans(payloadString, String.format("#%s", number));
+        addSpans(payloadString, actorName, position);
+        addSpans(payloadString, repoName, position);
+        addSpans(payloadString, String.format("#%s", number), position);
 
         return SpannableString.valueOf(mSpannableBuilder);
     }
 
-    private SpannableString getGollumPayloadSpannable(EventResponse event) {
+    private SpannableString getGollumPayloadSpannable(EventResponse event, int position) {
         String actorName = event.getActor().getLogin();
         String repoName = event.getRepo().getName();
 
-        String payloadString = mContext.getString(R.string.payload_gollum, actorName, repoName);
+        mStringBuilder.setLength(0);
+        mStringBuilder.append(actorName);
+        mStringBuilder.append(" ");
+        mStringBuilder.append(mContext.getString(R.string.updated_the));
+        mStringBuilder.append(" ");
+        mStringBuilder.append(repoName);
+        mStringBuilder.append(" ");
+        mStringBuilder.append(mContext.getString(R.string.wiki));
+        String payloadString = mStringBuilder.toString();
+
         mSpannableBuilder.clear();
         mSpannableBuilder.append(payloadString);
 
-        addSpans(payloadString, actorName);
-        addSpans(payloadString, repoName);
+        addSpans(payloadString, actorName, position);
+        addSpans(payloadString, repoName, position);
 
         return SpannableString.valueOf(mSpannableBuilder);
     }
@@ -378,15 +448,22 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         return refPaths[refPaths.length - 1];
     }
 
-    private void addSpans(String fullString, String substring) {
+    private void addSpans(String fullString, String substring, int position) {
         int start = fullString.indexOf(substring);
         int end = start + substring.length();
 
-        ForegroundColorSpan colorSpan = new ForegroundColorSpan(
-                ContextCompat.getColor(mContext, R.color.accent));
+        ForegroundColorSpan colorSpan = mColorSpanMap.get(position);
+        if (colorSpan == null) {
+            colorSpan = new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.accent));
+            mColorSpanMap.put(position, colorSpan);
+        }
         mSpannableBuilder.setSpan(colorSpan, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
-        StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
+        StyleSpan boldSpan = mStyleSpanMap.get(position);
+        if (boldSpan == null) {
+            boldSpan = new StyleSpan(Typeface.BOLD);
+            mStyleSpanMap.put(position, boldSpan);
+        }
         mSpannableBuilder.setSpan(boldSpan, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
     }
 }

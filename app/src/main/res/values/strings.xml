@@ -45,20 +45,23 @@
     <string name="minutes">minutes</string>
     <string name="ago">ago</string>
 
-    <string name="payload_push">%1$s pushed to %2$s at %3$s</string>
-    <string name="payload_pull_request">%1$s %2$s pull request %3$s#%4$s</string>
-    <string name="payload_gollum">%1$s updated the %2$s wiki</string>
+    <string name="pushed">pushed</string>
+    <string name="to">to</string>
+    <string name="at">at</string>
 
-    <string name="commits_count">%1$d more commits&#8230;</string>
-    <string name="commit_count">%1$d more commit&#8230;</string>
+    <string name="pull_request">pull request</string>
+
+    <string name="updated_the">updated the</string>
+    <string name="wiki">"wiki</string>
+
+    <string name="commits_count">more commits&#8230;</string>
+    <string name="commit_count">more commit&#8230;</string>
     <string name="view_diff_gollum">View diff&#8230;</string>
 
-    <string name="commits_count_pr">%1$d commits</string>
-    <string name="commit_count_pr">%1$d commit</string>
-    <string name="additions_count_pr">+%1$d lines</string>
-    <string name="addition_count_pr">+%1$d line</string>
-    <string name="deletions_count_pr">-%1$d lines</string>
-    <string name="deletion_count_pr">-%1$d line</string>
+    <string name="commits_count_pr">commits</string>
+    <string name="commit_count_pr">commit</string>
+    <string name="line_count_pr">lines</string>
+    <string name="lines_count_pr">line</string>
 
     <string name="merged">merged</string>
 </resources>
