@@ -32,7 +32,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -119,6 +119,7 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
 
     private Map<Integer, SpannableString> mPayloadSpannableMap;
     private Map<Integer, SpannableString> mGollumSpannableMap;
+    private Map<Integer, SpannableString> mPushSpannableMap;
 
     public NewsAdapter(Context context) {
         mContext = context;
@@ -128,8 +129,9 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         mSpannableBuilder = new SpannableStringBuilder();
         mStringBuilder = new StringBuilder();
 
-        mPayloadSpannableMap = new HashMap<>();
-        mGollumSpannableMap = new HashMap<>();
+        mPayloadSpannableMap = new LinkedHashMap<>();
+        mGollumSpannableMap = new LinkedHashMap<>();
+        mPushSpannableMap = new LinkedHashMap<>();
     }
 
     @Override
@@ -192,11 +194,9 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
 
         switch (event.getType()) {
             case PUSH:
-                PushEventPayloadResponse payload = (PushEventPayloadResponse) event.getPayload();
-                String branchName = getBranchNameFromRef(payload.getRef());
-                setPushItemView((PushNewsViewHolder) newsViewHolder, payload, branchName);
+                setPushItemView((PushNewsViewHolder) newsViewHolder, event, position);
                 if (payloadString == null) {
-                    payloadString = getPushPayloadSpannable(event, payload, branchName);
+                    payloadString = getPushPayloadSpannable(event);
                     mPayloadSpannableMap.put(position, payloadString);
                 }
                 break;
@@ -227,16 +227,28 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         mPicasso.load(avatarUrl).into(newsViewHolder.avatarView);
     }
 
-    private void setPushItemView(PushNewsViewHolder pushViewHolder,
-                                 PushEventPayloadResponse payload, String branchName) {
+    private void setPushItemView(PushNewsViewHolder pushViewHolder, EventResponse event,
+                                 int position) {
+        PushEventPayloadResponse payload = (PushEventPayloadResponse) event.getPayload();
         List<CommitResponse> commits = payload.getCommits();
 
+        // commits list empty: show new location of branch head
         if (commits == null || commits.isEmpty()) {
-            String head = payload.getHead().substring(0, 7);
-            String noCommitMsg = mContext.getString(R.string.push_no_commits, branchName, head);
-            pushViewHolder.commitMsg1.setText(noCommitMsg);
-            pushViewHolder.commitMsg1.setVisibility(View.VISIBLE);
+            SpannableString noCommitSpannable = mPushSpannableMap.get(position);
+            if (noCommitSpannable == null) {
+                String head = payload.getHead().substring(0, 7);
+                String noCommitStr = mContext.getString(R.string.push_no_commits, head);
 
+                mSpannableBuilder.clear();
+                mSpannableBuilder.append(noCommitStr);
+
+                addSpans(noCommitStr, head, false);
+                noCommitSpannable = SpannableString.valueOf(mSpannableBuilder);
+                mPushSpannableMap.put(position, noCommitSpannable);
+            }
+            pushViewHolder.commitMsg1.setText(noCommitSpannable);
+
+            pushViewHolder.commitMsg1.setVisibility(View.VISIBLE);
             pushViewHolder.commit2.setVisibility(View.GONE);
             pushViewHolder.commitCount.setVisibility(View.GONE);
             pushViewHolder.commitSum1.setVisibility(View.GONE);
@@ -246,6 +258,7 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
             // 1st commit is always shown
             String commitSum1 = firstCommit.getSha();
             pushViewHolder.commitSum1.setText(commitSum1);
+            pushViewHolder.commitSum1.setVisibility(View.VISIBLE);
 
             String commitMsg1 = firstCommit.getMessage();
             pushViewHolder.commitMsg1.setText(commitMsg1);
@@ -357,18 +370,19 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         mSpannableBuilder.clear();
         mSpannableBuilder.append(gollumEventPayloadString);
 
-        addSpans(gollumEventPayloadString, pageName);
+        addSpans(gollumEventPayloadString, pageName, false);
 
         SpannableString newSpannable = SpannableString.valueOf(mSpannableBuilder);
         mGollumSpannableMap.put(position, newSpannable);
         gollumNewsViewHolder.description.setText(newSpannable);
     }
 
-    private SpannableString getPushPayloadSpannable(EventResponse event,
-                                                    PushEventPayloadResponse payload,
-                                                    String branchName) {
+    private SpannableString getPushPayloadSpannable(EventResponse event) {
+        PushEventPayloadResponse payload = (PushEventPayloadResponse) event.getPayload();
+
         String actorName = event.getActor().getLogin();
         String repoName = event.getRepo().getName();
+        String branchName = getBranchNameFromRef(payload.getRef());
 
         // {actorName} pushed to {branchName} at {repoName}
         mStringBuilder.setLength(0);
@@ -388,9 +402,9 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         mSpannableBuilder.clear();
         mSpannableBuilder.append(payloadString);
 
-        addSpans(payloadString, actorName);
-        addSpans(payloadString, branchName);
-        addSpans(payloadString, repoName);
+        addSpans(payloadString, actorName, true);
+        addSpans(payloadString, branchName, true);
+        addSpans(payloadString, repoName, true);
 
         return SpannableString.valueOf(mSpannableBuilder);
     }
@@ -421,8 +435,8 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         mSpannableBuilder.clear();
         mSpannableBuilder.append(payloadString);
 
-        addSpans(payloadString, actorName);
-        addSpans(payloadString, String.format("%s#%s", repoName, number));
+        addSpans(payloadString, actorName, true);
+        addSpans(payloadString, String.format("%s#%s", repoName, number), true);
 
         return SpannableString.valueOf(mSpannableBuilder);
     }
@@ -444,8 +458,8 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         mSpannableBuilder.clear();
         mSpannableBuilder.append(payloadString);
 
-        addSpans(payloadString, actorName);
-        addSpans(payloadString, repoName);
+        addSpans(payloadString, actorName, true);
+        addSpans(payloadString, repoName, true);
 
         return SpannableString.valueOf(mSpannableBuilder);
     }
@@ -455,7 +469,7 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         return refPaths[refPaths.length - 1];
     }
 
-    private void addSpans(String fullString, String substring) {
+    private void addSpans(String fullString, String substring, boolean bold) {
         int start = fullString.indexOf(substring);
         int end = start + substring.length();
 
@@ -463,7 +477,9 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
                 ContextCompat.getColor(mContext, R.color.accent));
         mSpannableBuilder.setSpan(colorSpan, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
-        StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
-        mSpannableBuilder.setSpan(boldSpan, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        if (bold) {
+            StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
+            mSpannableBuilder.setSpan(boldSpan, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        }
     }
 }

@@ -48,7 +48,7 @@
     <string name="pushed">pushed</string>
     <string name="to">to</string>
     <string name="at">at</string>
-    <string name="push_no_commits">%1$s is now %2$s</string>
+    <string name="push_no_commits">Head is now %1$s</string>
 
     <string name="pull_request">pull request</string>
 

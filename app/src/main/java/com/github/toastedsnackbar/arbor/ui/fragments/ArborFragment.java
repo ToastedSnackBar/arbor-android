@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.github.toastedsnackbar.arbor.net.ApiReceiver;
 import com.github.toastedsnackbar.arbor.net.ApiReceiver.ReceiveResultListener;
@@ -13,6 +14,8 @@ import com.github.toastedsnackbar.arbor.net.requests.ApiRequest;
 import com.github.toastedsnackbar.arbor.net.responses.ApiResponse;
 
 public abstract class ArborFragment extends Fragment implements ReceiveResultListener {
+
+    private static final String LOG_TAG = "ArborFragment";
 
     private ApiReceiver mApiReceiver;
 
@@ -48,10 +51,12 @@ public abstract class ArborFragment extends Fragment implements ReceiveResultLis
             case ResultCodes.SUCCESS:
                 ApiResponse response = resultData.getParcelable(ApiService.EXTRA_RESPONSE);
                 onRequestSuccess(requestId, response);
+                Log.d(LOG_TAG, "requestId: " + requestId + " SUCCESS!");
                 break;
 
             case ResultCodes.ERROR:
                 onRequestError(requestId);
+                Log.e(LOG_TAG, "requestId: " + requestId + " ERROR!");
                 break;
         }
     }
