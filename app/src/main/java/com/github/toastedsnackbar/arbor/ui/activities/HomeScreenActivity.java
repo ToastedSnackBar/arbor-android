@@ -16,13 +16,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
 import com.github.toastedsnackbar.arbor.ui.fragments.ArborFragment;
 import com.github.toastedsnackbar.arbor.ui.fragments.FolloweeFragment;
 import com.github.toastedsnackbar.arbor.ui.fragments.NewsListFragment;
 import com.github.toastedsnackbar.arbor.ui.fragments.RepositoryListFragment;
-import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -60,8 +60,10 @@ public class HomeScreenActivity extends AppCompatActivity implements
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         NavigationView navigation = (NavigationView) findViewById(R.id.navigation_view);
-        navigation.setNavigationItemSelectedListener(HomeScreenActivity.this);
-        setupNavigationHeader(navigation);
+        if (navigation != null) {
+            navigation.setNavigationItemSelectedListener(HomeScreenActivity.this);
+            setupNavigationHeader(navigation);
+        }
 
         if (savedInstanceState != null && savedInstanceState.containsKey(KEY_INITIAL_FRAGMENT)) {
             mInitialNav = savedInstanceState.getInt(KEY_INITIAL_FRAGMENT);
@@ -69,7 +71,9 @@ public class HomeScreenActivity extends AppCompatActivity implements
             mInitialNav = DEFAULT_INITIAL_NAV;
         }
 
-        onNavigationItemSelected(navigation.getMenu().findItem(mInitialNav));
+        if (navigation != null) {
+            onNavigationItemSelected(navigation.getMenu().findItem(mInitialNav));
+        }
     }
 
     @Override
@@ -164,7 +168,7 @@ public class HomeScreenActivity extends AppCompatActivity implements
 
         CircleImageView avatarView = (CircleImageView) headerView.findViewById(R.id.avatar);
         String avatarUrl = ArborPreferences.getAvatarUrl();
-        Picasso.with(HomeScreenActivity.this).load(avatarUrl).into(avatarView);
+        Glide.with(HomeScreenActivity.this).load(avatarUrl).into(avatarView);
 
         TextView usernameView = (TextView) headerView.findViewById(R.id.username);
         String username = ArborPreferences.getUsername();

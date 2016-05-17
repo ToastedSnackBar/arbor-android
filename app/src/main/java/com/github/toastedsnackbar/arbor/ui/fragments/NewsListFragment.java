@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.bumptech.glide.Glide;
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.net.ApiReceiver;
 import com.github.toastedsnackbar.arbor.net.requests.EventListRequest;
@@ -41,6 +43,16 @@ public class NewsListFragment extends ArborFragment implements ApiReceiver.Recei
         RecyclerView newsList = (RecyclerView) view.findViewById(R.id.recycler_view);
         newsList.setAdapter(mAdapter);
         newsList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        newsList.addOnScrollListener(new OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (RecyclerView.SCROLL_STATE_IDLE == newState) {
+                    Glide.with(getActivity()).resumeRequests();
+                } else if (RecyclerView.SCROLL_STATE_DRAGGING == newState) {
+                    Glide.with(getActivity()).pauseRequests();
+                }
+            }
+        });
 
         EventListRequest request = new EventListRequest();
         executeRequest(request);

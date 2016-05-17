@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.net.responses.CommitResponse;
 import com.github.toastedsnackbar.arbor.net.responses.PageResponse;
@@ -28,7 +29,6 @@ import com.github.toastedsnackbar.arbor.net.responses.events.PushEventPayloadRes
 import com.github.toastedsnackbar.arbor.ui.adapters.NewsAdapter.NewsViewHolder;
 import com.github.toastedsnackbar.arbor.util.DateTimeUtil;
 import com.github.toastedsnackbar.arbor.util.StringUtil;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -112,7 +112,6 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
 
     private Context mContext;
     private List<EventResponse> mItems;
-    private Picasso mPicasso;
 
     private StringBuilder mStringBuilder;
     private SpannableStringBuilder mSpannableBuilder;
@@ -124,7 +123,6 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
     public NewsAdapter(Context context) {
         mContext = context;
         mItems = new ArrayList<>();
-        mPicasso = Picasso.with(mContext);
 
         mSpannableBuilder = new SpannableStringBuilder();
         mStringBuilder = new StringBuilder();
@@ -224,7 +222,9 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
 
         newsViewHolder.payload.setText(payloadString);
         newsViewHolder.timestamp.setText(timestamp);
-        mPicasso.load(avatarUrl).into(newsViewHolder.avatarView);
+
+        Glide.with(mContext).load(avatarUrl).override(100, 100).centerCrop().crossFade(500)
+                .into(newsViewHolder.avatarView);
     }
 
     private void setPushItemView(PushNewsViewHolder pushViewHolder, EventResponse event,

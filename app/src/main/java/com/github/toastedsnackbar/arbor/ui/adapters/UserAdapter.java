@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.net.responses.UserResponse;
 import com.github.toastedsnackbar.arbor.ui.adapters.UserAdapter.UserViewHolder;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,13 +48,11 @@ public class UserAdapter extends Adapter<UserViewHolder> {
     private Context mContext;
     private List<UserResponse> mItems;
     private Map<UserResponse, Boolean> mFollowingMap;
-    private Picasso mPicasso;
 
     public UserAdapter(Context context) {
         mContext = context;
         mItems = new ArrayList<>();
         mFollowingMap = new HashMap<>();
-        mPicasso = Picasso.with(mContext);
     }
 
     @Override
@@ -78,7 +76,7 @@ public class UserAdapter extends Adapter<UserViewHolder> {
         UserResponse user = mItems.get(position);
 
         String avatarUrl = user.getAvatarUrl();
-        mPicasso.load(avatarUrl).into(holder.avatarView);
+        Glide.with(mContext).load(avatarUrl).into(holder.avatarView);
 
         String username = user.getLogin();
         holder.usernameView.setText(username);
