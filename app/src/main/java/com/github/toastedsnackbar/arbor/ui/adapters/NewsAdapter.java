@@ -119,8 +119,6 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
 
     private Map<Integer, SpannableString> mPayloadSpannableMap;
     private Map<Integer, SpannableString> mGollumSpannableMap;
-    private Map<Integer, ForegroundColorSpan> mColorSpanMap;
-    private Map<Integer, StyleSpan> mStyleSpanMap;
 
     public NewsAdapter(Context context) {
         mContext = context;
@@ -132,8 +130,6 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
 
         mPayloadSpannableMap = new HashMap<>();
         mGollumSpannableMap = new HashMap<>();
-        mColorSpanMap = new HashMap<>();
-        mStyleSpanMap = new HashMap<>();
     }
 
     @Override
@@ -196,9 +192,11 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
 
         switch (event.getType()) {
             case PUSH:
-                setPushItemView((PushNewsViewHolder) newsViewHolder, event);
+                PushEventPayloadResponse payload = (PushEventPayloadResponse) event.getPayload();
+                String branchName = getBranchNameFromRef(payload.getRef());
+                setPushItemView((PushNewsViewHolder) newsViewHolder, payload, branchName);
                 if (payloadString == null) {
-                    payloadString = getPushPayloadSpannable(event, position);
+                    payloadString = getPushPayloadSpannable(event, payload, branchName);
                     mPayloadSpannableMap.put(position, payloadString);
                 }
                 break;
@@ -206,7 +204,7 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
             case PULL_REQUEST:
                 setPullRequestItemView((PullRequestNewsViewHolder) newsViewHolder, event);
                 if (payloadString == null) {
-                    payloadString = getPullRequestPayloadSpannable(event, position);
+                    payloadString = getPullRequestPayloadSpannable(event);
                     mPayloadSpannableMap.put(position, payloadString);
                 }
                 break;
@@ -214,7 +212,7 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
             case GOLLUM:
                 setGollumItemView((GollumNewsViewHolder) newsViewHolder, event, position);
                 if (payloadString == null) {
-                    payloadString = getGollumPayloadSpannable(event, position);
+                    payloadString = getGollumPayloadSpannable(event);
                     mPayloadSpannableMap.put(position, payloadString);
                 }
                 break;
@@ -229,48 +227,59 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         mPicasso.load(avatarUrl).into(newsViewHolder.avatarView);
     }
 
-    private void setPushItemView(PushNewsViewHolder pushViewHolder, EventResponse event) {
-        PushEventPayloadResponse payload = (PushEventPayloadResponse) event.getPayload();
+    private void setPushItemView(PushNewsViewHolder pushViewHolder,
+                                 PushEventPayloadResponse payload, String branchName) {
         List<CommitResponse> commits = payload.getCommits();
 
-        CommitResponse firstCommit = payload.getCommits().get(0);
+        if (commits == null || commits.isEmpty()) {
+            String head = payload.getHead().substring(0, 7);
+            String noCommitMsg = mContext.getString(R.string.push_no_commits, branchName, head);
+            pushViewHolder.commitMsg1.setText(noCommitMsg);
+            pushViewHolder.commitMsg1.setVisibility(View.VISIBLE);
 
-        // 1st commit is always shown
-        String commitSum1 = firstCommit.getSha().substring(0, 7);
-        pushViewHolder.commitSum1.setText(commitSum1);
-
-        String commitMsg1 = firstCommit.getMessage();
-        pushViewHolder.commitMsg1.setText(commitMsg1);
-
-        if (commits.size() >= 2) { // at least 2 commits (show everything)
-            CommitResponse secondCommit = payload.getCommits().get(1);
-            String commitSum2 = secondCommit.getSha().substring(0, 7);
-            pushViewHolder.commitSum2.setText(commitSum2);
-
-            String commitMsg2 = secondCommit.getMessage();
-            pushViewHolder.commitMsg2.setText(commitMsg2);
-
-            if (commits.size() > 2) {
-                int commitCount = commits.size() - 2;
-                int commitCountResId = commitCount > 1 ?
-                        R.string.commits_count : R.string.commit_count;
-                String commitCountString = mContext.getString(commitCountResId);
-
-                mStringBuilder.setLength(0);
-                mStringBuilder.append(commitCount);
-                mStringBuilder.append(" ");
-                mStringBuilder.append(commitCountString);
-
-                pushViewHolder.commitCount.setText(mStringBuilder);
-                pushViewHolder.commitCount.setVisibility(View.VISIBLE);
-            } else {
-                pushViewHolder.commitCount.setVisibility(View.GONE);
-            }
-
-            pushViewHolder.commit2.setVisibility(View.VISIBLE);
-        } else { // 1 commit (hide second commit and commit count)
             pushViewHolder.commit2.setVisibility(View.GONE);
             pushViewHolder.commitCount.setVisibility(View.GONE);
+            pushViewHolder.commitSum1.setVisibility(View.GONE);
+        } else {
+            CommitResponse firstCommit = commits.get(0);
+
+            // 1st commit is always shown
+            String commitSum1 = firstCommit.getSha();
+            pushViewHolder.commitSum1.setText(commitSum1);
+
+            String commitMsg1 = firstCommit.getMessage();
+            pushViewHolder.commitMsg1.setText(commitMsg1);
+
+            if (commits.size() >= 2) { // at least 2 commits (show everything)
+                CommitResponse secondCommit = commits.get(1);
+                String commitSum2 = secondCommit.getSha();
+                pushViewHolder.commitSum2.setText(commitSum2);
+
+                String commitMsg2 = secondCommit.getMessage();
+                pushViewHolder.commitMsg2.setText(commitMsg2);
+
+                if (commits.size() > 2) {
+                    int commitCount = commits.size() - 2;
+                    int commitCountResId = commitCount > 1 ?
+                            R.string.commits_count : R.string.commit_count;
+                    String commitCountString = mContext.getString(commitCountResId);
+
+                    mStringBuilder.setLength(0);
+                    mStringBuilder.append(commitCount);
+                    mStringBuilder.append(" ");
+                    mStringBuilder.append(commitCountString);
+
+                    pushViewHolder.commitCount.setText(mStringBuilder);
+                    pushViewHolder.commitCount.setVisibility(View.VISIBLE);
+                } else {
+                    pushViewHolder.commitCount.setVisibility(View.GONE);
+                }
+
+                pushViewHolder.commit2.setVisibility(View.VISIBLE);
+            } else { // 1 commit (hide second commit and commit count)
+                pushViewHolder.commit2.setVisibility(View.GONE);
+                pushViewHolder.commitCount.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -348,19 +357,18 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         mSpannableBuilder.clear();
         mSpannableBuilder.append(gollumEventPayloadString);
 
-        addSpans(gollumEventPayloadString, pageName, position);
+        addSpans(gollumEventPayloadString, pageName);
 
         SpannableString newSpannable = SpannableString.valueOf(mSpannableBuilder);
         mGollumSpannableMap.put(position, newSpannable);
         gollumNewsViewHolder.description.setText(newSpannable);
     }
 
-    private SpannableString getPushPayloadSpannable(EventResponse event, int position) {
-        PushEventPayloadResponse payload = (PushEventPayloadResponse) event.getPayload();
-
+    private SpannableString getPushPayloadSpannable(EventResponse event,
+                                                    PushEventPayloadResponse payload,
+                                                    String branchName) {
         String actorName = event.getActor().getLogin();
         String repoName = event.getRepo().getName();
-        String branchName = getBranchNameFromRef(payload.getRef());
 
         // {actorName} pushed to {branchName} at {repoName}
         mStringBuilder.setLength(0);
@@ -380,14 +388,14 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         mSpannableBuilder.clear();
         mSpannableBuilder.append(payloadString);
 
-        addSpans(payloadString, actorName, position);
-        addSpans(payloadString, branchName, position);
-        addSpans(payloadString, repoName, position);
+        addSpans(payloadString, actorName);
+        addSpans(payloadString, branchName);
+        addSpans(payloadString, repoName);
 
         return SpannableString.valueOf(mSpannableBuilder);
     }
 
-    private SpannableString getPullRequestPayloadSpannable(EventResponse event, int position) {
+    private SpannableString getPullRequestPayloadSpannable(EventResponse event) {
         PullRequestEventPayloadResponse payload = (PullRequestEventPayloadResponse)
                 event.getPayload();
 
@@ -413,14 +421,13 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         mSpannableBuilder.clear();
         mSpannableBuilder.append(payloadString);
 
-        addSpans(payloadString, actorName, position);
-        addSpans(payloadString, repoName, position);
-        addSpans(payloadString, String.format("#%s", number), position);
+        addSpans(payloadString, actorName);
+        addSpans(payloadString, String.format("%s#%s", repoName, number));
 
         return SpannableString.valueOf(mSpannableBuilder);
     }
 
-    private SpannableString getGollumPayloadSpannable(EventResponse event, int position) {
+    private SpannableString getGollumPayloadSpannable(EventResponse event) {
         String actorName = event.getActor().getLogin();
         String repoName = event.getRepo().getName();
 
@@ -437,8 +444,8 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         mSpannableBuilder.clear();
         mSpannableBuilder.append(payloadString);
 
-        addSpans(payloadString, actorName, position);
-        addSpans(payloadString, repoName, position);
+        addSpans(payloadString, actorName);
+        addSpans(payloadString, repoName);
 
         return SpannableString.valueOf(mSpannableBuilder);
     }
@@ -448,22 +455,15 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         return refPaths[refPaths.length - 1];
     }
 
-    private void addSpans(String fullString, String substring, int position) {
+    private void addSpans(String fullString, String substring) {
         int start = fullString.indexOf(substring);
         int end = start + substring.length();
 
-        ForegroundColorSpan colorSpan = mColorSpanMap.get(position);
-        if (colorSpan == null) {
-            colorSpan = new ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.accent));
-            mColorSpanMap.put(position, colorSpan);
-        }
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(
+                ContextCompat.getColor(mContext, R.color.accent));
         mSpannableBuilder.setSpan(colorSpan, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 
-        StyleSpan boldSpan = mStyleSpanMap.get(position);
-        if (boldSpan == null) {
-            boldSpan = new StyleSpan(Typeface.BOLD);
-            mStyleSpanMap.put(position, boldSpan);
-        }
+        StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
         mSpannableBuilder.setSpan(boldSpan, start, end, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
     }
 }

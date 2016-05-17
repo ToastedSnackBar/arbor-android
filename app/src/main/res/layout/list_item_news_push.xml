@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingBottom="1.25dp"
     android:paddingLeft="5dp"
@@ -71,6 +71,7 @@
                         android:textColor="@color/accent"
                         android:textSize="12sp"
                         android:typeface="monospace"
+                        android:fontFamily="monospace"
                         tools:text="6d4bd7f"/>
 
                     <TextView
@@ -100,6 +101,7 @@
                         android:textColor="@color/accent"
                         android:textSize="12sp"
                         android:typeface="monospace"
+                        android:fontFamily="monospace"
                         tools:text="1bb75cb"/>
 
                     <TextView
@@ -118,8 +120,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/accentDark"
-                    android:textStyle="bold"
                     android:textSize="12sp"
+                    android:textStyle="bold"
                     tools:text="2 more commits"/>
 
                 <View
