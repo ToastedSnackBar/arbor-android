@@ -16,13 +16,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
 import com.github.toastedsnackbar.arbor.ui.fragments.ArborFragment;
 import com.github.toastedsnackbar.arbor.ui.fragments.FolloweeFragment;
 import com.github.toastedsnackbar.arbor.ui.fragments.NewsListFragment;
 import com.github.toastedsnackbar.arbor.ui.fragments.RepositoryListFragment;
+import com.github.toastedsnackbar.arbor.util.GlideHelper;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -40,6 +40,8 @@ public class HomeScreenActivity extends AppCompatActivity implements
     private int mInitialNav;
     private MenuItem mCurrentNav;
 
+    private GlideHelper mGlideHelper;
+
     public static void start(Context context) {
         Intent intent = new Intent(context, HomeScreenActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -51,6 +53,8 @@ public class HomeScreenActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+
+        mGlideHelper = new GlideHelper(HomeScreenActivity.this);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar_home);
         setSupportActionBar(mToolbar);
@@ -168,7 +172,7 @@ public class HomeScreenActivity extends AppCompatActivity implements
 
         CircleImageView avatarView = (CircleImageView) headerView.findViewById(R.id.avatar);
         String avatarUrl = ArborPreferences.getAvatarUrl();
-        Glide.with(HomeScreenActivity.this).load(avatarUrl).into(avatarView);
+        mGlideHelper.load(avatarUrl, avatarView);
 
         TextView usernameView = (TextView) headerView.findViewById(R.id.username);
         String username = ArborPreferences.getUsername();

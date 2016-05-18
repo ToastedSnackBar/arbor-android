@@ -1,96 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:id="@+id/recycler_view_element"
+<android.support.v7.widget.CardView
+    android:id="@+id/card_view"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingBottom="1.25dp"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp"
-    android:paddingTop="1.25dp">
+    app:cardBackgroundColor="@color/background_darker_grey"
+    app:cardUseCompatPadding="true">
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/card_view"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/background_darker_grey"
-        app:cardUseCompatPadding="true">
+        android:padding="12dp">
 
-        <RelativeLayout
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/avatar"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="15dp"
+            tools:src="@drawable/house_md"/>
+
+        <LinearLayout
+            android:id="@+id/payload_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/avatar"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginRight="15dp"
-                tools:src="@drawable/house_md"/>
-
-            <LinearLayout
-                android:id="@+id/payload_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@id/avatar"
-                android:layout_toRightOf="@+id/avatar"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/payload_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/text_primary"
-                    tools:text="housemd edited the PPTH/diagnostics wiki"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@color/divider"/>
-
-                <TextView
-                    android:id="@+id/gollum_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:maxLines="3"
-                    android:ellipsize="end"
-                    tools:text="Edited How to easily skip clinical hours."/>
-
-                <TextView
-                    android:id="@+id/view_diff"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:textColor="@color/accentDark"
-                    android:textStyle="bold"
-                    android:textSize="12sp"
-                    android:text="@string/view_diff_gollum"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="5dp"
-                    android:background="@color/divider"/>
-            </LinearLayout>
+            android:layout_alignTop="@id/avatar"
+            android:layout_toRightOf="@+id/avatar"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/timestamp"
+                android:id="@+id/payload_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/payload_container"
-                android:layout_marginTop="5dp"
-                android:layout_toRightOf="@+id/avatar"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp"
-                tools:text="36 minutes ago"/>
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
+                android:textColor="@color/text_primary"
+                tools:text="housemd edited the PPTH/diagnostics wiki"/>
 
-</LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/divider"/>
+
+            <TextView
+                android:id="@+id/gollum_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
+                android:maxLines="3"
+                tools:text="Edited How to easily skip clinical hours."/>
+
+            <TextView
+                android:id="@+id/view_diff"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/view_diff_gollum"
+                android:textColor="@color/accentDark"
+                android:textSize="12sp"
+                android:textStyle="bold"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/divider"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/payload_container"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/avatar"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            tools:text="36 minutes ago"/>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

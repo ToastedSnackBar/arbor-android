@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.net.responses.CommitResponse;
 import com.github.toastedsnackbar.arbor.net.responses.PageResponse;
@@ -28,6 +27,7 @@ import com.github.toastedsnackbar.arbor.net.responses.events.PullRequestEventPay
 import com.github.toastedsnackbar.arbor.net.responses.events.PushEventPayloadResponse;
 import com.github.toastedsnackbar.arbor.ui.adapters.NewsAdapter.NewsViewHolder;
 import com.github.toastedsnackbar.arbor.util.DateTimeUtil;
+import com.github.toastedsnackbar.arbor.util.GlideHelper;
 import com.github.toastedsnackbar.arbor.util.StringUtil;
 
 import java.util.ArrayList;
@@ -120,7 +120,9 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
     private Map<Integer, SpannableString> mGollumSpannableMap;
     private Map<Integer, SpannableString> mPushSpannableMap;
 
-    public NewsAdapter(Context context) {
+    private GlideHelper mGlideHelper;
+
+    public NewsAdapter(Context context, GlideHelper glideHelper) {
         mContext = context;
         mItems = new ArrayList<>();
 
@@ -130,6 +132,8 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         mPayloadSpannableMap = new LinkedHashMap<>();
         mGollumSpannableMap = new LinkedHashMap<>();
         mPushSpannableMap = new LinkedHashMap<>();
+
+        mGlideHelper = glideHelper;
     }
 
     @Override
@@ -223,8 +227,7 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         newsViewHolder.payload.setText(payloadString);
         newsViewHolder.timestamp.setText(timestamp);
 
-        Glide.with(mContext).load(avatarUrl).override(100, 100).centerCrop().crossFade(500)
-                .into(newsViewHolder.avatarView);
+        mGlideHelper.load(avatarUrl, 100, 100, newsViewHolder.avatarView);
     }
 
     private void setPushItemView(PushNewsViewHolder pushViewHolder, EventResponse event,

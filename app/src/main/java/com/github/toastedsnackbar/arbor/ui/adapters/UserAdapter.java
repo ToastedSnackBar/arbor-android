@@ -10,10 +10,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.net.responses.UserResponse;
 import com.github.toastedsnackbar.arbor.ui.adapters.UserAdapter.UserViewHolder;
+import com.github.toastedsnackbar.arbor.util.GlideHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,10 +49,15 @@ public class UserAdapter extends Adapter<UserViewHolder> {
     private List<UserResponse> mItems;
     private Map<UserResponse, Boolean> mFollowingMap;
 
-    public UserAdapter(Context context) {
+    private GlideHelper mGlideHelper;
+
+    public UserAdapter(Context context, GlideHelper glideHelper) {
         mContext = context;
+
         mItems = new ArrayList<>();
         mFollowingMap = new HashMap<>();
+
+        mGlideHelper = glideHelper;
     }
 
     @Override
@@ -72,33 +77,33 @@ public class UserAdapter extends Adapter<UserViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(UserViewHolder holder, int position) {
+    public void onBindViewHolder(UserViewHolder userViewHolder, int position) {
         UserResponse user = mItems.get(position);
 
         String avatarUrl = user.getAvatarUrl();
-        Glide.with(mContext).load(avatarUrl).into(holder.avatarView);
+        mGlideHelper.load(avatarUrl, 100, 100, userViewHolder.avatarView);
 
         String username = user.getLogin();
-        holder.usernameView.setText(username);
+        userViewHolder.usernameView.setText(username);
 
         String name = user.getName();
         if (!TextUtils.isEmpty(name)) {
-            holder.nameView.setText(name);
-            holder.nameView.setVisibility(View.VISIBLE);
+            userViewHolder.nameView.setText(name);
+            userViewHolder.nameView.setVisibility(View.VISIBLE);
         } else {
-            holder.nameView.setVisibility(View.GONE);
+            userViewHolder.nameView.setVisibility(View.GONE);
         }
 
         String company = user.getCompany();
         if (!TextUtils.isEmpty(company)) {
-            holder.companyView.setText(company);
-            holder.companyView.setVisibility(View.VISIBLE);
+            userViewHolder.companyView.setText(company);
+            userViewHolder.companyView.setVisibility(View.VISIBLE);
         } else {
-            holder.companyView.setVisibility(View.GONE);
+            userViewHolder.companyView.setVisibility(View.GONE);
         }
 
         boolean isFollowing = mFollowingMap.get(user);
-        holder.followButton.setVisibility(isFollowing ? View.INVISIBLE : View.VISIBLE);
-        holder.followingButton.setVisibility(isFollowing ? View.VISIBLE : View.INVISIBLE);
+        userViewHolder.followButton.setVisibility(isFollowing ? View.INVISIBLE : View.VISIBLE);
+        userViewHolder.followingButton.setVisibility(isFollowing ? View.VISIBLE : View.INVISIBLE);
     }
 }
