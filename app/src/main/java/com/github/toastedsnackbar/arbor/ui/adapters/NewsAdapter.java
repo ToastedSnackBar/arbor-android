@@ -113,7 +113,6 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
     private Context mContext;
     private List<EventResponse> mItems;
 
-    private StringBuilder mStringBuilder;
     private SpannableStringBuilder mSpannableBuilder;
 
     private Map<Integer, SpannableString> mPayloadSpannableMap;
@@ -127,18 +126,24 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         mItems = new ArrayList<>();
 
         mSpannableBuilder = new SpannableStringBuilder();
-        mStringBuilder = new StringBuilder();
 
         mPayloadSpannableMap = new LinkedHashMap<>();
         mGollumSpannableMap = new LinkedHashMap<>();
         mPushSpannableMap = new LinkedHashMap<>();
 
         mGlideHelper = glideHelper;
+
+        setHasStableIds(true);
     }
 
     @Override
     public int getItemCount() {
         return mItems.size();
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
@@ -240,7 +245,7 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
             SpannableString noCommitSpannable = mPushSpannableMap.get(position);
             if (noCommitSpannable == null) {
                 String head = payload.getHead().substring(0, 7);
-                String noCommitStr = mContext.getString(R.string.push_no_commits, head);
+                String noCommitStr = mContext.getString(R.string.push_payload_no_commits, head);
 
                 mSpannableBuilder.clear();
                 mSpannableBuilder.append(noCommitStr);
@@ -278,14 +283,9 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
                     int commitCount = commits.size() - 2;
                     int commitCountResId = commitCount > 1 ?
                             R.string.commits_count : R.string.commit_count;
-                    String commitCountString = mContext.getString(commitCountResId);
+                    String commitCountString = mContext.getString(commitCountResId, commitCount);
 
-                    mStringBuilder.setLength(0);
-                    mStringBuilder.append(commitCount);
-                    mStringBuilder.append(" ");
-                    mStringBuilder.append(commitCountString);
-
-                    pushViewHolder.commitCount.setText(mStringBuilder);
+                    pushViewHolder.commitCount.setText(commitCountString);
                     pushViewHolder.commitCount.setVisibility(View.VISIBLE);
                 } else {
                     pushViewHolder.commitCount.setVisibility(View.GONE);
@@ -315,38 +315,20 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         int commitCount = payload.getPullRequest().getCommitCount();
         int commitCountStringResId = commitCount > 1 ?
                 R.string.commits_count_pr : R.string.commit_count_pr;
-        String commitCountString = mContext.getString(commitCountStringResId);
-
-        mStringBuilder.setLength(0);
-        mStringBuilder.append(commitCount);
-        mStringBuilder.append(" ");
-        mStringBuilder.append(commitCountString);
-        pullRequestViewHolder.commitCount.setText(mStringBuilder);
+        String commitCountString = mContext.getString(commitCountStringResId, commitCount);
+        pullRequestViewHolder.commitCount.setText(commitCountString);
 
         int additionCount = payload.getPullRequest().getAdditionCount();
         int additionCountStringResId = additionCount > 1 ?
-                R.string.line_count_pr : R.string.lines_count_pr;
-        String additionCountString = mContext.getString(additionCountStringResId);
-
-        mStringBuilder.setLength(0);
-        mStringBuilder.append("+");
-        mStringBuilder.append(additionCount);
-        mStringBuilder.append(" ");
-        mStringBuilder.append(additionCountString);
-        pullRequestViewHolder.additionCount.setText(mStringBuilder);
+                R.string.addition_lines_count_pr : R.string.addition_line_count_pr;
+        String additionCountString = mContext.getString(additionCountStringResId, additionCount);
+        pullRequestViewHolder.additionCount.setText(additionCountString);
 
         int deletionCount = payload.getPullRequest().getDeletionCount();
         int deletionCountStringResId = deletionCount > 1 ?
-                R.string.line_count_pr : R.string.lines_count_pr;
+                R.string.deletion_lines_count_pr : R.string.deletion_line_count_pr;
         String deletionCountString = mContext.getString(deletionCountStringResId);
-
-        // -{deletionCount} lines
-        mStringBuilder.setLength(0);
-        mStringBuilder.append("-");
-        mStringBuilder.append(deletionCount);
-        mStringBuilder.append(" ");
-        mStringBuilder.append(deletionCountString);
-        pullRequestViewHolder.deletionCount.setText(mStringBuilder);
+        pullRequestViewHolder.deletionCount.setText(deletionCountString);
     }
 
     private void setGollumItemView(GollumNewsViewHolder gollumNewsViewHolder, EventResponse event,
@@ -363,13 +345,7 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         String pageName = page.getPageName();
         String action = StringUtil.capitalizeFirst(page.getAction());
 
-        // {action} {pageName}
-        mStringBuilder.setLength(0);
-        mStringBuilder.append(StringUtil.capitalizeFirst(action));
-        mStringBuilder.append(" ");
-        mStringBuilder.append(pageName);
-
-        String gollumEventPayloadString = mStringBuilder.toString();
+        String gollumEventPayloadString = action + " " + pageName;
         mSpannableBuilder.clear();
         mSpannableBuilder.append(gollumEventPayloadString);
 
@@ -388,19 +364,8 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         String branchName = getBranchNameFromRef(payload.getRef());
 
         // {actorName} pushed to {branchName} at {repoName}
-        mStringBuilder.setLength(0);
-        mStringBuilder.append(actorName);
-        mStringBuilder.append(" ");
-        mStringBuilder.append(mContext.getString(R.string.pushed));
-        mStringBuilder.append(" ");
-        mStringBuilder.append(mContext.getString(R.string.to));
-        mStringBuilder.append(" ");
-        mStringBuilder.append(branchName);
-        mStringBuilder.append(" ");
-        mStringBuilder.append(mContext.getString(R.string.at));
-        mStringBuilder.append(" ");
-        mStringBuilder.append(repoName);
-        String payloadString = mStringBuilder.toString();
+        String payloadString = mContext.getString(R.string.push_payload,
+                actorName, repoName, branchName);
 
         mSpannableBuilder.clear();
         mSpannableBuilder.append(payloadString);
@@ -423,17 +388,8 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         String number = String.valueOf(payload.getNumber());
 
         // {actorName} {action} pull request {repoName}#{number}
-        mStringBuilder.setLength(0);
-        mStringBuilder.append(actorName);
-        mStringBuilder.append(" ");
-        mStringBuilder.append(action);
-        mStringBuilder.append(" ");
-        mStringBuilder.append(mContext.getString(R.string.pull_request));
-        mStringBuilder.append(" ");
-        mStringBuilder.append(repoName);
-        mStringBuilder.append("#");
-        mStringBuilder.append(number);
-        String payloadString = mStringBuilder.toString();
+        String payloadString = mContext.getString(R.string.pull_request_payload,
+                actorName, action, repoName, number);
 
         mSpannableBuilder.clear();
         mSpannableBuilder.append(payloadString);
@@ -448,15 +404,8 @@ public class NewsAdapter extends Adapter<NewsViewHolder> {
         String actorName = event.getActor().getLogin();
         String repoName = event.getRepo().getName();
 
-        mStringBuilder.setLength(0);
-        mStringBuilder.append(actorName);
-        mStringBuilder.append(" ");
-        mStringBuilder.append(mContext.getString(R.string.updated_the));
-        mStringBuilder.append(" ");
-        mStringBuilder.append(repoName);
-        mStringBuilder.append(" ");
-        mStringBuilder.append(mContext.getString(R.string.wiki));
-        String payloadString = mStringBuilder.toString();
+        // {actorName} updated the {repoName} wiki
+        String payloadString = mContext.getString(R.string.gollum_payload, actorName, repoName);
 
         mSpannableBuilder.clear();
         mSpannableBuilder.append(payloadString);

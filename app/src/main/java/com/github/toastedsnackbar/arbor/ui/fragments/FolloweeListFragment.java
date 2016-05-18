@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +22,7 @@ import com.github.toastedsnackbar.arbor.net.responses.UserListResponse;
 import com.github.toastedsnackbar.arbor.net.responses.UserResponse;
 import com.github.toastedsnackbar.arbor.ui.adapters.UserAdapter;
 import com.github.toastedsnackbar.arbor.util.GlideHelper;
+import com.github.toastedsnackbar.arbor.util.GlideHelper.GlideOnScrollListener;
 
 import java.util.HashMap;
 import java.util.List;
@@ -43,8 +43,6 @@ public class FolloweeListFragment extends ArborFragment {
 
     private int mUserCount;
 
-    private GlideHelper mGlideHelper;
-
     public static FolloweeListFragment newInstance(String url, boolean isAuthorized) {
         FolloweeListFragment fragment = new FolloweeListFragment();
         Bundle args = new Bundle();
@@ -64,8 +62,8 @@ public class FolloweeListFragment extends ArborFragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        mGlideHelper = new GlideHelper(getActivity());
-        mAdapter = new UserAdapter(getActivity(), mGlideHelper);
+        GlideHelper glideHelper = new GlideHelper(getActivity());
+        mAdapter = new UserAdapter(getActivity(), glideHelper);
 
         mFollowingMap = new HashMap<>();
         mFollowingRequestIdUserMap = new HashMap<>();
@@ -76,16 +74,7 @@ public class FolloweeListFragment extends ArborFragment {
         RecyclerView usersList = (RecyclerView) view.findViewById(R.id.recycler_view);
         usersList.setAdapter(mAdapter);
         usersList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        usersList.addOnScrollListener(new OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (RecyclerView.SCROLL_STATE_IDLE == newState) {
-                    mGlideHelper.resumeRequests();
-                } else if (RecyclerView.SCROLL_STATE_DRAGGING == newState) {
-                    mGlideHelper.pauseRequests();
-                }
-            }
-        });
+        usersList.addOnScrollListener(new GlideOnScrollListener(glideHelper));
 
         Bundle args = getArguments();
         String url = args.getString(KEY_URL);
