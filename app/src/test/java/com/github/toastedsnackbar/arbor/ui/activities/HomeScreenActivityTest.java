@@ -58,7 +58,7 @@ public class HomeScreenActivityTest {
         assertThat(actionBar).isNotNull();
         assertThat(actionBar.isShowing()).isTrue();
         assertThat(actionBar.getTitle()).isEqualTo(RuntimeEnvironment.application.getString(
-                R.string.activity));
+                R.string.news_feed));
     }
 
     @Test

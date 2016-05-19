@@ -31,7 +31,7 @@ public class HomeScreenActivity extends AppCompatActivity implements
 
     private static final String KEY_INITIAL_FRAGMENT = "key_initial_fragment";
 
-    private static final int DEFAULT_INITIAL_NAV = R.id.nav_activity;
+    private static final int DEFAULT_INITIAL_NAV = R.id.nav_news_feed;
 
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
@@ -69,13 +69,15 @@ public class HomeScreenActivity extends AppCompatActivity implements
             setupNavigationHeader(navigation);
         }
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_INITIAL_FRAGMENT)) {
-            mInitialNav = savedInstanceState.getInt(KEY_INITIAL_FRAGMENT);
-        } else {
-            mInitialNav = DEFAULT_INITIAL_NAV;
+        mInitialNav = DEFAULT_INITIAL_NAV;
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(KEY_INITIAL_FRAGMENT)) {
+                mInitialNav = savedInstanceState.getInt(KEY_INITIAL_FRAGMENT);
+            }
+            restoreActivityLabel();
         }
 
-        if (navigation != null) {
+        if (navigation != null && savedInstanceState == null) {
             onNavigationItemSelected(navigation.getMenu().findItem(mInitialNav));
         }
     }
@@ -124,18 +126,19 @@ public class HomeScreenActivity extends AppCompatActivity implements
 
         if (menuItem.getGroupId() != R.id.action_items) {
             mCurrentNav = menuItem;
+            mInitialNav = mCurrentNav.getItemId();
         }
 
         switch (menuItem.getItemId()) {
-            case R.id.nav_activity:
+            case R.id.nav_news_feed:
                 fragment = NewsListFragment.newInstance();
                 break;
 
-            case R.id.nav_my_repositories:
+            case R.id.nav_repositories:
                 fragment = RepositoryListFragment.newInstance();
                 break;
 
-            case R.id.nav_my_followings:
+            case R.id.nav_followees:
                 fragment = FolloweeFragment.newInstance();
                 break;
 
@@ -181,6 +184,30 @@ public class HomeScreenActivity extends AppCompatActivity implements
         TextView emailView = (TextView) headerView.findViewById(R.id.email);
         String email = ArborPreferences.getEmail();
         emailView.setText(email);
+    }
+
+    private void restoreActivityLabel() {
+        int labelStringResId;
+
+        switch (mInitialNav) {
+            case R.id.nav_news_feed:
+                labelStringResId = R.string.news_feed;
+                break;
+
+            case R.id.nav_repositories:
+                labelStringResId = R.string.repositories;
+                break;
+
+            case R.id.nav_followees:
+                labelStringResId = R.string.followees;
+                break;
+
+            default:
+                labelStringResId = R.string.activity_home_screen;
+                break;
+        }
+
+        setTitle(labelStringResId);
     }
 
     @Override

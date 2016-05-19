@@ -6,16 +6,16 @@
         android:checkableBehavior="single">
 
         <item
-            android:id="@+id/nav_activity"
-            android:title="@string/activity"/>
+            android:id="@+id/nav_news_feed"
+            android:title="@string/news_feed"/>
 
         <item
-            android:id="@+id/nav_my_repositories"
-            android:title="@string/my_repositories"/>
+            android:id="@+id/nav_repositories"
+            android:title="@string/repositories"/>
 
         <item
-            android:id="@+id/nav_my_followings"
-            android:title="@string/my_followings"/>
+            android:id="@+id/nav_followees"
+            android:title="@string/followees"/>
     </group>
 
     <group
