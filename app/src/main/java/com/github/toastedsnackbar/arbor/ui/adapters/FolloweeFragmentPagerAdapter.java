@@ -4,24 +4,24 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.github.toastedsnackbar.arbor.ui.fragments.FollowerListFragment;
-import com.github.toastedsnackbar.arbor.ui.fragments.NewsListFragment;
-import com.github.toastedsnackbar.arbor.ui.fragments.RepositoryListFragment;
+import com.github.toastedsnackbar.arbor.net.ApiEndpoints;
+import com.github.toastedsnackbar.arbor.ui.fragments.FolloweeListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeScreenFragmentPagerAdapter extends FragmentStatePagerAdapter {
+public class FolloweeFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     private List<Fragment> mFragments;
 
-    public HomeScreenFragmentPagerAdapter(FragmentManager fm) {
+    public FolloweeFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
 
         mFragments = new ArrayList<>();
-        mFragments.add(RepositoryListFragment.newInstance());
-        mFragments.add(NewsListFragment.newInstance());
-        mFragments.add(FollowerListFragment.newInstance());
+        mFragments.add(FolloweeListFragment.newInstance(ApiEndpoints.getAuthUserFollowingUrl(),
+                true));
+        mFragments.add(FolloweeListFragment.newInstance(ApiEndpoints.getAuthUserFollowersUrl(),
+                true));
     }
 
     @Override

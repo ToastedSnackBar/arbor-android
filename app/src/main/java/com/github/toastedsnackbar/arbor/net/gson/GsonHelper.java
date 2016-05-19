@@ -1,6 +1,8 @@
 package com.github.toastedsnackbar.arbor.net.gson;
 
+import com.github.toastedsnackbar.arbor.net.responses.IsFollowingResponse;
 import com.github.toastedsnackbar.arbor.net.responses.RepositoryListResponse;
+import com.github.toastedsnackbar.arbor.net.responses.UserListResponse;
 import com.github.toastedsnackbar.arbor.net.responses.events.EventListResponse;
 import com.github.toastedsnackbar.arbor.net.responses.events.EventResponse;
 import com.google.gson.Gson;
@@ -22,6 +24,8 @@ public class GsonHelper {
         builder.registerTypeAdapter(EventResponse.class, new EventTypeAdapter());
         builder.registerTypeAdapter(RepositoryListResponse.class, new RepositoryListTypeAdapter());
         builder.registerTypeAdapter(EventListResponse.class, new EventListTypeAdapter());
+        builder.registerTypeAdapter(UserListResponse.class, new UserListTypeAdapter());
+        builder.registerTypeAdapter(IsFollowingResponse.class, new IsFollowingTypeAdapter());
         mGson = builder.create();
     }
 

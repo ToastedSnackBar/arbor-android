@@ -31,14 +31,6 @@ public class ArborTestRunner extends RobolectricGradleTestRunner {
         return getAppManifest();
     }
 
-    @Override
-    public InstrumentationConfiguration createClassLoaderConfig() {
-        InstrumentationConfiguration.Builder builder = InstrumentationConfiguration.newBuilder();
-        builder.addInstrumentedClass(Snackbar.class.getName());
-
-        return builder.build();
-    }
-
     private static String getProjectDirectory() {
         String path = "";
 

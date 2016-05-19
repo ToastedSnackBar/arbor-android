@@ -33,7 +33,6 @@ import com.github.toastedsnackbar.arbor.net.ApiService.ResultCodes;
 import com.github.toastedsnackbar.arbor.net.requests.AuthUserRequest;
 import com.github.toastedsnackbar.arbor.net.responses.UserResponse;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
@@ -122,13 +121,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (resultCode) {
             case ResultCodes.RUNNING:
                 mProgressBar.setVisibility(View.VISIBLE);
+                enableButtons(false);
                 break;
 
             case ResultCodes.SUCCESS:
-                mProgressBar.setVisibility(View.GONE);
-
                 String requestId = resultData.getString(ApiService.EXTRA_REQUEST_ID);
                 if (TextUtils.isEmpty(requestId)) {
+                    showErrorSnackbar(R.string.splash_error_unknown);
+                    mProgressBar.setVisibility(View.GONE);
+                    enableButtons(true);
                     return;
                 }
 
@@ -136,6 +137,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     UserResponse response = resultData.getParcelable(ApiService.EXTRA_RESPONSE);
                     if (response == null) {
                         showErrorSnackbar(R.string.splash_error_incorrect);
+                        mProgressBar.setVisibility(View.GONE);
+                        enableButtons(true);
                         return;
                     }
 
@@ -146,6 +149,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     HomeScreenActivity.start(MainActivity.this);
                     finish();
                 }
+                break;
+
+            case ResultCodes.ERROR:
+                showErrorSnackbar(R.string.splash_error_unknown);
+                mProgressBar.setVisibility(View.GONE);
+                enableButtons(true);
                 break;
         }
     }
@@ -185,6 +194,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 android.support.design.R.id.snackbar_text);
         textView.setTextColor(Color.YELLOW);
         snackbar.show();
+    }
+
+    private void enableButtons(boolean enable) {
+        mLoginButton.setEnabled(enable);
+        mRegisterButton.setEnabled(enable);
+
+        mUsernameEditText.setEnabled(enable);
+        mPasswordEditText.setEnabled(enable);
     }
 
     @Override

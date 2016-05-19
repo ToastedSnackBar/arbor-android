@@ -42,13 +42,14 @@ public class ApiService extends IntentService {
         ResultReceiver receiver = intent.getParcelableExtra(EXTRA_RESULT_RECEIVER);
         receiver.send(ResultCodes.RUNNING, resultData);
 
+        ApiResponse response = null;
         try {
-            ApiResponse response = request.execute();
-
-            resultData.putParcelable(EXTRA_RESPONSE, response);
-            receiver.send(ResultCodes.SUCCESS, resultData);
+            response = request.execute();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            resultData.putParcelable(EXTRA_RESPONSE, response);
+            receiver.send(ResultCodes.SUCCESS, resultData);
         }
     }
 

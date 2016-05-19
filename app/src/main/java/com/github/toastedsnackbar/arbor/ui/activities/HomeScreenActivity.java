@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,10 +18,11 @@ import android.widget.TextView;
 
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
-import com.github.toastedsnackbar.arbor.ui.fragments.FollowerListFragment;
+import com.github.toastedsnackbar.arbor.ui.fragments.ArborFragment;
+import com.github.toastedsnackbar.arbor.ui.fragments.FolloweeFragment;
 import com.github.toastedsnackbar.arbor.ui.fragments.NewsListFragment;
 import com.github.toastedsnackbar.arbor.ui.fragments.RepositoryListFragment;
-import com.squareup.picasso.Picasso;
+import com.github.toastedsnackbar.arbor.util.GlideHelper;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -38,6 +38,9 @@ public class HomeScreenActivity extends AppCompatActivity implements
     private ActionBarDrawerToggle mDrawerToggle;
 
     private int mInitialNav;
+    private MenuItem mCurrentNav;
+
+    private GlideHelper mGlideHelper;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, HomeScreenActivity.class);
@@ -51,6 +54,8 @@ public class HomeScreenActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
 
+        mGlideHelper = new GlideHelper(HomeScreenActivity.this);
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar_home);
         setSupportActionBar(mToolbar);
 
@@ -59,8 +64,10 @@ public class HomeScreenActivity extends AppCompatActivity implements
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         NavigationView navigation = (NavigationView) findViewById(R.id.navigation_view);
-        navigation.setNavigationItemSelectedListener(HomeScreenActivity.this);
-        setupNavigationHeader(navigation);
+        if (navigation != null) {
+            navigation.setNavigationItemSelectedListener(HomeScreenActivity.this);
+            setupNavigationHeader(navigation);
+        }
 
         if (savedInstanceState != null && savedInstanceState.containsKey(KEY_INITIAL_FRAGMENT)) {
             mInitialNav = savedInstanceState.getInt(KEY_INITIAL_FRAGMENT);
@@ -68,7 +75,9 @@ public class HomeScreenActivity extends AppCompatActivity implements
             mInitialNav = DEFAULT_INITIAL_NAV;
         }
 
-        onNavigationItemSelected(navigation.getMenu().findItem(mInitialNav));
+        if (navigation != null) {
+            onNavigationItemSelected(navigation.getMenu().findItem(mInitialNav));
+        }
     }
 
     @Override
@@ -104,20 +113,30 @@ public class HomeScreenActivity extends AppCompatActivity implements
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
-        Class<? extends Fragment> fragmentClass = null;
-        Fragment fragment = null;
+        ArborFragment fragment = null;
+
+        if (mCurrentNav != null
+                && menuItem.getItemId() == mCurrentNav.getItemId()
+                && menuItem.getGroupId() != R.id.action_items) {
+            mDrawerLayout.closeDrawers();
+            return true;
+        }
+
+        if (menuItem.getGroupId() != R.id.action_items) {
+            mCurrentNav = menuItem;
+        }
 
         switch (menuItem.getItemId()) {
             case R.id.nav_activity:
-                fragmentClass = NewsListFragment.class;
+                fragment = NewsListFragment.newInstance();
                 break;
 
             case R.id.nav_my_repositories:
-                fragmentClass = RepositoryListFragment.class;
+                fragment = RepositoryListFragment.newInstance();
                 break;
 
             case R.id.nav_my_followings:
-                fragmentClass = FollowerListFragment.class;
+                fragment = FolloweeFragment.newInstance();
                 break;
 
             case R.id.action_log_out:
@@ -127,26 +146,20 @@ public class HomeScreenActivity extends AppCompatActivity implements
                 break;
         }
 
-        if (fragmentClass != null) {
-            try {
-                fragment = fragmentClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-
+        if (fragment != null) {
             showFragment(fragment);
             menuItem.setChecked(true);
             setTitle(menuItem.getTitle());
+            mDrawerLayout.closeDrawers();
         }
-
-        mDrawerLayout.closeDrawers();
 
         return true;
     }
 
-    private void showFragment(Fragment fragment) {
+    private void showFragment(ArborFragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.content, fragment,
+                fragment.getFragmentTag()).commit();
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
@@ -159,7 +172,7 @@ public class HomeScreenActivity extends AppCompatActivity implements
 
         CircleImageView avatarView = (CircleImageView) headerView.findViewById(R.id.avatar);
         String avatarUrl = ArborPreferences.getAvatarUrl();
-        Picasso.with(HomeScreenActivity.this).load(avatarUrl).into(avatarView);
+        mGlideHelper.load(avatarUrl, avatarView);
 
         TextView usernameView = (TextView) headerView.findViewById(R.id.username);
         String username = ArborPreferences.getUsername();

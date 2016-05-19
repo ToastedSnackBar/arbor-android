@@ -4,21 +4,12 @@ package com.github.toastedsnackbar.arbor.ui.activities;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.github.toastedsnackbar.arbor.ArborTestRunner;
 import com.github.toastedsnackbar.arbor.R;
 import com.github.toastedsnackbar.arbor.content.ArborPreferences;
-import com.github.toastedsnackbar.arbor.ui.fragments.FollowerListFragment;
-import com.github.toastedsnackbar.arbor.ui.fragments.NewsListFragment;
-import com.github.toastedsnackbar.arbor.ui.fragments.RepositoryListFragment;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,7 +21,6 @@ import org.robolectric.internal.ShadowExtractor;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.util.ActivityController;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 
 import static org.assertj.android.api.Assertions.assertThat;
